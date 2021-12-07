@@ -50,36 +50,30 @@ function timeForToday(value) {
     return `${year}-${month >= 10 ? month : '0' + month}-${date >= 10 ? date : '0' + date}`;
 }
 
-// 등록된 쿠키 가져오는 함수
-function getCookieValue(key) {
-    let cookieKey = key + "="; 
-    let result = "";
-    const cookieArr = document.cookie.split(";");
-    
-    for(let i = 0; i < cookieArr.length; i++) {
-        if(cookieArr[i][0] === " ") {
-            cookieArr[i] = cookieArr[i].substring(1);
-        }
-        
-        if(cookieArr[i].indexOf(cookieKey) === 0) {
-            result = cookieArr[i].slice(cookieKey.length, cookieArr[i].length);
-            return result;
-        }
-    }
-    return result;
-}
-
 const TalkList = ()=>{
     const [posts, setPosts] = React.useState({});
     const [current, setCurrent] = React.useState({});
+    const [cookie, setCookie] = React.useState('');
     
     // 채팅창 팝업
     const[addOn, setAddOn] = React.useState(false);
 
+    useEffect(()=>{
+        // cookie로 받은 내 idx 저장
+        if(document.cookie !== undefined){
+            const cookie = document.cookie.split('=');
+            console.log('쿠키 있습니다!');
+            console.log(cookie[1]);
+            setCookie(cookie[1]);
+        }else{
+            console.log('쿠키 없습니다. ㅜ')
+        }
+    },[])
+
     useEffect(() => {
         try{
             Promise.allSettled([
-                axios.get('/main/chat?idx=1',{
+                axios.get(`/main/chat?idx=${cookie}`, {
                     validateStatus: function (status) {
                       return status < 500; // Resolve only if the status code is less than 500
                     }
@@ -92,7 +86,6 @@ const TalkList = ()=>{
         } catch(e){
             console.error(e.message)
         }
-        console.log(getCookieValue("first"));
     },[])
     
     const onView = (roomIdx) => {
@@ -149,7 +142,7 @@ const TalkList = ()=>{
         
     } else { // 조회 데이터 존재하지 않을 경우
         return (
-            <div></div>
+            <div style={{textAlign: "center", fontSize: "1.5rem", padding: "10rem", color: "Gray"}}>채팅방이 없습니다. 친구와 채팅을 해보세요!</div>
         )
     }
 }

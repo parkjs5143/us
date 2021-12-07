@@ -4,8 +4,6 @@ import {Link} from 'react-router-dom';
 import queryString from 'query-string';
 import io from 'socket.io-client';
 import ScrollToBottom from 'react-scroll-to-bottom';
-import {useCookies} from 'react-cookie';
-import StateContext from "react-scroll-to-bottom/lib/ScrollToBottom/StateContext";
 
 const TalkWrap = styled.div`
     z-index: 100; 
@@ -44,7 +42,6 @@ let socket;
 
 const Talk = ({current})=>{
     const [img, setImg] = useState('');
-    const [myIdx, setMyIdx] = useState('');
     const [name, setName] = useState('');
     const [idx, setIdx] = useState('');
     const [memberIdx, setMemberIdx] = useState('');
@@ -53,21 +50,24 @@ const Talk = ({current})=>{
     const [messages, setMessages] = useState([]);
     const[addOn, setAddOn] = useState(true);
     const[cookie, setCookie] = useState('');
-    const[cookies, setCookies, removeCookie] = useCookies(['rememberText']);
 
     const ENDPORT = 'localhost:3001';
     
     const searchElement = useRef(null); // DOM 요소를 searchElement에 할당
     
-    useEffect(() => {
+    useEffect(()=>{
         // cookie로 받은 내 idx 저장
-        if(cookies.rememberText !== undefined){
-            console.log('쿠키 있습니다!')
-            setCookie(cookies.rememberText);
+        if(document.cookie !== undefined){
+            const cookie = document.cookie.split('=');
+            console.log('쿠키 있습니다!');
+            console.log(cookie[1]);
+            setCookie(cookie[1]);
         }else{
             console.log('쿠키 없습니다. ㅜ')
         }
-        
+    },[])
+
+    useEffect(() => {
         // current 에서 받은 데이터 저장
         const {img, name, idx, memberIdx, title} = current;
         if(img==null || img==''){
@@ -109,7 +109,7 @@ const Talk = ({current})=>{
         event.preventDefault();
 
         const data = document.querySelector('.talkTextInput').value;
-        const output = {idx:idx, memberIdx: memberIdx, sender:name, commend:'chat', type:'text', data:data, roomName : title};
+        const output = {idx:idx, memberIdx: cookie, sender:name, commend:'chat', type:'text', data:data, roomName : title};
         console.log('프론트에서 보낼거',output);
         if(socket == undefined){
             alert('서버에 연결되지 않았습니다. 서버를 연결하세요');
@@ -120,19 +120,6 @@ const Talk = ({current})=>{
             searchElement.current.value='';
             searchElement.current.focus();
         }
-    }
-
-    // message 출력
-    function println(data){
-        document.querySelector('.talkList').innerHTML += `<div class='reciverTalk'>
-        <div class='talkProfileImgWrap'>
-            <img class='talkProfileImg' src=${img} alt='프로필 사진'></img>
-        </div>
-        <div class='talkDetailWrap'>
-            <div class='talkProfileName'>${name}</div>
-            <div class='talkDetailList'>${data}</div>
-        </div>
-    </div>`;
     }
 
     const closePop = () => {
@@ -163,7 +150,7 @@ const Talk = ({current})=>{
                                 let isSentByCurrentUser = false;
 
                                 console.log(message);
-                                if(message.memberIdx === memberIdx){
+                                if(message.memberIdx === cookie){
                                     isSentByCurrentUser = true;
                                 }
 

@@ -187,17 +187,12 @@ const LoginPage = () => {
         })
         .then(res => {
             console.log(res)
-            //왜 안나옴.
-            
-            console.log('res.data.userId :: ', res.data)
-            // document.location.href = '/main'
+
             // 작업 완료 되면 페이지 이동(새로고침)
             if(res.data == true){
-
-            // document.location.href = '/main'
-            }
-            else{
-                alert("다시")
+                document.location.href = '/main'
+            } else{
+                alert("아이디와 패스워드가 일치하지 않습니다.")
             }
         })
         .catch()

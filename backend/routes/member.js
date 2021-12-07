@@ -122,11 +122,12 @@ router.route('/member/login').post((req,res)=>{
                         let dataLoading = true;
                         if(result[0] != null){
                             req.session.user = {
-                                email: email,
-                                pw: userPw,
+                                idx: result[0].idx,
+                                email: result[0].email,
                                 name: "first",
                                 authorized: true
                             };
+                            res.cookie('three', result[0].idx);
                             res.json(true)
                             const hi  = new Promise((resolve, reject)=>{
                                 if(dataLoading){
@@ -153,7 +154,10 @@ router.route('/member/login').post((req,res)=>{
     }
 })
 
-
+// 쿠키 값 가져오기
+router.route('/getCookie').get((req, res)=>{
+    res.send(req.cookies.three);
+})
 
 const LoginMember = function(email, userPw, callback){
     pool.getConnection((err, conn)=>{
