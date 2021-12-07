@@ -12,7 +12,7 @@
 
 ### 프로젝트 상세내용
 **주제**
-  * 소셜 플랫폼 ( 게시물 업로드, 친구 추가, 1:1 실시간 채팅 기능 )
+* 소셜 플랫폼 ( 게시물 업로드, 친구 추가, 1:1 실시간 채팅 기능 )
 
 ### 구현 목표
 **사용자**
@@ -36,3 +36,24 @@
 + 회원 문의 삭제 기능
 + 로그인/로그아웃 기능
 + 좌측 사이드 바 하단의 로고 클릭 시 사용자 로그인 페이지로 이동
+
+### 구동 화면
+###### 메인 페이지(게시물)
+![main](https://user-images.githubusercontent.com/75155418/145069016-ee490278-32c1-47e8-8f77-cdbf1229c6ec.png)
+
+###### 메인 페이지(채팅)
+
+###### 메인 페이지(위치)
+![map](https://user-images.githubusercontent.com/75155418/145069358-feec2764-eccf-4edb-a9a8-ee77d0220368.png)
+
+###### 로그인 페이지
+![login](https://user-images.githubusercontent.com/75155418/145069438-8e2010f5-46c3-4d9e-b80f-0840d3ac00a4.png)
+
+###### 게시물 업로드
+![KakaoTalk_20211207_235451557](https://user-images.githubusercontent.com/75155418/145069600-da20b024-d1c1-4884-bc26-641c6711c91f.png)
+
+###### 마이페이지
+![mypage](https://user-images.githubusercontent.com/75155418/145069673-abfc1f3f-bb50-44e9-9a22-01ae606635a3.png)
+
+###### 관리자 페이지
+![admin](https://user-images.githubusercontent.com/75155418/145069519-1c291401-f7ed-43c8-9f0c-66e72e68be77.png)
