@@ -2,6 +2,8 @@ import React, { useState, Component } from "react";
 import { Link, BrowserRouter as Router } from "react-router-dom";
 import styled from 'styled-components';
 import { useEffect } from "react";
+import axios from 'axios';
+
 const Regi1 = styled.div`
 html{
     background: rgb(248, 250, 252);
@@ -36,6 +38,7 @@ html{
         margin-top: 4rem;
     }
     .forregi input{
+        background-color: #F8FAFC;
         border-bottom: 1px solid lightgray;
         height: 5rem;
         color: #222;
@@ -107,8 +110,7 @@ html{
     input[id="check2"] {
         display: none;
     }
-    select { width: 200px; padding: .8em .5em; background: url(https://farm1.staticflickr.com/379/19928272501_4ef877c265_t.jpg) no-repeat 95% 50%; border: 1px solid lightgray; border-radius: 0px; appearance: none; outline:none; }
-    .genderSelectBox { margin: 2rem 0; }
+    select { width: 200px; /* 원하는 너비설정 */ padding: .8em .5em; /* 여백으로 높이 설정 */ font-family: inherit; /* 폰트 상속 */ background: url(https://farm1.staticflickr.com/379/19928272501_4ef877c265_t.jpg) no-repeat 95% 50%; /* 네이티브 화살표 대체 */ border: 1px solid lightgray; border-radius: 0px; /* iOS 둥근모서리 제거 */ -webkit-appearance: none; /* 네이티브 외형 감추기 */ -moz-appearance: none; appearance: none; }
     input[type=checkbox]{height: 0;width: 0;visibility: hidden;}
     label {cursor: pointer;text-indent: -9999px;width: 45px;height: 28px;background: grey;display: block;border-radius: 100px;position: relative; top: -3px; margin-right: 8px;}
     label:after {content: '';position: absolute;top: 5px;left: 5px;width: 19px;height: 19px;background: #fff;border-radius: 90px;transition: 0.3s;}
@@ -135,20 +137,19 @@ const RegistPage1 = () => {
     const [password, setPassword] = React.useState('')
     const [name,setName] = React.useState('')
     const [hp,setHp] = React.useState('')
+    const [gender,setGender] = React.useState('')
+    const [checkbox1,setCheckBox1] = React.useState('')
+    const [checkbox2,setCheckBox2] = React.useState('')
+    const [checkedInputs, setCheckedInputs] = useState([]);
+    const [checkedInputs2, setCheckedInputs2] = useState([]);
 
-    
-
+    //에러메세지 온오프
     const [display, setDisplay] = useState("none")
     const [display2, setDisplay2] = useState("none")
     const [display3, setDisplay3] = useState("none")
     const [display4, setDisplay4] = useState("none")
 
-    const changeBox = (checkbox) => {
-        chageCheckbox(checkbox)
-    }
-    const changeBox2 = (checkbox2) => {
-        chageCheckbox2(checkbox2)
-    }
+    
     const changeDispaly = (display) => {
         setDisplay(display)
     }
@@ -161,9 +162,10 @@ const RegistPage1 = () => {
     const changeDispaly4 = (display4) => {
         setDisplay4(display4)
     }
-
-    const isActive = false;
-
+    const changeGender = (gender) => {
+        setGender(gender)
+    }
+    //정규식 체크
     const checkEmail = (e) => {
         e.preventDefault();
 
@@ -171,7 +173,8 @@ const RegistPage1 = () => {
 
         var regExp = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i
         // 형식에 맞는 경우 true 리턴
-        console.log('이메일 유효성 검사 :: ', regExp.test(e.target.value))
+        const emailV = e.target.value;
+        setEmail(emailV)
 
         if (regExp.test(e.target.value) === false) {
             changeDispaly("block")
@@ -190,7 +193,8 @@ const RegistPage1 = () => {
         //  8 ~ 10자 영문, 숫자 조합
         var regExp = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,25}$/
         // 형식에 맞는 경우 true 리턴
-        console.log('비밀번호 유효성 검사 :: ', regExp.test(e.target.value))
+        const pwV = e.target.value;
+        setPassword(pwV)
         if (regExp.test(e.target.value) === false) {
             changeDispaly2("block")
             
@@ -207,7 +211,8 @@ const RegistPage1 = () => {
     const checkName = (e) => {
         e.preventDefault();
         var regExp = /^[가-힣]{2,15}$/;
-        console.log('한글이름 유효성 검사 :: ', regExp.test(e.target.value))
+        const pwV = e.target.value;
+        setName(pwV)
         if (regExp.test(e.target.value) === false) {
             changeDispaly3("block")
             nameDisable = false
@@ -223,7 +228,8 @@ const RegistPage1 = () => {
     const checkPh = (e) => {
         e.preventDefault();
         var regExp = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
-        console.log('폰번호 유효성 검사 :: ', regExp.test(e.target.value))
+        const pwV = e.target.value;
+        setHp(pwV)
         if (regExp.test(e.target.value) === false) {
             changeDispaly4("block")
             hpDisable = false
@@ -234,6 +240,7 @@ const RegistPage1 = () => {
         idDisabled()
 
     }
+    const [random, setRandom] = useState();
 
 
     const makeRanCode = (e) => {
@@ -244,53 +251,57 @@ const RegistPage1 = () => {
             const rnum = Math.floor(Math.random() * chars.length)
             randomstring += chars.substring(rnum, rnum + 1)
         }
-        return alert("회원가입을 축하합니다 🤩회원님의 개인 코드는 " + randomstring + "입니다")
+        setRandom(randomstring);
+        console.log("랜덤 : " + random)
+        //회원가입 함수 실행
+        goRegist();
     }
-
-
-    const [checkbox, chageCheckbox] = useState("icon/outline_check_box_outline_blank_black_24dp.png");
-
-    const [checkedInputs, setCheckedInputs] = useState([]);
-
+    
     const changeHandler = (checked, id) => {
         if (checked) {
             setCheckedInputs([...checkedInputs, id]);
             console.log("체크 반영 완료");
-            changeBox("icon/outline_check_box_black_24dp.png")
             btnDisable = true;
+            setCheckBox1("Y")
+
         } else {
             setCheckedInputs(checkedInputs.filter(el => el !== id));
             console.log("체크 해제 반영 완료");
-            changeBox("icon/outline_check_box_outline_blank_black_24dp.png")
             btnDisable = false;
+            setCheckBox1("N")
+
         }
         idDisabled()
     };
-
-    const [checkbox2, chageCheckbox2] = useState("icon/outline_check_box_outline_blank_black_24dp.png");
-
-    const [checkedInputs2, setCheckedInputs2] = useState([]);
 
     const changeHandler2 = (checked2, id2) => {
         if (checked2) {
             setCheckedInputs2([...checkedInputs2, id2]);
             console.log("체크 반영 완료");
-            changeBox2("icon/outline_check_box_black_24dp.png")
+            setCheckBox2("Y")
             btn2Disable = true;
 
         } else {
             setCheckedInputs2(checkedInputs2.filter(el => el !== id2));
             console.log("체크 해제 반영 완료");
-            changeBox2("icon/outline_check_box_outline_blank_black_24dp.png")
+            setCheckBox2("N")
             btn2Disable = false;
 
         }
         idDisabled()
     };
 
-    const isAllChecked = checkedInputs.length === 2;
-    
-    // const disabled = !isAllChecked;
+    const checkGender = (e) => {
+        e.preventDefault();
+
+        console.log(e.target.value)
+        if(e.target.value == 1){
+            changeGender("남")
+        }else{
+            changeGender("여")
+        }
+    }
+    //버튼활성화
     const [disabled, setDisabled ] = React.useState('disabled');
 
     const idDisabled = () => {
@@ -298,6 +309,22 @@ const RegistPage1 = () => {
             setDisabled('');
         }else{
             setDisabled('disabled');
+        }
+    }
+
+
+
+    //axios
+    
+    const goRegist = async () => {
+        let ag1 = "Y";
+        let ag2 = "Y";
+        let log = await axios.post('http://localhost:3001/member/regist?email='+email+"&userPw="+password+"&name="+name+"&tel="+hp+"&gender="+gender+"&code="+random+"&agreement1="+ag1+"&agreement2="+ag2)
+        if(log.data===true){
+            alert('회원가입이 완료되었습니다. 로그인 페이지에서 로그인 해주세요!')
+            window.location.href="/"
+        }else{
+            alert('올바르지 않거나 중복된 정보입니다. 다시 입력해 주세요!')
         }
     }
     return (
@@ -327,8 +354,8 @@ const RegistPage1 = () => {
                         <input id="ph" onChange={checkPh} placeholder="휴대폰번호를 입력해주세요." />
                         <p className="red" style={{ display: display4 }}>* 전화번호를 다시 입력해 주세요. ('-'제외)</p>
                     </div>
-                    <div className="genderSelectBox">
-                    <select className="choiceGender">
+                    <div>
+                    <select className="choiceGender" onChange={checkGender}>
                         <option value="1">남성</option>
                         <option value="2">여성</option>
                     </select>
@@ -344,12 +371,10 @@ const RegistPage1 = () => {
                             <span>개인 정보 보호 약관</span> 에 동의합니다</p>
                     </div>
                     <div className="activebtn">
-                        <Link to="/">
-                            <button
+                            <button type="button"
                                 onClick={makeRanCode} disabled={disabled}>
                                 회원가입
                             </button>
-                        </Link>
                     </div>
                 </form>
             </div>

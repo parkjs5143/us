@@ -1,7 +1,11 @@
-import React, {useEffect, useRef} from "react";
+import React, {useEffect, useRef, useState} from "react";
 import styled from 'styled-components';
 import {Link} from 'react-router-dom';
+import queryString from 'query-string';
 import io from 'socket.io-client';
+import ScrollToBottom from 'react-scroll-to-bottom';
+import {useCookies} from 'react-cookie';
+import StateContext from "react-scroll-to-bottom/lib/ScrollToBottom/StateContext";
 
 const TalkWrap = styled.div`
     z-index: 100; 
@@ -36,62 +40,99 @@ const TalkWrap = styled.div`
     .talkSendBtn.active { color: #333; }
 `;
 
+let socket;
+
 const Talk = ({current})=>{
-    const recieverName = '당근당근';
-    const recieverImg = 'img/blank_profile.png';
-    const {img, name, idx, memberIdx, title} = current;
-    let socket;
+    const [img, setImg] = useState('');
+    const [myIdx, setMyIdx] = useState('');
+    const [name, setName] = useState('');
+    const [idx, setIdx] = useState('');
+    const [memberIdx, setMemberIdx] = useState('');
+    const [title, setTitle] = useState('');
+    const [message, setMessage] = useState('');
+    const [messages, setMessages] = useState([]);
+    const[addOn, setAddOn] = useState(true);
+    const[cookie, setCookie] = useState('');
+    const[cookies, setCookies, removeCookie] = useCookies(['rememberText']);
+
+    const ENDPORT = 'localhost:3001';
     
-    // 채팅창 팝업
-    const[addOn, setAddOn] = React.useState(true);
-
     const searchElement = useRef(null); // DOM 요소를 searchElement에 할당
-
+    
     useEffect(() => {
+        // cookie로 받은 내 idx 저장
+        if(cookies.rememberText !== undefined){
+            console.log('쿠키 있습니다!')
+            setCookie(cookies.rememberText);
+        }else{
+            console.log('쿠키 없습니다. ㅜ')
+        }
+        
+        // current 에서 받은 데이터 저장
+        const {img, name, idx, memberIdx, title} = current;
+        if(img==null || img==''){
+            setImg('img/blank_profile.png');
+        } else setImg(img);
+        setName(name);
+        setIdx(idx);
+        setMemberIdx(memberIdx);
+        setTitle(title);
+
+        // soket.io
+        socket = io(ENDPORT);
+        console.log(socket);
+        socket.on('connection', function(){
+            console.log('웹소켓 서버에 연결되었습니다.');
+            
+        });
+        socket.emit('joinRoom', idx);   // {idx:idx, name:name}
+        console.log(`${title} 방 입장`)
+
+         // textarea focus 할당
         if (searchElement.current) { // 할당한 DOM 요소가 불러지면 (마운트 되면)
             searchElement.current.focus(); // textarea에 focus 할당!
-
-            connectToServer();  // 서버 연결
         }
-    }, []);
+    }, [current]);
 
+    // 백에서 받아온 messase 처리
+    useEffect(()=>{
+        socket.on('send', function(msg){
+            console.log('백에서온거',JSON.stringify(msg));
+            setMessages([...messages, msg]);
+            console.log(messages);
+            // println(`${msg.sender} ${msg.data}`)
+        })
+    }, [messages]);
+
+    // sendBtn 클릭
     const sendMsg = (event)=>{
+        event.preventDefault();
+
         const data = document.querySelector('.talkTextInput').value;
-        const output = {memberIdx:memberIdx, sender:name, commend:'chat', type:'text', data:data, roomName : title};
-        console.log(output);
+        const output = {idx:idx, memberIdx: memberIdx, sender:name, commend:'chat', type:'text', data:data, roomName : title};
+        console.log('프론트에서 보낼거',output);
         if(socket == undefined){
             alert('서버에 연결되지 않았습니다. 서버를 연결하세요');
             return;
         }
         socket.emit('message', output);
+        if (searchElement.current) { // 할당한 DOM 요소가 불러지면 (마운트 되면)
+            searchElement.current.value='';
+            searchElement.current.focus();
+        }
     }
 
-    function connectToServer(){
-        const url = `http://127.0.0.1:3001`;
-        console.log(url)
-        socket = io.connect(url);
-        console.log('socket 객체 생성')
-        socket.on('connect', function(){
-            console.log('웹소켓 서버에 연결되었습니다.')
-            socket.on('message', function(message){
-                console.log(JSON.stringify(message));
-                println(`${message.sender} ${message.data}`)
-            })
-        });
-        socket.emit('joinRoom', idx);
-        console.log(`방 ${title}입장`);
-    }
-
+    // message 출력
     function println(data){
-        document.querySelector('.talkContents').append(`<div className='reciverTalk'>
-        <div className='talkProfileImgWrap'>
-            <img className='talkProfileImg' src=${img} alt='프로필 사진'></img>
+        document.querySelector('.talkList').innerHTML += `<div class='reciverTalk'>
+        <div class='talkProfileImgWrap'>
+            <img class='talkProfileImg' src=${img} alt='프로필 사진'></img>
         </div>
-        <div className='talkDetailWrap'>
-            <div className='talkProfileName'>${name}</div>
-            <div className='talkDetailList'>${data}</div>
+        <div class='talkDetailWrap'>
+            <div class='talkProfileName'>${name}</div>
+            <div class='talkDetailList'>${data}</div>
         </div>
-    </div>`);
+    </div>`;
     }
 
     const closePop = () => {
@@ -117,68 +158,42 @@ const Talk = ({current})=>{
                 </div>
                 <div className='talkContents'>
                     <div className='talkList'>
-                        <div className='reciverTalk'>
-                            <div className='talkProfileImgWrap'>
-                                <Link to="/main">
-                                    <img className='talkProfileImg' src={img} alt='프로필 사진'></img>
-                                </Link>
-                            </div>
-                            <div className='talkDetailWrap'>
-                                <div className='talkProfileName'>{name}</div>
-                                <div className='talkDetailList'>네모네모네모</div>
-                            </div>
-                        </div>
-                        <div className='reciverTalk'>
-                            <div className='talkProfileImgWrap'>
-                                <Link to="/main">
-                                <img className='talkProfileImg' src={img} alt='프로필 사진'></img>
-                                </Link>
-                            </div>
-                            <div className='talkDetailWrap'>
-                                <div className='talkProfileName'>{name}</div>
-                                <div className='talkDetailList'>세모세모 네모네모 동글동글 뾰족뾰족 부들부들 보글보글 지글지글 자글자글 빠글빠글 야들야들 오들오들 시들시들 쭈글쭈글 미끌미끌</div>
-                            </div>
-                        </div>
-                        <div className='reciverTalk'>
-                            <div className='talkProfileImgWrap'>
-                                <Link to="/main">
-                                <img className='talkProfileImg' src={img} alt='프로필 사진'></img>
-                                </Link>
-                            </div>
-                            <div className='talkDetailWrap'>
-                                <div className='talkProfileName'>{name}</div>
-                                <div className='talkDetailList'>세모세모 네모네모 동글동글 뾰족뾰족 부들부들 보글보글 지글지글 자글자글 빠글빠글 야들야들 오들오들 시들시들 쭈글쭈글 미끌미끌</div>
-                            </div>
-                        </div>
-                        <div className='reciverTalk'>
-                            <div className='talkProfileImgWrap'>
-                                <Link to="/main">
-                                <img className='talkProfileImg' src={img} alt='프로필 사진'></img>
-                                </Link>
-                            </div>
-                            <div className='talkDetailWrap'>
-                                <div className='talkProfileName'>{name}</div>
-                                <div className='talkDetailList'>세모세모 네모네모 동글동글 뾰족뾰족 부들부들 보글보글 지글지글 자글자글 빠글빠글 야들야들 오들오들 시들시들 쭈글쭈글 미끌미끌</div>
-                            </div>
-                        </div>
-                        <div className='senderTalk'>
-                            <div className='talkDetailWrap'>
-                                <div className='talkDetailList'>동그르아아아아아아아아아므이이이이이이이이이 동그리동동 동그리동동 동그리동동 동그리동동 동그리동동 동그리동동 동그리동동 동그리동동</div>
-                            </div>
-                        </div>
-                        <div className='senderTalk'>
-                            <div className='talkDetailWrap'>
-                                <div className='talkDetailList'>붉은색 푸른색</div>
-                            </div>
-                        </div>
-                        <div className='senderTalk'>
-                            <div className='talkDetailWrap'>
-                                <div className='talkDetailList'>구 사이 삼초 짤븐 시간</div>
-                            </div>
-                        </div>
+                        <ScrollToBottom>
+                            {messages.map((message, i)=>{
+                                let isSentByCurrentUser = false;
+
+                                console.log(message);
+                                if(message.memberIdx === memberIdx){
+                                    isSentByCurrentUser = true;
+                                }
+
+                                return (
+                                    isSentByCurrentUser ? (
+                                    <div className='senderTalk'>
+                                        <div className='talkDetailWrap'>
+                                            <div className='talkDetailList'>{message.data}</div>
+                                        </div>
+                                    </div>
+                                    )
+                                    : (
+                                        <div className='reciverTalk'>
+                                            <div className='talkProfileImgWrap'>
+                                                <Link to="/main">
+                                                    <img className='talkProfileImg' src={img} alt='프로필 사진'></img>
+                                                </Link>
+                                            </div>
+                                            <div className='talkDetailWrap'>
+                                                <div className='talkProfileName'>{message.sender}</div>
+                                                <div className='talkDetailList'>{message.data}</div>
+                                            </div>
+                                        </div>
+                                    )
+                                )
+                            })}
+                        </ScrollToBottom>
                     </div>
                     <div className='talkSendWrap'>
-                        <textarea ref={searchElement} className='talkTextInput'></textarea>
+                        <textarea ref={searchElement} className='talkTextInput' onKeyPress={event => event.key === 'Enter' ? sendMsg(event) : null}></textarea>
                         <button className='talkSendBtn' onClick={sendMsg}>전송</button>
                     </div>
                 </div>

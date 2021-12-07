@@ -1,8 +1,13 @@
 const express = require('express');
 const app = express()
 const http = require('http').createServer(app);
-const io = require('socket.io')(http);
-
+const io   = require('socket.io')(http, {
+    cors: {
+        origin: ["http://localhost:3000"],
+        methods:["GET","POST"],
+        credentials :true
+    }
+});
 
 const mainRouter = require('./routes/main.js');
 const postRouter = require('./routes/post.js');
@@ -19,15 +24,22 @@ http.listen(3001, ()=>{
 
 io.sockets.on('connection', (socket) =>{
     // 방 조인
-    socket.on('joinRoom', function(room) {     // joinRoom을 클라이언트가 emit 했을 시
-        let roomName = room;
-        socket.join(roomName);    // 클라이언트를 msg에 적힌 room으로 참여 시킴
+    socket.on('joinRoom', (idx) => {     // joinRoom을 클라이언트가 emit 했을 시    // ({idx, room})
+        console.log(idx, '조인');
+        socket.join(idx);    // 클라이언트를 msg에 적힌 room으로 참여 시킴
     });
 
     socket.on('message', function(msg) {       // 클라이언트가 채팅 내용을 보냈을 시
         // 전달한 roomName에 존재하는 소켓 전부에게 broadcast라는 이벤트 emit
-        io.to(msg.roomName).emit('message', msg); 
+        console.log(msg);
+        io.to(msg.idx).emit('send', msg); 
+        console.log('지나가라');
     })
+
+    socket.on('disconnect',()=>{
+        console.log('유저가 나갔습니다.');
+    })
+
     //socket.broadcast.to(room_id).emit('msgAlert',data); //자신 제외 룸안의 유저
     //socket.in(room_id).emit('msgAlert',data); //broadcast 동일하게 가능 자신 제외 룸안의 유저
     //io.of('namespace').in(room_id).emit('msgAlert', data) //of 지정된 name space의 유저의 룸

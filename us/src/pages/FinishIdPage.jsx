@@ -1,8 +1,12 @@
-import React from "react";
+import React, {useEffect, useRef, useState} from "react";
 import { Link,BrowserRouter as Router } from "react-router-dom";
 import styled from 'styled-components';
-const SuckFindId = () => {
-    const SuckFindId = styled.div`
+import axios from 'axios';
+import { matchPath, useParams } from "react-router";
+import { UseParams } from "react-router";
+
+const SuckFindId = (props) => {
+    const SuckFindIdcss = styled.div`
     html{
         background-color: rgb(248, 250, 252);
     }
@@ -53,14 +57,22 @@ const SuckFindId = () => {
         color: gray;
     }
     `;
+    const urldata = useParams();
+    console.log(urldata)
+    const [data ,setData] = useState(urldata)
+    
+    const usedata = {
+        url : data
+    };
+
     return (
-        <SuckFindId>
+        <SuckFindIdcss>
         <div className="body">
             <div className="findtopnav">
             <div className="topNum">
-            <img src="img/us_logo_forLogin.png"></img>
+            <img src="/img/us_logo_forLogin.png"></img>
                 </div>
-                <h1>회원님의 이메일 주소는 <span>apple@apple.com</span> 입니다.</h1>
+                <h1>회원님의 이메일 주소는 <span>{urldata.someInfo}</span> 입니다.</h1>
                 <hr/>
             </div>
 
@@ -77,7 +89,7 @@ const SuckFindId = () => {
                 </Link>
             </div>
         </div>
-        </SuckFindId>
+        </SuckFindIdcss>
     )
 }
     

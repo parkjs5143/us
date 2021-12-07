@@ -1,7 +1,8 @@
-import React, { useState, Component } from "react";
+import React, { useState,useEffect ,Component } from "react";
 
 import { Link, BrowserRouter as Router } from "react-router-dom";
 import styled from 'styled-components';
+import axios from 'axios';
 const Login = styled.div`
 html{
     background: rgb(248, 250, 252);
@@ -103,6 +104,9 @@ const LoginPage = () => {
     function onSubmit(event){
         
     }
+
+    
+
     //이메일, 비밀번호 확인
     const [email, setEmail] = React.useState('')
     const [password, setPassword] = React.useState('')
@@ -121,12 +125,12 @@ const LoginPage = () => {
 
     const checkEmail = (e) => {
         e.preventDefault();
-        var text = document.getElementById('email').value;
-
         var regExp = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i
         // 형식에 맞는 경우 true 리턴
         console.log('이메일 유효성 검사 :: ', regExp.test(e.target.value))
 
+        const inputId = e.target.value;
+        setEmail(inputId);
         if (regExp.test(e.target.value) === false) {
             changeDispaly("block")
             emailDisable = false
@@ -145,6 +149,8 @@ const LoginPage = () => {
         var regExp = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,25}$/
         // 형식에 맞는 경우 true 리턴
         console.log('비밀번호 유효성 검사 :: ', regExp.test(e.target.value))
+        const inputPw = e.target.value;
+        setPassword(inputPw);
         if (regExp.test(e.target.value) === false) {
             changeDispaly2("block")
             passwordDisable = false
@@ -167,11 +173,58 @@ const LoginPage = () => {
         }
     }
 
+    //axios
+    //http://localhost:3001/member/login
+    const onClickLogin = (e) => {
+        e.preventDefault();
 
+        axios.post('/member/login',null,{
+            //params을 config로 보내주려고 중간데이터 null넣어쥼!
+            params: {
+            'email': email,
+            'userPw': password
+            }
+        })
+        .then(res => {
+            console.log(res)
+            //왜 안나옴.
+            
+            console.log('res.data.userId :: ', res.data)
+            // document.location.href = '/main'
+            // 작업 완료 되면 페이지 이동(새로고침)
+            if(res.data == true){
 
+            // document.location.href = '/main'
+            }
+            else{
+                alert("다시")
+            }
+        })
+        .catch()
+    }
+    
+    useEffect(() => {
+        axios.get('/member/login')
+            .then(res => console.log(res))
+            .catch()
+    }, [])
 
-
-
+	// function getLocation() {
+    //     if (navigator.geolocation) { // GPS를 지원하면
+    //         navigator.geolocation.getCurrentPosition(function(position) {
+    //             alert(position.coords.latitude + ' ' + position.coords.longitude);
+    //         }, function(error) {
+    //             console.error(error);
+    //         }, {
+    //             enableHighAccuracy: false,
+    //             maximumAge: 0,
+    //             timeout: Infinity
+    //         });
+    //     } else {
+    //         alert('GPS를 지원하지 않습니다');
+    //     }
+    // }
+    // getLocation();
 
     return (
         <Login>
@@ -179,32 +232,34 @@ const LoginPage = () => {
                 <div className="logo">
                     <img src="img/us_logo_forLogin.png"></img>
                 </div>
-
                 <div>
                     <form className="Login" ref={formRef} onSubmit={onSubmit}>
                         <div className="login_top">
                             {/* 이메일 인풋창 */}
                             <p className='login-text'>이메일</p>
                             <div className="forheigth">
-                                <input id="email" onChange={checkEmail} placeholder="이메일을 입력해주세요." />
+                                <input id="email" value={email} onChange={checkEmail} placeholder="이메일을 입력해주세요." />
                                 <p className="red" style={{ display: display }}>* 이메일 양식을 확인해주세요.</p>
                             </div>
                             {/* 비밀번호 인풋 */}
                             <p className='login-text'>비밀번호</p>
                             <div className="forheigth">
-                                <input id="pw" onChange={checkPassword} placeholder="비밀번호를 입력해주세요." type="password" />
+                                <input id="pw" value={password} onChange={checkPassword} placeholder="비밀번호를 입력해주세요." type="password" />
                                 <p className="red" style={{ display: display2 }}>* 영문,숫자,특수문자 포함 8자 이상 입력해주세요.</p>
                             </div>
                         </div>
 
                         <div className="login_btn_box">
                             {/* 로그인버튼 , 회원가입버튼*/}
-                            <Link to="/main">
-                                <button className="login_btn1" type="submit" disabled={disabled}>로그인</button>
-                            </Link>
+                            
+                                <button className="login_btn1" type="button" disabled={disabled} onClick={onClickLogin} >로그인</button>
+                            
                         </div>
 
-                        <div className="login_btn2">
+                        
+                        {/* 회원가입 버튼 클릭 -> /signup페이지로 이동 */}
+                    </form>
+                    <div className="login_btn2">
                             <Link to="/Regist1">
                                 <button className="signup">
                                     회원가입
@@ -215,8 +270,6 @@ const LoginPage = () => {
                                 <button className="find">이메일/비밀번호 찾기</button>
                             </Link>
                         </div>
-                        {/* 회원가입 버튼 클릭 -> /signup페이지로 이동 */}
-                    </form>
                 </div>
             </div>
         </Login>

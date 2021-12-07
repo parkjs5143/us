@@ -3,11 +3,9 @@ const mysql = require('mysql');
 const config = require('../config/config.json');
 const bodyParser = require('body-parser');
 const pool = mysql.createPool(config);
-const cors = require('cors');
 
 const router = express.Router()
 router.use(bodyParser.urlencoded({ extended: false }))
-router.use(cors());
 
 // 로그인 후 이동되는 메인페이지
 router.route('/main').get((req, res) => {
@@ -222,7 +220,7 @@ const mainChat = function (idx, callback) {
         } else {
             // 채팅 query문
             // select r.title, rm.memberIdx, m.img, m.name, (select content from chat where createdAt = (select max(createdAt) from chat where roomIdx = r.idx)) as chat from room_mem as rm join member as m on rm.memberIdx = m.idx join room as r on r.idx = rm.roomIdx where r.title in(select r.title from room_mem as rm join room as r on rm.idx = r.idx where rm.memberIdx = 1 group by r.title having rm.memberIdx != 1);
-            conn.query('select r.title, rm.memberIdx, m.img, m.name, (select content from chat where createdAt = (select max(createdAt) from chat where roomIdx = r.idx)) as chat, (select max(createdAt) from chat where roomIdx = r.idx) as time from room_mem as rm join member as m on rm.memberIdx = m.idx join room as r on r.idx = rm.roomIdx where r.title in (select title from room_mem as rm join room as r on rm.roomIdx = r.idx where rm.memberIdx = ?) and m.idx != ? group by title;', [idx, idx], (err, result) => {
+            conn.query('select r.title, r.idx, rm.memberIdx, m.img, m.name, (select content from chat where createdAt = (select max(createdAt) from chat where roomIdx = r.idx)) as chat, (select max(createdAt) from chat where roomIdx = r.idx) as time from room_mem as rm join member as m on rm.memberIdx = m.idx join room as r on r.idx = rm.roomIdx where r.title in (select title from room_mem as rm join room as r on rm.roomIdx = r.idx where rm.memberIdx = ?) and m.idx != ? group by title;', [idx, idx], (err, result) => {
                 conn.release();
                 if (err) {
                     callback(err, null);

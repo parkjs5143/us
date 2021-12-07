@@ -1,12 +1,14 @@
-import React, { useState , Component } from "react";
+import React, { useState , useEffect ,Component } from "react";
 import { Link,BrowserRouter as Router } from "react-router-dom";
 import styled from 'styled-components';
+import axios from 'axios';
+
 const FindidpwStyled = styled.div`
     html{
         text-decoration:none;
         background-color: rgb(248, 250, 252);
     }
-    .forheigth{ margin-bottom: 1rem; height: 8.7rem;}
+    .forheigth{ height:80px }
     .red{
         color:red;
         font-size:1.2rem;
@@ -70,13 +72,10 @@ const FindidpwStyled = styled.div`
     `;
 
 let hpDisable = false;
-const Findidpw = () => {
-    
+const Findidpw = () => {    
     const formRef = React.createRef();
-    const inputRef = React.createRef();
-
+    //휴대폰번호 저장
     const [display4 ,setDisplay4] = useState("none")
-
     const [handp ,setHandp] = React.useState('');
 
     //핸드폰버노 유효성 검사
@@ -90,8 +89,6 @@ const Findidpw = () => {
         const regExp = /^01([0|1|6|7|8|9])-?([0-9]{4})-?([0-9]{4})$/;
         const ph = e.target.value;
         setHandp(ph)
-        console.log('폰번호 유효성 검사 :: ', regExp.test(e.target.value))
-
         if (!regExp.test(ph)) {
             changeDispaly4("block")
             hpDisable = false
@@ -101,9 +98,8 @@ const Findidpw = () => {
         }
         idDisabled()
     }
-    
+    //버튼 활성화
     const [disabled, setDisabled ] = React.useState('disabled');
-
     const idDisabled = () => {
         if(hpDisable===true){
             setDisabled('');
@@ -111,7 +107,26 @@ const Findidpw = () => {
             setDisabled('disabled');
         }
     }
+    //axios
+    //http://localhost:3001/member/login
+    const searchEmail = (e) => {
+        e.preventDefault();
 
+        axios.post('/member/findId',null,{
+            //params을 config로 보내주려고 중간데이터 null넣어쥼!
+            params: {
+            'tel': handp
+            }
+        })
+        .then(res => {
+            if(res.data == false){
+                alert("존재하지 않는 전화번호 입니다")
+            }else{
+                window.location.href="/SuckFindId/"+ res.data
+            }
+        })
+        .catch()
+    }
     return (
         <FindidpwStyled>
             <div className="body">
@@ -127,12 +142,12 @@ const Findidpw = () => {
                     <div className="ph">
                         <p>휴대폰 번호</p>
                         <div className="phinput forheigth">
-                        <input autocomplete="off"  id="ph" onChange={checkPh} placeholder="휴대폰번호를 입력해주세요."/>
+                        <input type="text"   id="phInput" value={handp} onChange={checkPh} placeholder="휴대폰번호를 입력해주세요."/>
                         <p className="red"  style={{display:display4}}>* 전화번호를 다시 입력해 주세요. ('-'제외)</p>  
                         </div>
                     </div>
                     <div className="finregi">
-                        <Link to="/SuckFindId"><button className="activebtn" disabled={disabled}>이메일 찾기</button></Link>
+                        <button className="activebtn" type="button" disabled={disabled} onClick={searchEmail}>이메일 찾기</button>
                     </div>    
                 </form>
             </div>

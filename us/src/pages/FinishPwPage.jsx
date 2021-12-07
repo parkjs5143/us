@@ -53,7 +53,7 @@ const FinFindidpw = () => {
         <Findidpw>
         <div className="body">
             <div className="topNum">
-            <img src="img/us_logo_forLogin.png"></img>
+            <img src="/img/us_logo_forLogin.png"></img>
                 </div>
             <div className="findtopnav">
                 <p>임시 비밀번호를 전송하였습니다</p>

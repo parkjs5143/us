@@ -1,7 +1,7 @@
-import React, { useState , Component } from "react";
+import React, { useState , useEffect ,Component } from "react";
 import { Link,BrowserRouter as Router } from "react-router-dom";
 import styled from 'styled-components';
-
+import axios from 'axios';
 let emailDisable = false;
 let hpDisable = false;
 const Findidpwcss2 = styled.div`
@@ -18,7 +18,7 @@ const Findidpwcss2 = styled.div`
         margin: 0;
     }
     .forheigth{
-        margin-bottom: 1rem;
+        height:80px
     }
     input, textarea, button { padding: 0; outline: 0; border: 0; resize: none; border-radius: 0; -webkit-appearance: none; background-color: rgba(0,0,0,0); }
 
@@ -90,13 +90,27 @@ const Findidpwcss2 = styled.div`
     }
     `;
 const Findidpw2 = () => {
-
     const formRef = React.createRef();
-
+    //휴대전화번호, 이메일저장
     const [hp,setHp] = React.useState('')
     const [email, setEmail] = React.useState('')
 
 
+    //axios
+    const searchPw = (e) => {
+        axios.post('/member/findPassword',null,{
+            params: {
+            'tel': hp ,
+            'email': email
+            }
+        })
+        .then(res => {
+            console.log(res)
+                window.location.href="/FinFindidpw/"
+        })
+        .catch()
+    }
+    //에러메세지 토글
     const [display ,setDisplay] = useState("none")
     const [display4 ,setDisplay4] = useState("none")
     const changeDispaly = (display) => {
@@ -105,14 +119,15 @@ const Findidpw2 = () => {
     const changeDispaly4 = (display4) => {
         setDisplay4(display4)
     }
+    //이메일 정규식 체크
     const checkEmail = (e) => {
         e.preventDefault();
         var text = document.getElementById('email').value;
 
         var regExp = /^[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*@[0-9a-zA-Z]([-_\.]?[0-9a-zA-Z])*\.[a-zA-Z]{2,3}$/i
         // 형식에 맞는 경우 true 리턴
-        console.log('이메일 유효성 검사 :: ', regExp.test(e.target.value))
-
+        const emailV = e.target.value;
+        setEmail(emailV)
         if (regExp.test(e.target.value) === false) {
             changeDispaly("block")
             emailDisable = false
@@ -127,7 +142,8 @@ const Findidpw2 = () => {
     const checkPh = (e) => {
         e.preventDefault();
         var regExp = /^01([0|1|6|7|8|9])-?([0-9]{3,4})-?([0-9]{4})$/;
-        console.log('폰번호 유효성 검사 :: ', regExp.test(e.target.value))
+        const phV = e.target.value;
+        setHp(phV)
         if (regExp.test(e.target.value) === false) {
             changeDispaly4("block")
             hpDisable = false
@@ -135,27 +151,11 @@ const Findidpw2 = () => {
         } else {
             changeDispaly4("none")
             hpDisable = true
-
         }
         idDisabled()
-
     }
     
     let to_val = '';
-
-    const makeRanCode = (e) => {
-        const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz'
-        const stringLength = 10
-        let randomstring = ''
-        
-
-        for (let i = 0; i < stringLength; i++) {
-            const rnum = Math.floor(Math.random() * chars.length)
-            randomstring += chars.substring(rnum, rnum + 1)
-        }
-        return alert("임시 비밀번호는 [" +randomstring+"] 입니다")
-    }
-
     const [disabled, setDisabled ] = React.useState('disabled');
 
     const idDisabled = () => {
@@ -166,9 +166,7 @@ const Findidpw2 = () => {
         }
     }
 
-    function onSubmit(event){
-        
-    }
+    
     return (
         <Findidpwcss2>
         <div className="body">
@@ -178,7 +176,7 @@ const Findidpw2 = () => {
                 <p>가입 시 등록한 휴대폰 번호와 이메일을 입력하시면, 이메일로 임시 비밀번호를 전송해드립니다.</p>
             </div>
 
-            <form className="findemail" ref={formRef} onSubmit={onSubmit}>
+            <form className="findemail" ref={formRef}>
                 
                 <input id="ranpw" name="ran_pw" value={to_val} type="hidden"></input>
                 <div className="tofind">
@@ -197,11 +195,9 @@ const Findidpw2 = () => {
                 
                 </div>
                 <div className="finregi">
-                <Link to="/FinFindidpw">
-                <button type="submit" value="Send" onClick={makeRanCode} disabled={disabled}>
+                <button type="button" value="Send" onClick={searchPw} disabled={disabled}>
                     비밀번호 찾기
                 </button>
-                </Link>
             </div>
             </form>
             

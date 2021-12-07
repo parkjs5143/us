@@ -50,6 +50,25 @@ function timeForToday(value) {
     return `${year}-${month >= 10 ? month : '0' + month}-${date >= 10 ? date : '0' + date}`;
 }
 
+// 등록된 쿠키 가져오는 함수
+function getCookieValue(key) {
+    let cookieKey = key + "="; 
+    let result = "";
+    const cookieArr = document.cookie.split(";");
+    
+    for(let i = 0; i < cookieArr.length; i++) {
+        if(cookieArr[i][0] === " ") {
+            cookieArr[i] = cookieArr[i].substring(1);
+        }
+        
+        if(cookieArr[i].indexOf(cookieKey) === 0) {
+            result = cookieArr[i].slice(cookieKey.length, cookieArr[i].length);
+            return result;
+        }
+    }
+    return result;
+}
+
 const TalkList = ()=>{
     const [posts, setPosts] = React.useState({});
     const [current, setCurrent] = React.useState({});
@@ -60,14 +79,20 @@ const TalkList = ()=>{
     useEffect(() => {
         try{
             Promise.allSettled([
-                axios.get('http://localhost:3001/main/chat?idx=1')
+                axios.get('/main/chat?idx=1',{
+                    validateStatus: function (status) {
+                      return status < 500; // Resolve only if the status code is less than 500
+                    }
+                })
             ]).then((res) => {
+                console.log(res);
                 console.log(res[0].value.data);
                 setPosts(res[0].value.data);
             })
         } catch(e){
             console.error(e.message)
         }
+        console.log(getCookieValue("first"));
     },[])
     
     const onView = (roomIdx) => {
@@ -109,7 +134,6 @@ const TalkList = ()=>{
                                 </div>
                                 <div className='talkRecord'>
                                     <div className='talkDate'>{timeForToday(post.time)}</div>
-                                    <div className='readCount'>?</div>
                                 </div>
                                 <input type='hidden' id='roomIdx' value={post.idx}></input>
                                 <input type='hidden' id='memberIdx'value={post.memberIdx}></input>
