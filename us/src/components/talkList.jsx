@@ -73,7 +73,7 @@ const TalkList = ()=>{
     useEffect(() => {
         try{
             Promise.allSettled([
-                axios.get(`/main/chat?idx=${cookie}`, {
+                axios.get(`http://localhost:3000/main/chat?idx=${cookie}`, {
                     validateStatus: function (status) {
                       return status < 500; // Resolve only if the status code is less than 500
                     }

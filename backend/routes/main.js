@@ -1,6 +1,6 @@
 const express = require('express');
 const mysql = require('mysql');
-const config = require('../config/config.json');
+const config = require('../config/config');
 const bodyParser = require('body-parser');
 const pool = mysql.createPool(config);
 
@@ -116,10 +116,11 @@ router.route('/main/friend/list').get((req, res) => {
 
 // 친구 검색
 router.route('/main/friend').post((req, res) => {
-    const invitationCode = req.body.code;
+    const invitationCode = req.query.code;
+    const idx = req.query.idx;
 
     if (pool) {
-        invitation(invitationCode, (err, result) => {
+        invitation(invitationCode, idx, (err, result) => {
             if (err) {
                 res.writeHead('201', { 'content-type': 'text/html; charset=utf8' });
                 res.write('<h2>메인데이터 출력 실패 </h2>');
@@ -138,21 +139,18 @@ router.route('/main/friend').post((req, res) => {
 
 // 친구 추가
 router.route('/main/insert_friend').post((req, res) => {
-    const email = req.body.email;
-    const idx = req.body.idx;
+    const fIdx = req.query.fIdx;
+    const idx = req.query.idx;
 
     if (pool) {
-        insertFriend(email, idx, (err, result) => {
+        insertFriend(fIdx, idx, (err, result) => {
             if (err) {
                 res.writeHead('201', { 'content-type': 'text/html; charset=utf8' });
                 res.write('<h2>메인데이터 출력 실패 </h2>');
                 res.write('<p>데이터가 안나옵니다.</p>')
                 res.end();
             } else {
-                res.writeHead('202', { 'content-type': 'text/html; charset=utf8' });
-                res.write('<h2>저장 성공 </h2>');
-                res.write('<p>너무 잘되욥</p>')
-                res.end();
+                res.send(result);
             }
         })
     }
@@ -250,7 +248,7 @@ const friendList = function (idx, callback) {
         if (err) {
             console.log(err);
         } else {
-            conn.query('select m.img, m.name, m.message from friend as f join member as m on m.idx = f.friendIdx where f.memberIdx = ?;', [idx], (err, result) => {
+            conn.query('select m.idx, m.img, m.name, m.message from friend as f join member as m on m.idx = f.friendIdx where f.memberIdx = ?;', [idx], (err, result) => {
                 conn.release();
                 if (err) {
                     callback(err, null);
@@ -264,46 +262,54 @@ const friendList = function (idx, callback) {
 }
 
 // 친구 검색
-const invitation = function (invitationCode, callback) {
+const invitation = function (invitationCode, idx, callback) {
     pool.getConnection((err, conn) => {
         if (err) {
             console.log(err);
         } else {
-            conn.query('select name, message, img from member where code = ?', [invitationCode], (err, result) => {
-                conn.release();
-                if (err) {
-                    callback(err, null);
-                    return;
-                } else {
-                    callback(null, result);
-                }
+            let flag = false;
+            let fIdx = null;
+            conn.query('select idx, name, message, img from member where code = ?;', [invitationCode], (err, result1) => {
+                if (result1 != "") fIdx = result1[0].idx; 
+                conn.query('select exists (select idx from friend where memberIdx = ? and friendIdx = ? limit 1) as success;', [idx, fIdx], (err, result2) => {
+                    if (result2[0].success == 1) flag = true;
+
+                    conn.release();
+                    if (err) {
+                        callback(err, null);
+                        return;
+                    } else {
+                        callback(null, { result1, flag });
+                    }
+                })
+
             });
         }
     });
 }
 
 // 친구 추가
-const insertFriend = function (email, idx, callback) {
+const insertFriend = function (fIdx, idx, callback) {
     pool.getConnection((err, conn) => {
-        if (err) {    
+        if (err) {
             console.log(err)
         } else {
-            conn.query('select idx from member where email = ?', [email], (err, result) => {
-                if (err) {
-                    console.log(err);
-                } else {
-                    conn.query('insert into friend(memberIdx, friendIdx) values(?, ?)', [idx, result[0].idx], (err, result) => {
-                        conn.release();
-                        if(err){
-                            callback(err, null)
-                            console.log('select문 오류')
-                            return;
-                        }else{
-                            callback(null, result);
-                        }
-                    });
+            conn.query('select exists (select idx from friend where memberIdx = ? and friendIdx = ? limit 1) as success;', [idx, fIdx], (err, result) => {
+                if(result[0].success == 1) {
+                    conn.query('delete from friend where memberIdx = ? and friendIdx = ?', [idx, fIdx]);
+                }else {
+                    conn.query('insert into friend(memberIdx, friendIdx) values(?, ?)', [idx, fIdx]);
                 }
-            })
+
+                conn.release();
+                if (err) {
+                    callback(err, null)
+                    console.log('select문 오류')
+                    return;
+                } else {
+                    callback(null, true);
+                }
+            });
         }
     })
 }

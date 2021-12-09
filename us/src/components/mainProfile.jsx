@@ -1,39 +1,38 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
-import axios from 'axios';
+import { Link, useParams } from "react-router-dom";
+import axios from "axios";
 
 const MainProfileWrap = styled.div`
     input:focus {outline:none;}
     textarea:focus {outline:none;}
 
     // 메인 css //
-    .section1_box{display: flex; justify-content: left; margin-left:6.5rem;}
-    .profile_layer1{display:flex; height:4rem;}
-    .profile_layer2{display:flex; height: 3.3rem; margin-top:2.5rem;}
-    .profile_img_box{width:17rem; height:17rem; margin-top:2rem;}
-    .profile_img{width:100%; height:100%; border: 4px solid #a5a7c38a; border-radius: 50%; cursor:pointer;}
+    .section1_box{display: flex; align-items: center; margin: 2rem 0 0 6.5rem;}
+    .profile_layer1{display:flex; height:4rem; align-items: center; }
+    .profile_layer2{display:flex; height: 3.3rem; }
+    .profile_layer1 p, .status_message p{ margin: 0; }
+    .phone_name p{ margin: 1rem 0; }
+    .profile_img_box{width:17rem; height:17rem; }
+    .profile_img{width:100%; height:100%; border: 4px solid lightgray; border-radius: 50%; cursor:pointer;}
     .profile_detail_box{margin-left: 9rem;}
-    .option_box{margin: 3.5rem 0.7rem; cursor:pointer;}
-    .posting_box{margin: 3.5rem 0;}
+    .option_box{ cursor:pointer; margin: 0 1rem; }
     .post_btn{border-radius: 5px; background-color: #14c1c7; color: white; border:none; height: 3rem; cursor:pointer;}
     .nikname_box{font-size: 2.8rem; color:black;}
-    .friend_cnt_box{margin-left: 1.6rem; font-size: 1.8rem; display:flex; cursor:pointer;}
+    .friend_cnt_box{margin-left: 1.6rem; font-size: 1.8rem; display:flex;}
     .posting_cnt_box{font-size: 1.8rem; color:black; display:flex; cursor:pointer;}
     .profile_layer3{height: 1rem; margin-top:3rem;}
     .name{font-size: 1.8rem; font-weight: bold; cursor:pointer;}
     .status_message{font-size: 1.5rem; margin-top: 2rem; cursor:pointer;}
-    .section2_container{display:flex; justify-content:center;}
-    .section2_box{display: flex; margin-top: 5rem; justify-content: space-around; width: 90rem;}
-    .phone_img{width:3rem; height:3rem;}
-    .phone_profile{width:8.5rem; height: 8.5rem; border-radius:50%; border: 3px solid #423b422e; cursor:pointer;}
-    .phone_name{margin-top: 7rem; text-align: center; font-weight: 600; font-size: 1.4rem; cursor:pointer;}
+    .section2_container{display:flex;}
+    .section2_box{display: flex; margin-top: 5rem; width: 90rem; margin: 5rem auto 0; }
+    .phone_profile{width:8.5rem; height: 8.5rem; border-radius:50%; border: 3px solid lightgray; cursor:pointer;}
+    .phone_name{ text-align: center; font-weight: 600; font-size: 1.4rem; cursor:pointer;}
     .posting_cnt{margin-left:0.8rem; font-weight:600;}
-    .friend_cnt{font-weight:600; cursor:pointer;}
-    .usually_contect{width:8.5rem;}
-    .arr_btn{background: none; border:none;}
+    .usually_contect{ width:8.5rem; margin: 0 1.35rem; }
+    .arr_btn{background: none; border:none; padding:0;}
     .arr_img{width:6rem; cursor: pointer;}
-    .arr_box{transform: translate(93.8rem, -12.5rem);}
+    .arr_box{ position: relative; bottom: 12rem; display: flex; justify-content: space-between; }
     .sec_post_box{display:flex; color: black;}
     .sec_chat_box{display:flex; color: black; margin-left: 4rem;}
     .section3_box{display:flex; border-top: 1px solid rgb(219,219,219); margin-top: -6rem; justify-content: center;}
@@ -49,43 +48,42 @@ const MainProfileWrap = styled.div`
     .friend_pop_container{z-index: 100; position:fixed; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.5);}
     .friend_pop_box{position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); background:white; border:none; width: 33rem; height: 44rem; border-radius: 15px; padding: 1rem 0 1rem 1rem;}
     .pop_sec1{display:flex; justify-content: space-between;}
-    .pop_sec1_add_box{display:flex;}
+    .pop_sec1_add_box{display:flex;align-items:center;}
     .friend_btn{background: none; border:none; font-size: 1.8rem; margin-top:1.7rem; cursor:pointer;}
+    .pop1_close{margin: 0 0.5rem 0 0;}
     .pop1_close_btn{background:none; border:none; cursor: pointer;}
-    .pop_sec1_add_title{margin: 0.3rem 0.3rem; font-size: 1.3rem; font-weight: 600;}
+    .pop_sec1_add_title{margin: 0; font-size: 1.3rem; font-weight: 600;}
     .pop_sec2_box{display:flex; justify-content: space-between; height: 5rem; margin-bottom:1.3rem;}
     .pop_sec2_friend_box{display:flex;}
-    .pop_sec2_friend_profile_img{width:5rem; height:5rem; border-radius:50%; border:2px solid #a5a7c391; cursor:pointer;}
+    .pop_sec2_friend_profile_img{width:5rem; height:5rem; border-radius:50%; border:2px solid lightgray; cursor:pointer;}
     .pop_sec2{margin-top:1.5rem; overflow: auto; height: 37.8rem;}
     .pop_sec2_friend_detail_box{margin: 0.8rem 1.3rem;}
     .pop_sec2_friend_detail_m{font-size: 1.4rem;}
-    .chat_img_box{height: 2.8rem; margin: 2rem 0.9rem;}
+    .chat_img_box{ display: flex; align-items: center; padding-right: 0.8rem; }
     .chat_img{width:2.8rem; cursor:pointer;}
     .detail_n, .detail_m{margin:0; cursor:pointer;}
     .detail_n{font-size:1.5rem; font-weight:bold;}
     .detail_m{width: 18rem; white-space: nowrap; text-overflow: ellipsis; overflow: hidden;}
     .person_add_btn{border:none; background:none; cursor: pointer;}
+    .pop_no_friend_box{ width: calc(100% - 1rem); height: 92%; text-align: center; display:flex; justify-content: center; align-items: center; color: gray; font-size: 1.5rem; font-weight: bold; }
 
     // 친구추가 팝업2(코드 불일치) css //
-    .add_pop_container{z-index: 100; position:fixed; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.5);}
+    .add_pop_container{z-index: 100; position:fixed; left:0; top:0; width:100%; height:100%; }
     .add_friend_pop_box{position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); background:white; border:none; width: 33rem; height: 44rem; border-radius: 15px; padding: 1rem 0 1rem 1rem;}
-    .add_friend_pop_sec1_box{display:flex; justify-content: space-between; margin-top: 0.5rem;}
-    .pop2_close_btn{border:none; background:none; cursor:pointer;}
-    .ok_cancel_box{display:flex; justify-content:center;}
-    .input_friend_code{border-top:none; border-left:none; border-right:none; width:20rem; cursor:pointer;}
+    .add_friend_pop_sec1_box{ width: calc(100% - 1rem); display:flex; justify-content: center; margin-top: 1rem;}
+    .ok_cancel_box{display:flex; justify-content:center; width: calc(100% - 1rem);}
+    .input_friend_code{border: none; border-bottom: 1px solid; margin:0 1.2rem 0 1rem; font-size: 1.8rem; text-align: center; width:17rem; cursor:pointer;}
     .code_notFind{font-size: 1.5rem; width: 18rem; text-align: center; margin: 15rem auto;}
-    .ok_btn, .cancel_btn{width: 5rem; height: 3rem; background-color: black; color: white; border-radius: 5px; border: none;}
+    .ok_btn, .cancel_btn{cursor:pointer; padding: 0.8rem 2rem; background-color: black; color: white; border-radius: 5px; border: none;}
     .cancel_box{margin-left:0.3rem;}
     .ok_box{margin-right:0.3rem;}
-    .code_notFind_container{margin:10rem 0;}
-    .code_notFind_container{display:none;}
-    .cancel_btn, .ok_btn{cursor:pointer;}
+    .select_friend_btn{ background: black; color: white; padding: 0 1rem; border-radius: 5px; cursor: pointer; border: none;}
 
     //친구추가 팝업3(코드일치) css  //
-    .code_find_box{display:block;}
-    .find_profile_img{width:12rem; height:12rem; border-radius:50%; border: 3px solid #a5a7c3ad; cursor:pointer;}
-    .find_profile{display: flex; justify-content: center; margin-top: 3rem;}
-    .find_profile_m{text-align: center; font-size: 1.4rem; margin: 1rem 0 12.5rem 0; cursor:pointer;}
+    .code_find_box{display:block; width: calc(100% - 1rem);padding: 7.5rem 0 5.5rem;}
+    .find_profile_img{width:12rem; height:12rem; border-radius:50%; border: 3px solid lightgray; cursor:pointer;}
+    .find_profile{display: flex; justify-content: center;}
+    .find_profile_m{text-align: center; width:85%; font-size: 1.4rem; margin: 1rem auto 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; cursor:pointer;}
     .find_profile_name{text-align: center; margin: 1rem 0 0.5rem 0; font-weight: bold; cursor:pointer;}
 
     //게시물 업로드 팝업1(업로드할 이미지) css //
@@ -130,29 +128,50 @@ const MainProfileWrap = styled.div`
     #hashtag_list{display: flex; margin-top: 1rem; flex-wrap: wrap; width:55.5rem;}
 `;
 
-
 const MainProfile = ()=>{
-//메인화면 값 가져오기
-    const [mainProfile, setMainProfiles] = React.useState([]);
-    useEffect(() => {
-        try{
-            Promise.allSettled([
-                axios.get('http://localhost:3001/main?idx=1')
-            ]).then((res) => {
-                // console.log(res[0].value.data[0]);
-                // setMainProfiles(res[0].value.data[0]);
-            })
-        } catch(e){
-            console.error(e.message)
-        }
-    },[])
+    
+    const cookie = document.cookie;
+    const [profile, setProfile] = useState({info:[0], postCnt:0, friendCnt:0, friend:[0]});
+    const [email, setEmail] = useState('');
+    const [btn, setBtn] = useState(true);
+    let [friends, setFriends] = useState([])
+    let friendFor = [];
+    let [friendPage, setFPage] = useState(0);
 
+    useEffect(async () => {
+
+        const profile = await axios.get(`http://localhost:3001/main?idx=${cookie.substr(6,cookie.length)}`)
+        setProfile({info:profile.data[0][0], postCnt:profile.data[1][0].postCnt, friendCnt:profile.data[2][0].friendCnt, friend:profile.data[3]})
+        // const curr = profile.data[0][0].email.split('@');
+        // setEmail(curr[0])
+        if(profile.data[3].length>8){ 
+            setBtn(false);
+            for(let i=0; i<8; i++){friendFor[i]=profile.data[3][i]}
+            setFriends(friendFor);
+        }else{ 
+            for(let i=0; i<profile.data[3].length; i++){friendFor[i]=profile.data[3][i]}; 
+            setFriends(friendFor); 
+        }
+    }, []);
+
+
+    // 상단 친구목록 버튼
+    const prev = () =>{
+        for(let i=0; i<8; i++){friendFor[i]=profile.friend[i];}
+        setFriends(friendFor);
+        setFPage(0);
+    }
+    const next = () =>{
+        let j = 0;
+        for(let i=8; i<profile.friend.length; i++){friendFor[j]=profile.friend[i];j++}
+        setFriends(friendFor);
+        setFPage(1);
+    }
 
     //친구추가 목록 팝업
     const[friendOn, setFriendOn] = React.useState(false);
     const onOpenFriend = () => {
         setFriendOn(!friendOn);
-
          //팝업 창 띄울 시 body 스크롤
         if(friendOn==false){
             document.body.style.overflow = "hidden";
@@ -160,25 +179,39 @@ const MainProfile = ()=>{
             document.body.style.overflowY = "unset";
         }
     }
+    let [list, setList] = useState([]);
+    const[addOn, setAddOn] = React.useState(false);
+    useEffect(async () => {
+        const list = await axios.get(`http://localhost:3001/main/friend/list?idx=${cookie.substr(6,cookie.length)}`)
+        setList(list.data)
+    }, [addOn]);
 
     //친구추가 팝업
-    const[addOn, setAddOn] = React.useState(false);
-    const onAddFriend = () => {
-        setAddOn(!addOn);
-
-         //팝업 창 띄울 시 body 스크롤
-        if(addOn==false){
-            document.body.style.overflow = "hidden";
-        }else if(friendOn==true){
-            document.body.style.overflowY = "unset";
+    
+    const[addFriends, setAddF] = useState(null);
+    
+    const codeBtn = async() =>{
+        let code = document.getElementById('codeInput')
+        let findFriend = await axios.post("http://localhost:3001/main/friend?code=" + code.value + `&idx=${cookie.substr(6,cookie.length)}`)
+        setAddF({info:findFriend.data.result1[0], flag:findFriend.data.flag})
+    }
+    const onAddFriend = async() => { //추가 버튼
+        if(addFriends!==null&&addFriends.info!==undefined){
+            let plusFriend = await axios.post("http://localhost:3001/main/insert_friend?fIdx="+addFriends.info.idx+"&idx="+cookie.substr(6,cookie.length))
+            console.log(plusFriend)
         }
+        setAddF(null)
+        setAddOn(!addOn);
+    }
+    const onAddFriend2 = async() => { //추가 취소 버튼
+        setAddF(null)
+        setAddOn(!addOn);
     }
 
     //게시물 올리기 팝업1(업로드될 이미지 선택 팝업)
     const[postOn, setPostOn] = React.useState(false);
     const onOpenPost = () =>{
         setPostOn(!postOn);
-
          //팝업 창 띄울 시 body 스크롤
         if(postOn==false){
             document.body.style.overflow = "hidden";
@@ -191,7 +224,6 @@ const MainProfile = ()=>{
     const[postTxtOn, setPostTxtOn] = React.useState(false);
     const onOpenPostTxt = () =>{
         setPostTxtOn(!postTxtOn);
-
          //팝업 창 띄울 시 body 스크롤
         if(postTxtOn==false){
             document.body.style.overflow = "hidden";
@@ -205,9 +237,7 @@ const MainProfile = ()=>{
             <div className="post2_pop_container">
                 <div className="post2_pop_box">
                     <div className="post2_pop_sec1">
-                        <div>
-                            <p className="wr_upload_txt">게시글 작성</p>
-                        </div>
+                        <div><p className="wr_upload_txt">게시글 작성</p></div>
                         <div className="pop4_close">
                             <button className="pop4_close_btn" type="button" onClick={onOpenPost}><img src="/img/clear_black.png" alt="close"/></button>
                         </div>
@@ -283,46 +313,44 @@ const MainProfile = ()=>{
         return (
             <div className="add_pop_container">
                 <div className="add_friend_pop_box">
-                    <div className="add_friend_pop_sec1">
-                        <div className="add_friend_pop_sec1_box">
-                            <div className="add_friend_pop_logo">
-                                <img src="/img/person_add.png" alt="친구추가"/>
-                            </div>
-                            <form>
-                                <div className="input_friend_code_box">
-                                    <input className="input_friend_code" type="text"/>
-                                </div>
-                            </form>
-                            <div className="pop2_close">
-                                <button className="pop2_close_btn" type="button" onClick={onAddFriend}><img src="/img/clear_black.png" alt="close"/></button>
-                            </div>
-                        </div>
+                    <div className="add_friend_pop_sec1_box">
+                        <img src="/img/person_add.png" style={{width: '3rem'}} alt="친구추가"/>
+                        <input className="input_friend_code" type="text" id="codeInput"/>
+                        <button type="button" class="select_friend_btn" onClick={codeBtn}>검색</button>
                     </div>
                     <div className="add_friend_pop_sec2">
-                        <div className="code_notFind_container">
-                            <div className="code_notFind_box">
-                                <p className="code_notFind">해당하는 코드의 회원님을 찾을 수 없습니다.</p>
-                            </div>
+                        {addFriends!==null?
+                            addFriends.info===undefined?
+                                <div className="code_notFind_box">
+                                    <p className="code_notFind">해당 코드의 회원님을 찾을 수 없습니다.</p>
+                                </div>
+                            :
+                                <div className="code_find_box">
+                                    <div className="find_profile">
+                                        <img className="find_profile_img" src={'/'+addFriends.info.img} alt="일치 프로필"/>
+                                    </div>
+                                    <div className="find_profile_name_box">
+                                        <p className="find_profile_name">{addFriends.info.name}</p>
+                                    </div>
+                                    <div className="find_profile_m_box">
+                                        <p className="find_profile_m">{addFriends.info.message!==null?addFriends.info.message:'-'}</p>
+                                    </div>
+                                </div>
+                        :
+                        <div className="code_notFind_box">
+                            <p className="code_notFind">상단에 코드를 입력 후<br/>검색을 눌러주세요</p>
                         </div>
-                        <div className="code_find_box">
-                            <div className="find_profile">
-                                <img className="find_profile_img" src="/img/mj_image.jpg" alt="일치 프로필"/>
-                            </div>
-                            <div className="find_profile_name_box">
-                                <p className="find_profile_name">밥머거</p>
-                            </div>
-                            <div className="find_profile_m_box">
-                                <p className="find_profile_m">오늘은 뭐 먹지??</p>
-                            </div>
-                        </div>
+                        }
                     </div>
                     <div className="add_friend_pop_sec3">
                         <div className="ok_cancel_box">
-                            <div className="ok_box">
-                                <button className="ok_btn" type="submit" onClick={onAddFriend}>추가</button>
-                            </div>
+                            {addFriends!==null&&addFriends.info!==undefined&&addFriends.info.idx!==profile.info.idx?
+                                <div className="ok_box">
+                                    <button className="ok_btn" type="submit" onClick={onAddFriend}>{addFriends.flag===true?'해제':'추가'}</button>
+                                </div>:<></>
+                            }
                             <div className="cancel_box">
-                                <button className="cancel_btn" type="button" onClick={onAddFriend}>취소</button>
+                                <button className="cancel_btn" type="button" onClick={onAddFriend2}>취소</button>
                             </div>
                         </div>
                     </div>
@@ -352,104 +380,25 @@ const MainProfile = ()=>{
                         </div>
                     </div>
                     <div className="pop_sec2">
-                        <div className="pop_sec2_box">
-                            <div className="pop_sec2_friend_box">
-                                <div className="pop_sec2_friend_profileImg_box">
-                                    <img className="pop_sec2_friend_profile_img" src="/img/mj_image.jpg" alt="프로필 이미지"/>
+                        {list.length!==0?
+                            list.map(listData=>(
+                                <div className="pop_sec2_box">
+                                    <div className="pop_sec2_friend_box">
+                                        <div className="pop_sec2_friend_profileImg_box">
+                                            <img className="pop_sec2_friend_profile_img" src={listData.img!==null?"/"+listData.img:'/img/admin/noneImg.png'} alt="프로필 이미지"/>
+                                        </div>
+                                        <div className="pop_sec2_friend_detail_box">
+                                            <div className="pop_sec2_friend_detail_n"><p className="detail_n">{listData.name}</p></div>
+                                            <div className="pop_sec2_friend_detail_m"><p className="detail_m">{listData.message!==null?listData.message:'-'}</p></div>
+                                        </div>
+                                    </div>
+                                    <div className="chat_img_box">
+                                        <img className="chat_img" src="/img/message.png" alt="채팅방 이미지"/>
+                                    </div>
                                 </div>
-                                <div className="pop_sec2_friend_detail_box">
-                                    <div className="pop_sec2_friend_detail_n"><p className="detail_n">미나리</p></div>
-                                    <div className="pop_sec2_friend_detail_m"><p className="detail_m">바다 가고싶다😥</p></div>
-                                </div>
-                            </div>
-                            <div className="chat_img_box">
-                                <img className="chat_img" src="/img/message.png" alt="채팅방 이미지"/>
-                            </div>
-                        </div>
-                        <div className="pop_sec2_box">
-                            <div className="pop_sec2_friend_box">
-                                <div className="pop_sec2_friend_profileImg_box">
-                                    <img className="pop_sec2_friend_profile_img" src="/img/mj_image.jpg" alt="프로필 이미지"/>
-                                </div>
-                                <div className="pop_sec2_friend_detail_box">
-                                    <div className="pop_sec2_friend_detail_n"><p className="detail_n">김밥</p></div>
-                                    <div className="pop_sec2_friend_detail_m"><p className="detail_m">수능엔 김밥이쥐🍣</p></div>
-                                </div>
-                            </div>
-                            <div className="chat_img_box">
-                                <img className="chat_img" src="/img/message.png" alt="채팅방 이미지"/>
-                            </div>
-                        </div>
-                        <div className="pop_sec2_box">
-                            <div className="pop_sec2_friend_box">
-                                <div className="pop_sec2_friend_profileImg_box">
-                                    <img className="pop_sec2_friend_profile_img" src="/img/mj_image.jpg" alt="프로필 이미지"/>
-                                </div>
-                                <div className="pop_sec2_friend_detail_box">
-                                    <div className="pop_sec2_friend_detail_n"><p className="detail_n">영양갱</p></div>
-                                    <div className="pop_sec2_friend_detail_m"><p className="detail_m">겁나 배고프다..😭 뭐 먹지</p></div>
-                                </div>
-                            </div>
-                            <div className="chat_img_box">
-                                <img className="chat_img" src="/img/message.png" alt="채팅방 이미지"/>
-                            </div>
-                        </div>
-                        <div className="pop_sec2_box">
-                            <div className="pop_sec2_friend_box">
-                                <div className="pop_sec2_friend_profileImg_box">
-                                    <img className="pop_sec2_friend_profile_img" src="/img/mj_image.jpg" alt="프로필 이미지"/>
-                                </div>
-                                <div className="pop_sec2_friend_detail_box">
-                                    <div className="pop_sec2_friend_detail_n"><p className="detail_n">라면</p></div>
-                                    <div className="pop_sec2_friend_detail_m"><p className="detail_m">먹을게 라면밖에 없다니..흑흑</p></div>
-                                </div>
-                            </div>
-                            <div className="chat_img_box">
-                                <img className="chat_img" src="/img/message.png" alt="채팅방 이미지"/>
-                            </div>
-                        </div>
-                        <div className="pop_sec2_box">
-                            <div className="pop_sec2_friend_box">
-                                <div className="pop_sec2_friend_profileImg_box">
-                                    <img className="pop_sec2_friend_profile_img" src="/img/mj_image.jpg" alt="프로필 이미지"/>
-                                </div>
-                                <div className="pop_sec2_friend_detail_box">
-                                    <div className="pop_sec2_friend_detail_n"><p className="detail_n">미나리</p></div>
-                                    <div className="pop_sec2_friend_detail_m"><p className="detail_m">바다 가고싶다😥</p></div>
-                                </div>
-                            </div>
-                            <div className="chat_img_box">
-                                <img className="chat_img" src="/img/message.png" alt="채팅방 이미지"/>
-                            </div>
-                        </div>
-                        <div className="pop_sec2_box">
-                            <div className="pop_sec2_friend_box">
-                                <div className="pop_sec2_friend_profileImg_box">
-                                    <img className="pop_sec2_friend_profile_img" src="/img/mj_image.jpg" alt="프로필 이미지"/>
-                                </div>
-                                <div className="pop_sec2_friend_detail_box">
-                                    <div className="pop_sec2_friend_detail_n"><p className="detail_n">미나리</p></div>
-                                    <div className="pop_sec2_friend_detail_m"><p className="detail_m">바다 가고싶다😥</p></div>
-                                </div>
-                            </div>
-                            <div className="chat_img_box">
-                                <img className="chat_img" src="/img/message.png" alt="채팅방 이미지"/>
-                            </div>
-                        </div>
-                        <div className="pop_sec2_box">
-                            <div className="pop_sec2_friend_box">
-                                <div className="pop_sec2_friend_profileImg_box">
-                                    <img className="pop_sec2_friend_profile_img" src="/img/mj_image.jpg" alt="프로필 이미지"/>
-                                </div>
-                                <div className="pop_sec2_friend_detail_box">
-                                    <div className="pop_sec2_friend_detail_n"><p className="detail_n">미나리</p></div>
-                                    <div className="pop_sec2_friend_detail_m"><p className="detail_m">바다 가고싶다😥</p></div>
-                                </div>
-                            </div>
-                            <div className="chat_img_box">
-                                <img className="chat_img" src="/img/message.png" alt="채팅방 이미지"/>
-                            </div>
-                        </div>
+                            ))
+                            : <div className="pop_no_friend_box">등록된 친구가 없습니다<br/>상단 버튼을 눌러 추가하세요</div>
+                        }
                     </div>
                 </div>
             </div>
@@ -461,17 +410,15 @@ const MainProfile = ()=>{
         <MainProfileWrap>
             <div className="section1_box">
                 <div className="profile_img_box">
-                    <img className="profile_img" src=""alt="profile"/>
+                    <img className="profile_img" src={profile.info.img!==null?"/"+profile.info.img:'/img/empty_profile_icon.png'} alt="profile"/>
                 </div>
                 <div className="profile_detail_box">
                     <div className="profile_layer1">
                         <div className="nikname_box">
-                            <p>{}</p>
+                            <p>{email}</p>
                         </div>
                         <div className="option_box">
-                            <Link to="/mypage">
-                                <img src="/img/setting.png" alt="setting"/>
-                            </Link>
+                            <Link to="/mypage"><img src="/img/setting.png" alt="setting"/></Link>
                         </div>
                         <div className="posting_box">
                             <button className="post_btn" type="button" onClick={onOpenPost}>게시물 올리기</button>{postOn?<Post1/>:""}
@@ -483,98 +430,48 @@ const MainProfile = ()=>{
                                 <p>게시물</p>
                             </div>
                             <div className="posting_cnt">
-                                <p>503</p>
+                                <p>{profile.postCnt}</p>
                             </div>
                         </div>
                         <div className="friend_cnt_box">
                             <div className="friend">
-                                <button className="friend_btn" type="button" onClick={onOpenFriend}>친구</button>{friendOn?<Friend/>:""}
-                            </div>
-                            <div className="friend_cnt">
-                                <p>3.3백만</p>
+                                <button className="friend_btn" type="button" onClick={onOpenFriend}>친구 <span style={{fontWeight:'600',fontSize:'1.9rem'}}>{profile.friendCnt}</span></button>{friendOn?<Friend/>:""}
                             </div>
                         </div>
                     </div>
                     <div className="profile_layer3">
                         <div className="name">
-                            <p></p>
+                            <p>{profile.info.name}</p>
                         </div>
                     </div>
                     <div className="profile_layer4">
                         <div className="status_message">
-                            <p></p>
+                            <p>{profile.info.message!==null?profile.info.message:"등록된 소개가 없습니다."}</p>
                         </div>
                     </div>
                 </div>
             </div>
             <div className="section2_container">
                 <div className="section2_box">
-                    <div className="usually_contect_box1 usually_contect">
-                        <div className="phone_img">
-                            <img className="phone_profile" src="/img/puppy.jpg"/>
-                        </div>
-                        <div className="phone_name">
-                            <p>공주님</p>
-                        </div>
-                    </div>
-                    <div className="usually_contect_box2 usually_contect">
-                        <div className="phone_img">
-                            <img className="phone_profile" src="/img/puppy.jpg"/>
-                        </div>
-                        <div className="phone_name">
-                            <p>왕자님</p>
-                        </div>
-                    </div>
-                    <div className="usually_contect_box3 usually_contect">
-                        <div className="phone_img">
-                            <img className="phone_profile" src="/img/puppy.jpg"/>
-                        </div>
-                        <div className="phone_name">
-                            <p>개구리</p>
-                        </div>
-                    </div>
-                    <div className="usually_contect_box4 usually_contect">
-                        <div className="phone_img">
-                            <img className="phone_profile" src="/img/puppy.jpg"/>
-                        </div>
-                        <div className="phone_name">
-                            <p>딸기당</p>
-                        </div>
-                    </div>
-                    <div className="usually_contect_box5 usually_contect">
-                        <div className="phone_img">
-                            <img className="phone_profile" src="/img/puppy.jpg"/>
-                        </div>
-                        <div className="phone_name">
-                            <p>포도당</p>
-                        </div>
-                    </div>
-                    <div className="usually_contect_box6 usually_contect">
-                        <div className="phone_img">
-                            <img className="phone_profile" src="/img/puppy.jpg"/>
-                        </div>
-                        <div className="phone_name">
-                            <p>바나나</p>
-                        </div>
-                    </div>
-                    <div className="usually_contect_box7 usually_contect">
-                        <div className="phone_img">
-                            <img className="phone_profile" src="/img/puppy.jpg"/>
-                        </div>
-                        <div className="phone_name">
-                            <p>오렌지</p>
-                        </div>
-                    </div>
+                    {profile.friendCnt!==0?
+                        friends.map(friendData=>(
+                            <div className="usually_contect_box1 usually_contect">
+                                <div className="phone_img">
+                                    <img className="phone_profile" src={friendData.img!==null?"/"+friendData.img:'/img/admin/noneImg.png'}/>
+                                </div>
+                                <div className="phone_name"><p>{friendData.name}</p></div>
+                            </div>
+                        )):<></>
+                    }
                 </div>
             </div>
             <div className="arr_box">
-                <button type="button" className="arr_btn">
-                    <img className="arr_img" src="/img/arr-right-circle.svg"/>
-                </button>
+                <button type="button" className="arr_btn" style={btn===true||friendPage===0?{opacity: '0'}:{opacity: '1'}} id="prev" disabled={btn} onClick={prev}><img className="arr_img" src="/img/arr-left-circle.svg"/></button>
+                <button type="button" className="arr_btn" style={btn===true||friendPage===1?{opacity: '0'}:{opacity: '1'}} id="next" disabled={btn} onClick={next}><img className="arr_img" src="/img/arr-right-circle.svg"/></button>
             </div>
             <div className="section3_box">
                 <div className="sec_post_container">
-                    <Link to="/main" className="post_link">
+                    <Link to={"/main"} className="post_link">
                         <div className="sec_post_box">
                             <div className="sec_post_img">
                                 <img className="sec3_img1" src="/img/post_img.png"/>
@@ -586,19 +483,19 @@ const MainProfile = ()=>{
                     </Link>
                 </div>
                 <div className="sec_chat_container">
-                    <Link to="/mainTalk">
+                    <Link to={"/mainTalk"}>
                         <div className="sec_chat_box">
                             <div className="sec_chat_img">
                                 <img className="sec3_img2" src="/img/chat.png"/>
                             </div>
                             <div className="sec_chat_title">
                                 <p>채팅</p>
-                            </div>
+                            </div>  
                         </div>
                     </Link>
                 </div>
                 <div className="sec_location_container">
-                    <Link to="/mainMap">
+                    <Link to={"/mainMap"}>
                         <div className="sec_location_box">
                             <div className="sec_location_img">
                                 <img className="sec3_img3" src="/img/location.png"/>
@@ -611,10 +508,7 @@ const MainProfile = ()=>{
                 </div>
             </div>
         </MainProfileWrap>
-    );    
-    
-
-
+    );
 
     //이미지 업로드 js 
     function handleFileSelect(evt) {
