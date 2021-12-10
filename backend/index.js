@@ -1,13 +1,13 @@
+
 const express = require('express');
-const app = express()
+const app = express();
 const http = require('http').createServer(app);
-const io   = require('socket.io')(http, {
-    cors: {
-        origin: ["http://localhost:3000"],
-        methods:["GET","POST"],
-        credentials :true
-    }
-});
+// const logger = require('morgan');
+// const cors = require('cors');
+// const static = require('serve-static');
+// const path = require('path');
+const mysql = require('mysql');
+const config = require('./config/config');
 
 const mainRouter = require('./routes/main.js');
 const postRouter = require('./routes/post.js');
@@ -16,7 +16,23 @@ const adminRouter = require('./routes/admin.js');
 const replyRouter = require('./routes/reply.js');
 const chatRouter = require('./routes/chat.js');
 const inquiryRouter = require('./routes/inquiry.js');
+const pool = mysql.createPool(config);
 
+app.use(memberRouter);
+app.use(mainRouter);
+app.use(postRouter);
+app.use(adminRouter);
+app.use(replyRouter);
+app.use(chatRouter);
+app.use(inquiryRouter);
+
+const io   = require('socket.io')(http, {
+    cors: {
+        origin: ["http://localhost:3000"],
+        methods:["GET","POST"],
+        credentials :true
+    }
+});
 
 http.listen(3001, ()=>{
     console.log('3001번포트로 실행중');
@@ -34,6 +50,20 @@ io.sockets.on('connection', (socket) =>{
         console.log(msg);
         io.to(msg.idx).emit('send', msg); 
         console.log('지나가라');
+        pool.getConnection((err, conn)=>{
+            if(err){
+                console.log(err);
+            }else{
+                conn.query('insert into chat(roomIdx, memberIdx, content) values (?,?,?)',[msg.idx, msg.memberIdx, msg.data], (err, result)=>{
+                    if(err){
+                        console.log(err);
+                    }else{
+                        console.log(result);
+                        console.log('======== success =====');
+                    }
+                })
+            }
+        })
     })
 
     socket.on('disconnect',()=>{

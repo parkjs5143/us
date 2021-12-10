@@ -1,10 +1,12 @@
-import React, {useRef, useEffect} from "react";
+import React from "react";
 import Header from "../components/header";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 
 
 const UploadForm = styled.div`
+
+    @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap');
     .upload_container{max-width: 100rem; border: 2px solid #a5a7c38a; height: 82rem; margin: 1rem auto;}
     .upload_header_box{display:flex; margin:2rem; position:relative; padding: 0 1rem; width:54rem;}
     .upload_profile_img{width: 5.5rem; height: 5.5rem; border-radius: 50%; border: 2px solid #0000009e;}
@@ -12,21 +14,19 @@ const UploadForm = styled.div`
     .upload_profile_id{font-size: 2.4rem; margin-left:1rem;}
     .upload_option_box{position:absolute; top: 1.8rem; right: 0.6rem;}
     .upload_option_img{cursor:pointer; width:3rem;}
-    .images_list{margin: 2rem auto; width: 53rem; border: 2px solid black; height: 39rem; overflow:hidden; display:flex;}
+    .images_list{margin: 2rem auto; width: 53rem; height: 39rem; overflow:hidden; display:flex;}
     .upload_mini_header{display:flex; margin:0 0 0 4rem; position:relative;}
     .mini_header_logo{width: 4rem; height: 3rem;}
     .cats_img{width: 13rem; height: 3.7rem; position: absolute; top: 0.3rem; right: 4rem;}
-    .wr_post_container{display: flex; margin:1rem auto; width:51rem; height: 13rem; border: 2px solid black; font-size: 1.7rem; padding: 1rem; border-radius: 6px;}
+    .wr_post_container{display: flex; margin:1rem auto; width:51rem; height: 13rem; border: 2px solid #00000045; font-size: 1.7rem; padding: 1rem; border-radius: 6px;}
     .return_main_btn{border-radius: 5px; background-color: #14c1c7; color: white; border: none; height: 4.5rem; cursor: pointer; width:15rem; font-size:1.7rem; box-shadow:3px 3px 3px #9b9b9b9e;}
     .return_main_btn_container{display: flex; justify-content: center; margin-top: 3.5rem;}
-    .option_pop_table{text-align: center; border: 1px solid #9e9e9ee8; font-size: 1.6rem; width: 12rem; border-radius: 5px; background: #3bf1f1; color: white; height: 7rem; cursor:pointer;}
     .option_btn{border:none; background:none;}
     .option_pop_container{position:relative;}
     .option_pop_box{position:absolute; top: -3px; right: -82px;}
-    .post_delete{border-top:1px solid #9e9e9ee8;}
     .wr_post_area{padding-left:2rem; padding-top:0.7rem;}
     .wr_post_writer{font-weight:bold; padding-left:1rem; padding-top:0.5rem;}
-    .up_replay_box{margin-top: 9rem; width: 38rem; height: 61rem; border: 2px solid black; border-radius: 5px;}
+    .up_replay_box{margin-top: 9rem; width: 38rem; height: 61rem; border: 2px solid #00000045; border-radius: 5px;}
     .left_right_container{display:flex;}
     .upload_time{font-size:1.5rem; margin-left:1rem; color:#555;}
     .reply_header{display:flex; position:relative;}
@@ -38,21 +38,31 @@ const UploadForm = styled.div`
     .prev_box{position:absolute; top:-25.7rem; left:2.5rem;}
     .next_box{position:absolute; top:-25.7rem; right:2.5rem;}
     .reply1_box{display:flex; margin: 2rem 1rem 1rem 1rem;}
-    .re_profile_img{width: 3rem; height: 3rem; border-radius: 50%; border: 2px solid #0000009e;}
-    .re_reply{font-size: 1.5rem; margin: 1rem; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; width:16rem;}
+    .re_profile_img{width: 3rem; height: 3rem; border-radius: 50%; border: 2px solid #00000054;}
+    .re_reply{font-size: 1.4rem; margin:0.5rem; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; width:9.7rem;}
     .re_time{font-size: 0.7rem; margin-left:1.5rem; color: gray;}
     .reply2_box{display:flex; margin: 1rem 1rem 1rem 6.5rem;}
     .reply3_box{display:flex; margin: 1rem 1rem 1rem 12rem;}
     .input_reply_box{display:flex;}
-    .re_btn{background-color:#14c1c7; color:white; border:none; height:3rem; width:5rem; box-shadow: 1.5px 1.5px 1.5px #9b9b9b9e;}
-    .input_reply_container{border-top: 2px solid #00000026; margin-top: 17.5rem;height: 15rem;}
-    .like_btn{border:none; background:none;}
+    .re_btn{background-color:#f8fafc; color:#14c1c7; border:none; height:3.9rem; width:4.4rem; font-weight:600;font-size:1.5rem; line-height: 4.7rem;}
+    .input_reply_container{margin-top: 32rem; height: 4rem;}
     .like_img{width:2rem; height:2rem;}
     .like_box{display:flex; margin-left: auto;}
-    .in_input_box{margin: 0 auto;}
-    .in_input{outline: none; width:32rem; height:14.5rem; resize:none;}
+    .in_input{outline: none; width:30rem; height:2.5rem; border: 1px solid #808080b0; resize:none; border-radius:15px; line-height: 2.5rem; font-size: 1.3rem; padding: 0.5rem 1rem; font-family: 'Nanum Gothic', sans-serif;}
     .re_time_reply_box{display:flex;}
     .reply_btn{border:none; background:none; color:gray; font-size:0.5rem; cursor:pointer; margin:0; line-height:0.1rem; font-weight:600;}
+    .re_delete_btn{background: none; border: none;}
+    .like_delete_box{display:flex;}
+    .re_delete_box{display:flex;}
+    .re_delete_btn{padding:0;}
+    .re_delete{font-size: 0.5rem;
+        color: gray; line-height: 0rem; margin: 0; font-weight:600;}
+    .in_input_box{margin:0.5rem;}
+    .like_btn{background:none; border:none;}
+    .re_id_box{display:flex;}
+    .re_id_div{margin:1rem 0 0 0.5rem;}
+    .re_id_span{font-size: 1.5rem; font-weight: 600; line-height: 1rem;}
+
 `;
 
 
@@ -142,24 +152,35 @@ const DelPopWrap = styled.div`
     .btnWrap { text-align: center; padding: 3rem 0; }
 `;
 
+//게시물 수정/삭제 팝업 css
+const PostEditDelete = styled.div`
+    .option_pop_container{z-index: 100; position:fixed; left:0; top:0; width:100%; height:100%; background:rgba(0,0,0,0.5)}
+    .option_pop_box{position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); background:white;border:none; width: 15rem; height: 15rem; border-radius: 15px; padding: 1rem;}
+    .edit_delete_close_btn{background:none; border:none;}
+    .edit_delete_close{display: flex; justify-content: right;}
+    .btn_container{display:flex; position: relative;
+    }
+    .edit_btn{width:7rem;height: 3.5rem; background: black;border-radius: 5px;border: 1px solid black;font-size: 1.5rem;font-weight:600; color: white;}
+    .delete_btn{width:7rem;height: 3.5rem;background: black;border-radius: 5px;border: 1px solid black;font-size: 1.5rem;font-weight:600; color: white;}
+    .edit_btn_box{position:absolute; top: 2.7rem; left: 0.1rem;}
+    .delete_btn_box{position:absolute; top: 2.7rem;right: 0.1rem;}
+
+`
+
 
 const UploadPage = () => {
 
     //게시물 수정/삭제 팝업열기
-    const el = useRef();
     const[PostOptionOn, setPostOptionOn] = React.useState(false);
-    const OpenPostOption = e =>{
-        // setPostOptionOn(!PostOptionOn);
-        if (PostOptionOn && (!el.current || !el.current.contains(e.target))) setPostOptionOn(false);
+    const OpenPostOption = () =>{
+        setPostOptionOn(!PostOptionOn);
+        if(PostOptionOn){
+            document.body.style.overflowY = "unset";
+        } else {
+            document.body.style.overflowY = "hidden";
+        }
         
     }
-    // 팝업 영역 밖 클릭시 닫기
-    useEffect(() => {
-        window.addEventListener('click', OpenPostOption);
-        return () => {
-        window.removeEventListener('click', OpenPostOption);
-        };
-        }, []);
 
 
     // 게시물 수정 팝업열기
@@ -189,20 +210,25 @@ const UploadPage = () => {
     // 게시물 수정/삭제 팝업 DOM
     const PostOption = () =>{
         return(
-            <div className="option_pop_container">
-                <div className="option_pop_box">
-                    <table className="option_pop_table">
-                        <tbody>
-                            <tr>
-                                <td onClick={openEditOn}>게시물 수정</td>
-                            </tr>
-                            <tr>
-                                <td className="post_delete" onClick={openPostDel}>게시물 삭제</td>
-                            </tr>
-                        </tbody>
-                    </table>
+            <PostEditDelete>
+                <div className="option_pop_container">
+                    <div className="option_pop_box">
+                        <div>
+                            <div className="edit_delete_close">
+                                <button className="edit_delete_close_btn" type="button" onClick={OpenPostOption}><img src="/img/clear_black.png" alt="close"/></button>
+                            </div>
+                            <div className="btn_container">
+                                <div className="edit_btn_box">
+                                    <button type="button" className="edit_btn" onClick={openEditOn}>수정</button>
+                                </div>
+                                <div className="delete_btn_box">
+                                    <button type="button" className="delete_btn" onClick={openPostDel}>삭제</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </PostEditDelete>
         );
     }
 
@@ -313,14 +339,14 @@ const UploadPage = () => {
                                 <button className="option_btn" onClick={OpenPostOption}>
                                     <img className="upload_option_img" src="/img/more_vert_black.png" alt="게시물 메뉴"/>
                                 </button>
-                                {PostOptionOn && <PostOption ref={el}/>}
+                                {PostOptionOn?<PostOption/>:''}
                             </div>
                         </div>
                         <div className="post_images_box">
                             <div className="images_list">
-                                <img className="up_img" src="/img/puppy.jpg"/>
-                                <img className="up_img" src="/img/puppy.jpg"/>
-                                <img className="up_img" src="/img/puppy.jpg"/>
+                                <img className="up_img" src="/img/puppy.jpg" alt="게시물 사진"/>
+                                <img className="up_img" src="/img/puppy.jpg" alt="게시물 사진"/>
+                                <img className="up_img" src="/img/puppy.jpg" alt="게시물 사진"/>
                             </div>
                             <div className="img_pagnation">
                                 <div className="prev_box">
@@ -337,9 +363,6 @@ const UploadPage = () => {
                                     <img className="mini_header_logo" src="/img/us_logo.png" alt="댓글부분 로고"/>
                                 </Link>
                             </div>
-                            <div className="cats_box">
-                                <img className="cats_img" src="/img/cats.png"/>
-                            </div>
                         </div>
                         <div className="wr_post_container">
                             <div className="wr_post_writer">sh239_tt</div>
@@ -352,7 +375,7 @@ const UploadPage = () => {
                                 <p>댓글</p>
                             </div>
                             <div className="reply_img_box">
-                                <img className="reply_img" src="/img/bubble_chat.png"/>
+                                <img className="reply_img" src="/img/bubble_chat.png" alt="댓글"/>
                             </div>
                         </div>
                         <div className="up_replay_box">
@@ -362,8 +385,13 @@ const UploadPage = () => {
                                         <img className="re_profile_img" src="/img/profile_img.png" alt="댓글 프로필"/>
                                     </div>
                                     <div className="re_reply_box">
-                                        <div className="re_reply">
-                                            <span className="reply">아니 안녕 못해!!ㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎhhh</span>
+                                        <div className="re_id_box">
+                                            <div className="re_id_div">
+                                                <span className="re_id_span">shdd_0594</span>
+                                            </div>
+                                            <div className="re_reply">
+                                                <span className="reply">아니 안녕 못해!!ㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎhhh</span>
+                                            </div>
                                         </div>
                                         <div className="re_time_reply_box">
                                             <div className="re_time">
@@ -371,6 +399,11 @@ const UploadPage = () => {
                                             </div>
                                             <div>
                                                 <button type="button" className="reply_btn">댓글달기</button>
+                                            </div>
+                                            <div className="re_delete_box">
+                                                <button className="re_delete_btn" type="button">
+                                                    <p className="re_delete">삭제</p>
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -383,8 +416,13 @@ const UploadPage = () => {
                                         <img className="re_profile_img" src="/img/profile_img.png" alt="댓글 프로필"/>
                                     </div>
                                     <div className="re_reply_box">
-                                        <div className="re_reply">
-                                            <span>아니 안녕 못해!!</span>
+                                        <div className="re_id_box">
+                                            <div className="re_id_div">
+                                                <span className="re_id_span">shdd_0594</span>
+                                            </div>
+                                            <div className="re_reply">
+                                                <span className="reply">💛💚💙💛🧡❤💜🤎🖤</span>
+                                            </div>
                                         </div>
                                         <div className="re_time_reply_box">
                                             <div className="re_time">
@@ -392,6 +430,11 @@ const UploadPage = () => {
                                             </div>
                                             <div>
                                                 <button type="button" className="reply_btn">댓글달기</button>
+                                            </div>
+                                            <div className="re_delete_box">
+                                                <button className="re_delete_btn" type="button">
+                                                    <p className="re_delete">삭제</p>
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -404,8 +447,13 @@ const UploadPage = () => {
                                         <img className="re_profile_img" src="/img/profile_img.png" alt="댓글 프로필"/>
                                     </div>
                                     <div className="re_reply_box">
-                                        <div className="re_reply">
-                                            <span>😱😨😳</span>
+                                        <div className="re_id_box">
+                                            <div className="re_id_div">
+                                                <span className="re_id_span">shdd_0594</span>
+                                            </div>
+                                            <div className="re_reply">
+                                                <span className="reply">바다 가고싶다...😥😣</span>
+                                            </div>
                                         </div>
                                         <div className="re_time_reply_box">
                                             <div className="re_time">
@@ -413,6 +461,11 @@ const UploadPage = () => {
                                             </div>
                                             <div>
                                                 <button type="button" className="reply_btn">댓글달기</button>
+                                            </div>
+                                            <div className="re_delete_box">
+                                                <button className="re_delete_btn" type="button">
+                                                    <p className="re_delete">삭제</p>
+                                                </button>
                                             </div>
                                         </div>
                                     </div>
@@ -425,8 +478,13 @@ const UploadPage = () => {
                                         <img className="re_profile_img" src="/img/profile_img.png" alt="댓글 프로필"/>
                                     </div>
                                     <div className="re_reply_box">
-                                        <div className="re_reply">
-                                            <span>😇</span>
+                                        <div className="re_id_box">
+                                            <div className="re_id_div">
+                                                <span className="re_id_span">shdd_0594</span>
+                                            </div>
+                                            <div className="re_reply">
+                                                <span className="reply">에이 요!!</span>
+                                            </div>
                                         </div>
                                         <div className="re_time_reply_box">
                                             <div className="re_time">
@@ -435,28 +493,40 @@ const UploadPage = () => {
                                             <div>
                                                 <button type="button" className="reply_btn">댓글달기</button>
                                             </div>
+                                            <div className="re_delete_box">
+                                                <button className="re_delete_btn" type="button">
+                                                    <p className="re_delete">삭제</p>
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
+                                    
                                     <div className="like_box">
-                                        <button type="button" className="like_btn"><img className="like_img" src="/img/smile.png" alt="좋아요"/></button>
+                                        <button type="button" className="like_btn">
+                                            <img className="like_img" src="/img/smile.png" alt="좋아요"/>
+                                        </button>
                                     </div>
                                 </div>
                             </div>
                             <div className="input_reply_container">
-                                <div className="input_reply_box">
-                                    <div className="in_input_box">
-                                        <textarea className="in_input" />
+                                <form>
+                                    <div className="input_reply_box">
+                                        <div className="in_input_box">
+                                            <textarea className="in_input" value="댓글 달기.."/>
+                                        </div>
+                                        <div className="re_btn_box">
+                                            <button type="submit" className="re_btn">게시</button>
+                                        </div>
                                     </div>
-                                    <div className="re_btn_box">
-                                        <button type="submit" className="re_btn">입력</button>
-                                    </div>
-                                </div>
+                                </form>
                             </div>
                         </div>
                     </div>
                 </div>
                 <div className="return_main_btn_container">
+                    <Link to="/main">
                     <button type="button" className="return_main_btn">메인으로 가기</button>
+                    </Link>
                 </div>
             </div>
         </UploadForm>
@@ -482,7 +552,7 @@ const UploadPage = () => {
                             '<div class="prev_img" style="display: block;"><img style="width:100%; height:100%;" src="',
                             e.target.result,
                             '" title="', escape(theFile.name),
-                            '"/><br><div class="img_del"><i class="fas fa-times-circle"></i></div></div>'
+                            '" alt="게시물 사진"/><br><div class="img_del"><i class="fas fa-times-circle"></i></div></div>'
                         ].join('');
                     document.querySelector('.prev_upload').insertBefore(span, null);
                     const muti_img_list = document.querySelectorAll(".img_del");

@@ -128,9 +128,7 @@ const MainProfileWrap = styled.div`
     #hashtag_list{display: flex; margin-top: 1rem; flex-wrap: wrap; width:55.5rem;}
 `;
 
-const MainProfile = ()=>{
-    
-    const cookie = document.cookie;
+const MainProfile = (idx)=>{
     const [profile, setProfile] = useState({info:[0], postCnt:0, friendCnt:0, friend:[0]});
     const [email, setEmail] = useState('');
     const [btn, setBtn] = useState(true);
@@ -139,11 +137,10 @@ const MainProfile = ()=>{
     let [friendPage, setFPage] = useState(0);
 
     useEffect(async () => {
-
-        const profile = await axios.get(`http://localhost:3001/main?idx=${cookie.substr(6,cookie.length)}`)
+        const profile = await axios.get(`http://localhost:3001/main?idx=${idx.idx}`)
         setProfile({info:profile.data[0][0], postCnt:profile.data[1][0].postCnt, friendCnt:profile.data[2][0].friendCnt, friend:profile.data[3]})
-        // const curr = profile.data[0][0].email.split('@');
-        // setEmail(curr[0])
+        const curr = profile.data[0][0].email.split('@');
+        setEmail(curr[0])
         if(profile.data[3].length>8){ 
             setBtn(false);
             for(let i=0; i<8; i++){friendFor[i]=profile.data[3][i]}
@@ -152,7 +149,7 @@ const MainProfile = ()=>{
             for(let i=0; i<profile.data[3].length; i++){friendFor[i]=profile.data[3][i]}; 
             setFriends(friendFor); 
         }
-    }, []);
+    }, [idx]);
 
 
     // 상단 친구목록 버튼
@@ -182,7 +179,7 @@ const MainProfile = ()=>{
     let [list, setList] = useState([]);
     const[addOn, setAddOn] = React.useState(false);
     useEffect(async () => {
-        const list = await axios.get(`http://localhost:3001/main/friend/list?idx=${cookie.substr(6,cookie.length)}`)
+        const list = await axios.get(`http://localhost:3001/main/friend/list?idx=${idx.idx}`)
         setList(list.data)
     }, [addOn]);
 
@@ -192,12 +189,12 @@ const MainProfile = ()=>{
     
     const codeBtn = async() =>{
         let code = document.getElementById('codeInput')
-        let findFriend = await axios.post("http://localhost:3001/main/friend?code=" + code.value + `&idx=${cookie.substr(6,cookie.length)}`)
+        let findFriend = await axios.post("http://localhost:3001/main/friend?code=" + code.value + `&idx=${idx.idx}`)
         setAddF({info:findFriend.data.result1[0], flag:findFriend.data.flag})
     }
     const onAddFriend = async() => { //추가 버튼
         if(addFriends!==null&&addFriends.info!==undefined){
-            let plusFriend = await axios.post("http://localhost:3001/main/insert_friend?fIdx="+addFriends.info.idx+"&idx="+cookie.substr(6,cookie.length))
+            let plusFriend = await axios.post("http://localhost:3001/main/insert_friend?fIdx="+addFriends.info.idx+"&idx="+idx.idx)
             console.log(plusFriend)
         }
         setAddF(null)
@@ -410,7 +407,7 @@ const MainProfile = ()=>{
         <MainProfileWrap>
             <div className="section1_box">
                 <div className="profile_img_box">
-                    <img className="profile_img" src={profile.info.img!==null?"/"+profile.info.img:'/img/empty_profile_icon.png'} alt="profile"/>
+                    <img className="profile_img" src={profile.info.img!==null?"/"+profile.info.img:'/img/blank_profile.png'} alt="profile"/>
                 </div>
                 <div className="profile_detail_box">
                     <div className="profile_layer1">
@@ -457,7 +454,7 @@ const MainProfile = ()=>{
                         friends.map(friendData=>(
                             <div className="usually_contect_box1 usually_contect">
                                 <div className="phone_img">
-                                    <img className="phone_profile" src={friendData.img!==null?"/"+friendData.img:'/img/admin/noneImg.png'}/>
+                                    <img className="phone_profile" src={friendData.img!==null&&friendData.img!==''?"/"+friendData.img:"/img/blank_profile.png"}/>
                                 </div>
                                 <div className="phone_name"><p>{friendData.name}</p></div>
                             </div>
@@ -471,7 +468,7 @@ const MainProfile = ()=>{
             </div>
             <div className="section3_box">
                 <div className="sec_post_container">
-                    <Link to={"/main"} className="post_link">
+                    <Link to={"/main?idx="+idx.idx} className="post_link">
                         <div className="sec_post_box">
                             <div className="sec_post_img">
                                 <img className="sec3_img1" src="/img/post_img.png"/>
@@ -483,7 +480,7 @@ const MainProfile = ()=>{
                     </Link>
                 </div>
                 <div className="sec_chat_container">
-                    <Link to={"/mainTalk"}>
+                    <Link to={"/mainTalk?idx="+idx.idx}>
                         <div className="sec_chat_box">
                             <div className="sec_chat_img">
                                 <img className="sec3_img2" src="/img/chat.png"/>
@@ -495,7 +492,7 @@ const MainProfile = ()=>{
                     </Link>
                 </div>
                 <div className="sec_location_container">
-                    <Link to={"/mainMap"}>
+                    <Link to={"/mainMap?idx="+idx.idx}>
                         <div className="sec_location_box">
                             <div className="sec_location_img">
                                 <img className="sec3_img3" src="/img/location.png"/>

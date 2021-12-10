@@ -6,47 +6,34 @@ import { Link } from "react-router-dom";
 import axios from "axios";
 
 const MypageWrap = styled.div`
-    * { text-decoration:none; font-size: 2rem;}
-    ul, li { list-style: none; padding:0; margin: 0;}
-    input, textarea, button { padding: 0; outline: 0; border: 0; resize: none; border-radius: 0; -webkit-appearance: none; background-color: rgba(0,0,0,0); }
-    .container { max-width:100rem; margin: 0 auto; }
-    .navBar { float: left; width: 15rem; padding:3rem; }
-    .menuLink { margin-bottom: 2rem; color: #222; cursor: pointer; font-size: 1.7rem; }
-    .menuLink.on { font-weight: 600; }
-    .menuLink:hover { color:#5c5c5c; }
-    .content { padding: 3rem 3rem 5rem 7rem; overflow: hidden; border-left: 1px solid rgba(0,0,0,0.1);}
-    .profileItem { display: flex; position: relative; align-items: center; margin-bottom: 3rem; }
-    .section1 { width: 20%; position: relative; right:3rem; font-size: 1.8rem; text-align: right; font-weight: 600;}
-    .section2 { width: 80%; }
-    .modifyImg { color: #1cbbeb; font-weight: bold; cursor: pointer; font-size: 1.5rem; margin-top: .5rem; }
-    .profileImg img { width: 7rem; border-radius: 50%; vertical-align:middle; }
-    .section2 input {
-        border: 1px solid lightgray;
-        background-color: #fff;
-        border-radius: 3px;
-        width: 100%;
-        height: 4rem;
-        color: black;
-        font-size: 1.5rem;
-        padding-left: 1rem;
-    }
-    .section2 textarea {
-        border: 1px solid lightgray;
-        background-color: #fff;
-        border-radius: 3px;
-        width: 100%;
-        height: 8rem;
-        color: black;
-        font-size: 1.5rem;
-        padding-left: 1rem;
-        padding-top: 1rem;
-    }
-    .section2 h3 { font-size: 1.6rem; margin: 2rem 0 0 1rem; font-weight: 400; }
-    .section2 p { font-size: 1.4rem;  margin: 0; margin-left:1rem; }
-    .widthraw { color: #1cbbeb; cursor: pointer; display: inline-block; font-size: 1.5rem; position:relative; left: 4rem; }
-    .widthraw:hover { font-weight: 600; }
-    .submitBtn { text-align: center; margin-top: 2rem; }
-    .btn { padding: 1rem 1.5rem; font-size: 1.7rem; background: #14c1c7; border-radius: 10px; color: #fff; cursor: pointer; }
+* { text-decoration:none; }
+ul, li { list-style: none; padding:0; margin: 0;}
+input, textarea, button { padding: 0; outline: 0; border: 0; resize: none; border-radius: 0; -webkit-appearance: none; background-color: rgba(0,0,0,0); }
+.container { max-width:100rem; margin: 0 auto; }
+.navBar { float: left; width: 12rem; padding:5rem 3rem 3rem 2rem; }
+.menuLink { margin-bottom: 4rem; color: #555; cursor: pointer; font-size: 1.6rem; }
+.menuLink.on { font-weight: 600; color: #14c1c7; }
+.menuLink:hover { color:#14c1c7; font-weight: 600; }
+.content { padding: 4rem 3rem 5rem 6rem; overflow: hidden; border-left: 1px solid rgba(0,0,0,0.1);}
+.profileItem { display: flex; position: relative; align-items: center; margin-bottom: 2.5rem; }
+.profileFirst { margin-left: -1.5rem; margin-bottom: 4rem; }
+.profileList { margin-left: 9rem; }
+.privacy { margin-left: -1rem; }
+.privacy .section1 { width: 100%; font-size: 1.5rem; color: #777; }
+.privacy .section1 .star { color: #14c1c7; font-size: 1.5rem; margin-left: 0; }
+.privacy .section1 span { font-size: 1.3rem; color: #14c1c7; margin-left: 3rem; }
+.section1 { width: 6rem; position: relative; right:3rem; font-size: 1.4rem; text-align: left; font-weight: 600;}
+.section2 { width: 80%; }
+.modifyImg { color: #14c1c7; font-weight: bold; cursor: pointer; font-size: 1.4rem; margin-top: 1rem; }
+.profileName { font-size: 1.7rem; font-weight: bold; color: #444; }
+.profileImg img { width: 6.5rem; border-radius: 50%; vertical-align:middle; border: 2px solid #999; }
+.section2 input, .section2 textarea { border: 1px solid lightgray; background-color: #fff; border-radius: 5px; width: 100%; height: 4rem; color: black; font-size: 1.4rem; padding-left: 1rem; }
+.section2 textarea { height: 8rem; padding-top: 1rem; }
+.section2 p { font-size: 1.4rem;  margin: 0; margin-left:1rem; }
+.widthraw { color: #14c1c7; cursor: pointer; display: inline-block; font-size: 1.4rem; position:relative; margin-left: 84%; }
+.widthraw:hover { font-weight: bold; }
+.submitBtn { text-align: center; margin-top: 2rem; }
+.btn { width: 12rem; height: 4rem; font-size: 1.5rem; background: #14c1c7; border-radius: 7px; color: #fff; cursor: pointer; box-shadow: 3px 3px 3px #d0d0d0; }
 `;
 
 const WithdrawWrap = styled.div`
@@ -145,28 +132,101 @@ const Mypage = () =>{
         }
     }
 
+
+    const cookies = document.cookie.substring(6);
+        console.log("쿠키!!!! => " + cookies);
+    const editProfile = () =>{
+        window.location.href="/mypage/" + cookies ;
+    }
+    const editPw = () =>{
+        window.location.href="/mypagePw/" + cookies ;
+    }
+    const oneToOne = () =>{
+        window.location.href="/mypageQnA/" + cookies ;
+    }
+
+    axios.get("http://localhost:3001/member/edit", {
+            params: {
+                'idx': cookies
+            }
+        })
+        .then(function (result) {
+            console.log(result.data[0]) 
+            setName(result.data[0].name)
+            setProImg(result.data[0].img)
+            setProEmail(result.data[0].email)
+            setProTell(result.data[0].tel)
+            setProCode(result.data[0].code)
+            setProGender(result.data[0].gender)
+
+        }).catch(function (error) {
+        });
+    
+        const [name , setName] = React.useState('')
+        const [proImg, setProImg] = React.useState('')
+        const [proEmail, setProEmail] = React.useState('')
+        const [protell, setProTell] = React.useState('')
+        const [proInfo, setProInfo] = React.useState('')
+        const [proCode, setProCode] = React.useState('')
+        const [proGender, setProGender] = React.useState('')
+
+
+        const nameInput = (e) => {
+            e.preventDefault();
+            const data = e.target.value;
+            setName(data)
+        }
+        const infoInput = (e) => {
+            e.preventDefault();
+            const data = e.target.value;
+            setProInfo(data)
+        }
+        const emailInput = (e) => {
+            e.preventDefault();
+            const data = e.target.value;
+            setProEmail(data)
+        }
+        const telInput = (e) => {
+            e.preventDefault();
+            const data = e.target.value;
+            setProTell(data)
+        }
+
+
+        const send = async () => {
+            
+            // let log = await axios.post('http://localhost:3001/member/editMember?img='+password3+"&email="+password+"&name="+cookies+"&tel="+cookies+"&message="+cookies+"&gender="+cookies)
+            // console.log(log)
+    
+            // if(log.data===true){
+            //     alert('비밀번호가 수정되었습니다')
+            //     editPw();
+            // }else{
+            //     alert('이전 비밀번호 또는 새 비밀번호를 확인해주세요')
+            // }
+        }
     return (
         <>
             {withdrawPop ? <WithdrawPop/> : ""}
             <Header/>
             <MypageWrap>
                 <div className="container">
-                    <div>
+                    <div className="navForm">
                         <ul className="navBar">
-                            <Link to="/mypage"><li className="menuLink on">프로필 편집</li></Link>
-                            <Link to="/mypagePw"><li className="menuLink">비밀번호 변경</li></Link>
-                            <Link to="/mypageLogin"><li className="menuLink">로그인 활동</li></Link>
-                            <Link to="/mypageQnA"><li className="menuLink">문의하기</li></Link>
+                            <li className="menuLink on" onClick={editProfile}>프로필 편집</li>
+                            <li className="menuLink" onClick={editPw}>비밀번호 변경</li>
+                            <li className="menuLink" >로그인 활동</li>
+                            <li className="menuLink" onClick={oneToOne}>문의하기</li>
                         </ul>
                     </div>
                     <div className="content">
                         <ul className="profileList">
                             <li className="profileItem">
                                 <div className="profileImg section1">
-                                    <img src={fileImage} alt="프로필사진"/>
+                                    <img src={proImg==null||proImg==''? "/img/blank_profile.png": "/"+proImg} alt="프로필사진"/>
                                 </div>
                                 <div className="profileNameBox section2">
-                                    <div className="profileName">햄수수수수타</div>
+                                    <div className="profileName">{name}</div>
                                     <label htmlFor="inputImg"><div className="modifyImg">프로필 사진 바꾸기</div></label>
                                     <input type="file" name="inputImg" id="inputImg" accept="image/*" style={{display:"none"}} onChange={changeImage}/>
                                 </div>
@@ -174,44 +234,44 @@ const Mypage = () =>{
                             <li className="profileItem">
                                 <div className="section1">이름</div>
                                 <div className="section2">
-                                    <input type="text" name="name" id="name" placeholder="이름"/>
+                                    <input type="text" name="name" id="name" placeholder={name} onChange={nameInput}/>
                                 </div>
                             </li>
                             <li className="profileItem">
                                 <div className="section1">코드</div>
                                 <div className="section2">
-                                    <input type="text" name="code" id="code" placeholder="코드" value="xsf123!2r"/>
+                                    <input type="text" name="code" id="code" placeholder="코드" value={proCode}/>
                                 </div>
                             </li>
                             <li className="profileItem">
                                 <div className="section1">소개</div>
                                 <div className="section2">
-                                    <textarea name="intro" id="intro" placeholder="소개"/>
+                                    <textarea name="intro" id="intro" placeholder="소개" onChange={infoInput}/>
                                 </div>
                             </li>
-                            <li className="profileItem">
-                                <div className="section1"></div>
-                                <div className="section2">
-                                    <h3>개인정보</h3>
-                                    <p className="">아래 개인정보 내용은 프로필에 공개되지 않습니다.</p>
+                            <li className="profileItem privacy">
+                                <div className="section1">
+                                    <p>
+                                        <span className="star">*</span> 개인정보<span className="">아래에 작성된 개인정보는 프로필에 공개되지 않습니다.</span>
+                                    </p>
                                 </div>
                             </li>
                             <li className="profileItem">
                                 <div className="section1">이메일</div>
                                 <div className="section2">
-                                    <input type="text" name="email" id="email" placeholder="이메일" value="star1234@us.com"/>
+                                    <input type="text" name="email" id="email" placeholder={proEmail} onChange={emailInput} />
                                 </div>
                             </li>
                             <li className="profileItem">
                                 <div className="section1">번호</div>
                                 <div className="section2">
-                                    <input type="text" name="hp" id="hp" placeholder="번호" value="+82 1022225555"/>
+                                    <input type="text" name="hp" id="hp" placeholder={protell} onChange={telInput}/>
                                 </div>
                             </li>
                             <li className="profileItem">
                                 <div className="section1">성별</div>
                                 <div className="section2">
-                                    <input type="text" name="gender" id="gender" placeholder="성별" value="여자"/>
+                                <input type="text" name="gender" id="gender" placeholder="성별" value={proGender}/>
                                 </div>
                             </li>
                         </ul>

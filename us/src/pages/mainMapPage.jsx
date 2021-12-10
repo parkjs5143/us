@@ -14,13 +14,15 @@ const MainForm = styled.div`
 `;
 
 const MainMapPage = () =>{
+    const param = window.location.search.split('=')[1]
+
     return (
         <>
         <Header/>
         <MainForm>
             <div className="container">
-                <MainProfile/>
-                <MainMap/>
+                <MainProfile idx={param}/>
+                <MainMap idx={param}/>
             </div>
         </MainForm>
         </>

@@ -50,30 +50,20 @@ function timeForToday(value) {
     return `${year}-${month >= 10 ? month : '0' + month}-${date >= 10 ? date : '0' + date}`;
 }
 
-const TalkList = ()=>{
+const TalkList = (idx)=>{
+    const cookie = document.cookie;
     const [posts, setPosts] = React.useState({});
     const [current, setCurrent] = React.useState({});
-    const [cookie, setCookie] = React.useState('');
     
     // 채팅창 팝업
     const[addOn, setAddOn] = React.useState(false);
 
-    useEffect(()=>{
-        // cookie로 받은 내 idx 저장
-        if(document.cookie !== undefined){
-            const cookie = document.cookie.split('=');
-            console.log('쿠키 있습니다!');
-            console.log(cookie[1]);
-            setCookie(cookie[1]);
-        }else{
-            console.log('쿠키 없습니다. ㅜ')
-        }
-    },[])
-
     useEffect(() => {
+        console.log('리스트에서 idx뽑기',idx);
+        console.log('리스트에서 idx뽑기',idx.idx);
         try{
             Promise.allSettled([
-                axios.get(`http://localhost:3000/main/chat?idx=${cookie}`, {
+                axios.get(`http://localhost:3000/main/chat?idx=${idx.idx}`, {
                     validateStatus: function (status) {
                       return status < 500; // Resolve only if the status code is less than 500
                     }
@@ -90,6 +80,7 @@ const TalkList = ()=>{
     
     const onView = (roomIdx) => {
         setCurrent(posts.find(item => item.idx === roomIdx))
+        console.log(current);
     }
 
     const onTalkPop = () => {
@@ -106,7 +97,7 @@ const TalkList = ()=>{
     if(posts.length > 0) {
         return (
             <TalkListWrap>
-                {addOn ? <Talk current={current}/> : ""}
+                {addOn ? <Talk current={current} loginIdx={idx.idx}/> : ""}
                 <div className='talkItemList'>
                 {
                     posts.map(post => (
@@ -119,7 +110,7 @@ const TalkList = ()=>{
                                 alert('우클!');
                             }}>
                                 <div className='talkProfileImgWrap'>
-                                    <img className='talkProfileImg' src={'/'+post.img} alt='프로필 사진'></img>
+                                    <img className='talkProfileImg' src={post.img==null||post.img==''? "/img/blank_profile.png": "/"+post.img} alt='프로필 사진'></img>
                                 </div>
                                 <div className='talkDetailWrap'>
                                     <div className='talkProfileName'>{post.name}</div>

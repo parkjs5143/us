@@ -40,7 +40,7 @@ const TalkWrap = styled.div`
 
 let socket;
 
-const Talk = ({current})=>{
+const Talk = ({current, loginIdx})=>{
     const [img, setImg] = useState('');
     const [name, setName] = useState('');
     const [idx, setIdx] = useState('');
@@ -48,26 +48,15 @@ const Talk = ({current})=>{
     const [title, setTitle] = useState('');
     const [message, setMessage] = useState('');
     const [messages, setMessages] = useState([]);
-    const[addOn, setAddOn] = useState(true);
-    const[cookie, setCookie] = useState('');
+    const [addOn, setAddOn] = useState(true);
+    // const[cookie, setCookie] = useState('');
 
     const ENDPORT = 'localhost:3001';
     
     const searchElement = useRef(null); // DOM 요소를 searchElement에 할당
     
-    useEffect(()=>{
-        // cookie로 받은 내 idx 저장
-        if(document.cookie !== undefined){
-            const cookie = document.cookie.split('=');
-            console.log('쿠키 있습니다!');
-            console.log(cookie[1]);
-            setCookie(cookie[1]);
-        }else{
-            console.log('쿠키 없습니다. ㅜ')
-        }
-    },[])
-
     useEffect(() => {
+        console.log('current뽑기',current);
         // current 에서 받은 데이터 저장
         const {img, name, idx, memberIdx, title} = current;
         if(img==null || img==''){
@@ -92,6 +81,7 @@ const Talk = ({current})=>{
         if (searchElement.current) { // 할당한 DOM 요소가 불러지면 (마운트 되면)
             searchElement.current.focus(); // textarea에 focus 할당!
         }
+        console.log('로그인Idx',loginIdx);
     }, [current]);
 
     // 백에서 받아온 messase 처리
@@ -100,16 +90,16 @@ const Talk = ({current})=>{
             console.log('백에서온거',JSON.stringify(msg));
             setMessages([...messages, msg]);
             console.log(messages);
-            // println(`${msg.sender} ${msg.data}`)
         })
     }, [messages]);
 
     // sendBtn 클릭
     const sendMsg = (event)=>{
         event.preventDefault();
+        console.log('왜또안나오니',loginIdx);
 
         const data = document.querySelector('.talkTextInput').value;
-        const output = {idx:idx, memberIdx: cookie, sender:name, commend:'chat', type:'text', data:data, roomName : title};
+        const output = {idx:idx, memberIdx: loginIdx, sender:name, commend:'chat', type:'text', data:data, roomName : title};
         console.log('프론트에서 보낼거',output);
         if(socket == undefined){
             alert('서버에 연결되지 않았습니다. 서버를 연결하세요');
@@ -138,7 +128,7 @@ const Talk = ({current})=>{
                     </div>
                     <h2 className='recieverName'>{title}</h2>
                     <div className='talkToggle'>
-                        <img src='img/talk_toggle.svg' alt='메뉴'></img>
+                        {/* <img src='img/talk_toggle.svg' alt='메뉴'></img> */}
                         <img src='img/close_icon.svg' alt='나가기' onClick={closePop}></img>
                         <div className='talkExitPop'>채팅방 나가기</div>
                     </div>
@@ -150,7 +140,7 @@ const Talk = ({current})=>{
                                 let isSentByCurrentUser = false;
 
                                 console.log(message);
-                                if(message.memberIdx === cookie){
+                                if(message.memberIdx === loginIdx){
                                     isSentByCurrentUser = true;
                                 }
 
@@ -165,12 +155,10 @@ const Talk = ({current})=>{
                                     : (
                                         <div className='reciverTalk'>
                                             <div className='talkProfileImgWrap'>
-                                                <Link to="/main">
-                                                    <img className='talkProfileImg' src={img} alt='프로필 사진'></img>
-                                                </Link>
+                                                <img className='talkProfileImg' src={img} alt='프로필 사진'></img>
                                             </div>
                                             <div className='talkDetailWrap'>
-                                                <div className='talkProfileName'>{message.sender}</div>
+                                                <div className='talkProfileName'>{name}</div>
                                                 <div className='talkDetailList'>{message.data}</div>
                                             </div>
                                         </div>

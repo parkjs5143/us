@@ -1,7 +1,7 @@
 /* global kakao */
 import React, { useEffect, useState } from 'react';
 
-const MapContainer = () => {
+const MapContainer = (idx) => {
     const { kakao } = window;
     const [myPosition, setMyPosition] = useState([]);
 

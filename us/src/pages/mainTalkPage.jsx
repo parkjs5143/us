@@ -15,14 +15,15 @@ const MainForm = styled.div`
 `;
 
 const MainTalkPage = () =>{
-    
+    const param = window.location.search.split('=')[1]
+
     return (
         <>
         <Header/>
         <MainForm>
             <div className="container">
-                <MainProfile/>
-                <TalkList/>
+                <MainProfile idx={param}/>
+                <TalkList idx={param}/>
             </div>
         </MainForm>
         </>

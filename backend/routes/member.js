@@ -128,7 +128,7 @@ router.route('/member/login').post((req,res)=>{
                                 authorized: true
                             };
                             res.cookie('three', result[0].idx);
-                            res.json(true)
+                            res.json(result[0].idx)
                             const hi  = new Promise((resolve, reject)=>{
                                 if(dataLoading){
                                     resolve("true");
@@ -246,6 +246,7 @@ const LoginMember = function(email, userPw, callback){
 // 로그아웃
 router.route('/member/logout').get((req, res) => {
     res.clearCookie("first");
+    res.clearCookie("three");
     req.session.destroy(function (err, result) {
         if (err) console.err('err : ', err);
         res.send(result);

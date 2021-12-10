@@ -22,13 +22,13 @@ const HeaderForm = styled.div`
 
         })
     }
-const Header = () =>{
+const Header = (idx) =>{
     return (
         <HeaderForm>
             <div className="header_container">
                 <div className="header_box">
                     <div className="logo_box">
-                        <Link to="/main"><img className="logo_img" alt="logo" src="/img/us_logo.png"/></Link>
+                        <Link to={"/main?idx="+idx.idx}><img className="logo_img" alt="logo" src="/img/us_logo.png"/></Link>
                     </div>
                     <div className="logout_box">
                         <img className="logout_tag" onClick={logout} alt="logout" src="/img/logout_img.png"/>

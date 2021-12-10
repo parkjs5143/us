@@ -37,10 +37,10 @@ function App() {
         <Route path={"/FindIdPw2"} element={<FindPwPage/>}/>
         <Route path={"/FinFindidpw"} element={<FinishPwPage/>}/>
 
-        <Route path={"/mypage"} element={<Mypage/>}/>
-        <Route path={"/mypagePw"} element={<MypagePw/>}/>
+        <Route path={"/mypage/:idx"} element={<Mypage/>}/>
+        <Route path={"/mypagePw/:idx"} element={<MypagePw/>}/>
         <Route path={"/mypageLogin"} element={<MypageLogin/>}/>
-        <Route path={"/mypageQnA"} element={<MypageQnA/>}/>
+        <Route path={"/mypageQnA/:idx"} element={<MypageQnA/>}/>
         
         <Route path={"/uploadpage"} element={<UploadPage/>}/>
       </Routes>
