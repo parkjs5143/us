@@ -8,13 +8,14 @@ router.use(bodyParser.urlencoded({ extended: false }))
 
 // 문의하기
 router.route('/inquiry').post((req, res) => {
-    const memberIdx = req.query.memberIdx;
-    const title = req.query.title;
-    const content = req.query.content;
-    const type = req.query.type;
-    const sql = 'insert into inquiry(memberIdx, title, content, type) values (?,?,?,?)';
-    const data = [memberIdx, title, content, type];
-    console.log(`memberIdx:${memberIdx}, title:${title}, content:${content}`);
+    const memberIdx = req.body.memberIdx;
+    const title = req.body.title;
+    const content = req.body.content;
+    const type = req.body.type;
+    const type2 = req.body.type2;
+    const sql = 'insert into inquiry(memberIdx, title, content, type,type2) values (?,?,?,?,?)';
+    const data = [memberIdx, title, content, type, type2];
+    console.log(`memberIdx:${memberIdx}, title:${title}, content:${content}, type:${type}, type2: ${type2}`);
 
     pool.query(sql, data, (err, rows, fields) => {
         if (err) {
@@ -25,7 +26,7 @@ router.route('/inquiry').post((req, res) => {
             res.end();
         } else {
             console.log(rows);
-            res.json(true);
+            res.json({message : "문의 성공!"});
         }
     })
 });

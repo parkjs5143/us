@@ -79,7 +79,7 @@ router.route('/main/place').get((req, res) => {
             if (err) {
                 res.writeHead('200', { 'content-type': 'text/html; charset=utf8' });
                 res.write('<h2>메인데이터 출력 실패 </h2>');
-                res.write('<p>데이터가 안나옵니다.</p>');
+                res.write('<p>데이터가 안나옵니다.</p>')
                 res.end();
             } else {
                 res.send(result);
@@ -222,7 +222,6 @@ const mainChat = function (idx, callback) {
                 conn.release();
                 if (err) {
                     callback(err, null);
-                    console.log(err);
                     return;
                 } else {
                     callback(null, result);

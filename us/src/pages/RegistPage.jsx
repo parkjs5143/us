@@ -137,11 +137,14 @@ const RegistPage1 = () => {
     const [password, setPassword] = React.useState('')
     const [name,setName] = React.useState('')
     const [hp,setHp] = React.useState('')
-    const [gender,setGender] = React.useState('')
+    const [gender,setGender] = React.useState('남')
     const [checkbox1,setCheckBox1] = React.useState('')
     const [checkbox2,setCheckBox2] = React.useState('')
     const [checkedInputs, setCheckedInputs] = useState([]);
     const [checkedInputs2, setCheckedInputs2] = useState([]);
+
+    // 랜덤코드 저장
+    const [random, setRandom] = useState('');
 
     //에러메세지 온오프
     const [display, setDisplay] = useState("none")
@@ -149,6 +152,19 @@ const RegistPage1 = () => {
     const [display3, setDisplay3] = useState("none")
     const [display4, setDisplay4] = useState("none")
 
+    useEffect (()=>{
+        const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz'
+        const stringLength = 6
+        let randomstring = ''
+        for (let i = 0; i < stringLength; i++) {
+            const rnum = Math.floor(Math.random() * chars.length)
+            randomstring += chars.substring(rnum, rnum + 1)
+        }
+        console.log(randomstring);
+        setRandom(randomstring);
+        console.log("랜덤 : " + random)
+    },[])
+    
     
     const changeDispaly = (display) => {
         setDisplay(display)
@@ -240,23 +256,7 @@ const RegistPage1 = () => {
         idDisabled()
 
     }
-    const [random, setRandom] = useState();
 
-
-    const makeRanCode = (e) => {
-        const chars = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXTZabcdefghiklmnopqrstuvwxyz'
-        const stringLength = 6
-        let randomstring = ''
-        for (let i = 0; i < stringLength; i++) {
-            const rnum = Math.floor(Math.random() * chars.length)
-            randomstring += chars.substring(rnum, rnum + 1)
-        }
-        setRandom(randomstring);
-        console.log("랜덤 : " + random)
-        //회원가입 함수 실행
-        goRegist();
-    }
-    
     const changeHandler = (checked, id) => {
         if (checked) {
             setCheckedInputs([...checkedInputs, id]);
@@ -314,8 +314,7 @@ const RegistPage1 = () => {
 
 
 
-    //axios
-    
+    // axios 제출
     const goRegist = async () => {
         let ag1 = "Y";
         let ag2 = "Y";
@@ -372,7 +371,7 @@ const RegistPage1 = () => {
                     </div>
                     <div className="activebtn">
                             <button type="button"
-                                onClick={makeRanCode} disabled={disabled}>
+                                onClick={goRegist} disabled={disabled}>
                                 회원가입
                             </button>
                     </div>

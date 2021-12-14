@@ -33,23 +33,13 @@ let passwordDisable2 = false;
 
 
 const MyPagePw = () =>{
-    
+    const param = window.location.search.split('=')[1];
     const cookies = document.cookie.substring(6);
-        console.log("쿠키!!!! => " + cookies);
-    const editProfile = () =>{
-        window.location.href="/mypage/" + cookies ;
-    }
-    const editPw = () =>{
-        window.location.href="/mypagePw/" + cookies ;
-    }
-    const oneToOne = () =>{
-        window.location.href="/mypageQnA/" + cookies ;
-    }
 
-    
+    useEffect(()=>{
         axios.get("http://localhost:3001/member/edit", {
             params: {
-                'idx': cookies
+                'idx': param
             }
         })
         .then(function (result) {
@@ -58,6 +48,8 @@ const MyPagePw = () =>{
             setProImg(result.data[0].img)
         }).catch(function (error) {
         });
+
+    },[])
     
 ///member/ComparePassword
     const [name , setName] = React.useState('')
@@ -69,15 +61,9 @@ const MyPagePw = () =>{
    
     const send = async () => {
         console.log(password3+"///////////////"+password +"///////////"+ cookies)
-        let log = await axios.post('http://localhost:3001/member/ComparePassword?userPw='+password3+"&userPw2="+password+"&idx="+cookies)
+        let log = await axios.post('http://localhost:3001/member/ComparePassword?userPw='+password3+"&userPw2="+password+"&idx="+param)
         console.log(log)
 
-        // if(log.data===true){
-        //     alert('비밀번호가 수정되었습니다')
-        //     editPw();
-        // }else{
-        //     alert('이전 비밀번호 또는 새 비밀번호를 확인해주세요')
-        // }
     }
 
     const [password, setPassword] = useState('');
@@ -169,11 +155,11 @@ const MyPagePw = () =>{
             <MyPagePwWrap>
                 <div className="container">
                     <div>
-                        <ul className="navBar">
-                                <li className="menuLink" onClick={editProfile}>프로필 편집</li>
-                                <li className="menuLink on" onClick={editPw}>비밀번호 변경</li>
-                                <li className="menuLink" >로그인 활동</li>
-                                <li className="menuLink" onClick={oneToOne}>문의하기</li>
+                    <ul className="navBar">
+                            <Link to={"/mypage?idx="+ param}><li className="menuLink ">프로필 편집</li></Link>
+                            <Link to={"/mypagePw?idx="+ param}><li className="menuLink on">비밀번호 변경</li></Link>
+                            <Link to={"/mypageLogin?idx=" + param}><li className="menuLink">로그인 활동</li></Link>
+                            <Link to={"/mypageQnA?idx=" + param}><li className="menuLink">문의하기</li></Link>
                         </ul>
                         </div>
                     <div className="content">

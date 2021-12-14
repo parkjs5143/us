@@ -29,9 +29,8 @@ const MypageLoginWrap = styled.div`
     `;
 
 const MypageLogin = () =>{
-    const menuClick = ()=>{
-        
-    };
+    const param = window.location.search.split('=')[1];
+    
     return (
         <>
             <Header/>
@@ -39,10 +38,10 @@ const MypageLogin = () =>{
                 <div className="container">
                     <div>
                         <ul className="navBar">
-                            <Link to="/mypage"><li className="menuLink" onClick={menuClick}>프로필 편집</li></Link>
-                            <Link to="/mypagePw"><li className="menuLink" onClick={menuClick}>비밀번호 변경</li></Link>
-                            <Link to="/mypageLogin"><li className="menuLink on" onClick={menuClick}>로그인 활동</li></Link>
-                            <Link to="/mypageQnA"><li className="menuLink" onClick={menuClick}>문의하기</li></Link>
+                            <Link to={"/mypage?idx="+ param}><li className="menuLink ">프로필 편집</li></Link>
+                            <Link to={"/mypagePw?idx="+ param}><li className="menuLink">비밀번호 변경</li></Link>
+                            <Link to={"/mypageLogin?idx=" + param}><li className="menuLink on">로그인 활동</li></Link>
+                            <Link to={"/mypageQnA?idx=" + param}><li className="menuLink">문의하기</li></Link>
                         </ul>
                     </div>
                     <div className="content">

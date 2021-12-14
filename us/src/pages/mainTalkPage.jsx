@@ -15,7 +15,7 @@ const MainForm = styled.div`
 `;
 
 const MainTalkPage = () =>{
-    const param = window.location.search.split('=')[1]
+    const param = window.location.search.split('=')[1];
 
     return (
         <>

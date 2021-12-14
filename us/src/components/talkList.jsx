@@ -119,10 +119,6 @@ const TalkList = (idx)=>{
                                 <div className='talkRecord'>
                                     <div className='talkDate'>{timeForToday(post.time)}</div>
                                 </div>
-                                <input type='hidden' id='roomIdx' value={post.idx}></input>
-                                <input type='hidden' id='memberIdx'value={post.memberIdx}></input>
-                                <input type='hidden' id='img' value={post.img}></input>
-                                <input type='hidden' id='title' value={post.title}></input>
                             </div>
                         </a>
                     ))
@@ -131,7 +127,8 @@ const TalkList = (idx)=>{
             </TalkListWrap>
         )
         
-    } else { // 조회 데이터 존재하지 않을 경우
+    } 
+    else { // 조회 데이터 존재하지 않을 경우
         return (
             <div style={{textAlign: "center", fontSize: "1.5rem", padding: "10rem", color: "Gray"}}>채팅방이 없습니다. 친구와 채팅을 해보세요!</div>
         )

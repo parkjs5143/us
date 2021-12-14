@@ -128,7 +128,7 @@ router.route('/member/login').post((req,res)=>{
                                 authorized: true
                             };
                             res.cookie('three', result[0].idx);
-                            res.json(result[0].idx);    
+                            res.json(result[0].idx)
                             const hi  = new Promise((resolve, reject)=>{
                                 if(dataLoading){
                                     resolve("true");
@@ -154,9 +154,10 @@ router.route('/member/login').post((req,res)=>{
     }
 })
 
-
-
-
+// 쿠키 값 가져오기
+router.route('/getCookie').get((req, res)=>{
+    res.send(req.cookies.three);
+})
 
 const LoginMember = function(email, userPw, callback){
     pool.getConnection((err, conn)=>{
@@ -180,15 +181,72 @@ const LoginMember = function(email, userPw, callback){
     })
 }
 
-// 쿠키 값 가져오기
-router.route('/getCookie').get((req, res)=>{
-    res.send(req.cookies.three);
-})
+// router.route('/member/login').post((req, res) => {
+//     const email = req.body.email || req.query.email;
+//     const userPw = req.body.userPw || req.query.userPw;
+//     console.log(`email:${email}, userpw:${userPw}`);
+//     if(pool){
+//         LoginMember(email, userPw, (err, result)=>{
+//             if(err){
+//                 res.writeHead('200', { 'content-type': 'text/html; charset=utf8' });
+//                 res.write('<h2>메인데이터 출력 실패 </h2>');
+//                 res.write('<p>데이터가 안나옵니다.</p>')
+//                 res.end();
+//             }else{
+//                 let dataLoading = true;
+//                 if(result == true){
+//                     req.session.user = {
+//                         email: email,
+//                         pw: userPw,
+//                         name: "first",
+//                         authorized: true
+//                     };
+//                     res.json(result)
+//                     const hi  = new Promise((resolve, reject)=>{
+//                         if(dataLoading){
+//                             resolve("true");
+//                         }else{
+//                             reject("false");
+//                         }
+//                     });
+//                     hi.then((res)=> console.log(`Resolve : ${res}`))
+//                     .catch((err)=> console.log(err));
+//                 }else{
+//                     res.send(false);
+//                     console.log(false);
+//                 }
+//             }
+//         })
+//     }
+// });
+// const LoginMember = function(email, userPw, callback){
+//     pool.getConnection((err, conn)=>{
+//         if(err){
+//             console.log(err);
+//         }else{
+//             const sql = conn.query('select email,userPw from member where email=? and userPw=?', [email,userPw], (err, result)=>{
+//                 conn.release();
+//                 if(err){
+//                     callback(err, null);
+//                     return;
+//                 }else{
+//                     if(result == ""){
+//                         callback(null, false);
+//                     }else{
+//                         callback(null, true);
+//                     }
+//                 }
+//             })
+//         }
+//     })
+// }
+
 
 
 // 로그아웃
 router.route('/member/logout').get((req, res) => {
     res.clearCookie("first");
+    res.clearCookie("three");
     req.session.destroy(function (err, result) {
         if (err) console.err('err : ', err);
         res.send(result);
@@ -359,13 +417,13 @@ const SendMember = function (randomPassword, email, callback) {
 
 // 비밀번호 변경
 router.route('/member/ComparePassword').post((req, res) => {
-    const userPw = req.query.userPw;
-    const userPw2 = req.query.userPw2;
-    const idx = req.query.idx;
-    console.log(`userPw : ${userPw}, userPw2:${userPw2}, idx:${idx}`);
+    const userPw = req.body.userPw;
+    const userPw2 = req.body.userPw2;
+    const email = req.body.email;
+    console.log(`userPw : ${userPw}, userPw2:${userPw2}, email:${email}`);
 
     if (pool) {
-        UpdatePassword(userPw, userPw2, idx, (err, result) => {
+        UpdatePassword(userPw, userPw2, email, (err, result) => {
             if (err) {
                 console.log(err);
                 res.writeHead('200', { 'content-type': 'text/html;charset=utf8' });
@@ -379,124 +437,84 @@ router.route('/member/ComparePassword').post((req, res) => {
     }
 
 })
-const UpdatePassword = function (userPw, userPw2, idx, callback) {
+const UpdatePassword = function (userPw, userPw2, email, callback) {
     pool.getConnection((err, conn) => {
         if (err) {
             console.log(err);
         } else {
-            conn.query('select userPw from member where idx=?',[idx], (err1, result1)=>{
-                console.log(result1);
-                if(bcrypt.compareSync(userPw, result1[0].userPw) == false){
-                    console.log(bcrypt.compareSync(userPw, result1[0].userPw))
-                    console.log('password 틀림')
-                    return;
-                } else {
-                    console.log('패스워드 맞음');
-                    if(userPw != userPw2){
-                        const encryptedPassword = bcrypt.hashSync(userPw2, saltRounds) // 비밀번호 암호화
-                        console.log(encryptedPassword)
-                        conn.query('update member set userPw=? where idx=?', [encryptedPassword, idx], (err, result) => {
-                            conn.release();
-                            console.log(result);
-                            if(err){
-                                callback(null, false);
-                                return;
-                            }else{
-                                callback(null, result);
-                            }
-                        })
+            console.log('이건 되나?');
+            if (userPw != userPw2) {
+                const encryptedPassword = bcrypt.hashSync(userPw2, saltRounds) // 비밀번호 암호화
+                const sql2 = conn.query('update member set userPw=? where email=?', [encryptedPassword, email], (err, result) => {
+                    conn.release();
+                    if (err) {
+                        console.log(err);
+                        return;
+                    } else {
+                        callback(null, result);
                     }
-                }
-            })
+                })
+            } else {
+                console.log('비밀번호 혹은 이메일 확인!');
+            }
         }
     })
 }
+// 순이한테 확인할꺼면 하고 말꺼면 말고
 
 
 
 // 정보 수정
-// 기존 데이터를 불러오는 곳
-router.route('/member/edit').get((req, res)=>{
-    const idx = req.query.idx;
-
-    if(pool){
-        edit(idx, (err, result)=>{
-            if (err) {
-                res.send(false)
-                res.end();
-            } else {
-                res.send(result);
-            }
-        })
-    }
-})
-const edit = function(idx,callback){
-    pool.getConnection((err,conn)=>{
-        if(err){
-            console.log(err);
-        }else{
-            conn.query('select img, name, code, message, email, tel, gender from member where idx=?',[idx],(err,result)=>{
-                conn.release();
-                if(err){
-                    callback(err, null);
-                    console.log('select문 오류');
-                    return;
-                }else{
-                    callback(null, result);
-                }
-            })
-        }
-    })
-}
-
-// 여기가 정보 수정하는곳
+// http://127.0.0.1:3000/member/edit (put)
 const storage = multer.diskStorage({
     destination: function (req, file, cb) {
-        cb(null, "./uploads/");
+        cb(null, "./uploads/images");
     },
     filename: (req, file, callback) => {
         callback(null, file.originalname);
     }
 });
 const upload = multer({ storage: storage });
-router.route('/member/editMember').post(upload.single('img'), async (req, res) => {
+router.route('/member/edit').get((req, res) => {
+    res.render('upload.ejs');
+});
+router.route('/member/edit').post(upload.single('img'), async (req, res) => {
+    const idx = req.body.idx;
     const img = req.body.img;
     const email = req.body.email;
     const name = req.body.name;
     const tel = req.body.tel;
     const message = req.body.message;
     const gender = req.body.gender;
+    // 세션도 수정이 되어야 함....................
+    const sql = 'update member set img=?, name=?, tel=?, message=?, gender=?, email=? where idx=?';
+    const data = [img, name, tel, message, gender, email, idx];
 
-    console.log(`img : ${img}, email:${email}, name:${name}, tel:${tel}, message:${message}, gender:${gender}`);
-    if(pool){
-        editMember(img, name, tel, message, gender, email, (err, result)=>{
-            if(err){
-                console.log(err)
-                res.send(false);
-            }else{
-                res.send(true);
-                res.end();
-            }
-        })
-    }
-});
-const editMember = function (img, name, tel, message, gender, email, callback) {
-    pool.getConnection((err, conn) => {
+    console.log(`img : ${img}, email:${email}, name:${name}, tel:${tel}, message:${message}, gender:${gender}, idx=${idx}`);
+    pool.query(sql, data, function (err, rows, fields) {
         if (err) {
-            console.log(err)
+            console.log('err : ' + err);
+            res.writeHead('200', { 'content-type': 'text/html;charset=utf-8' });
+            res.write('<h2>회원정보 수정 실패!</h2>');
+            res.write('<p>수정중 오류가 발생했습니다</p>');
+            res.end();
         } else {
-            conn.query('update member set img=?, name=?, tel=?, message=?, gender=? where idx=?', [img, name, tel, message, gender, email], (err, result) => {
-                if (err) {
-                    callback(err, null);
-                    return;
-                } else {
-                    callback(null, true);
-                }
-            })
+            console.log(rows);
+            // req.session.idx = rows.idx;
+            // req.session.email = rows.email;
+            // req.session.userPw = rows.userPw;
+            req.session.user = {
+                idx: idx,
+                email: email,
+                userPw: userPw,
+                name: "first",
+                authorized: true
+            };
 
+            res.send(rows);
         }
     })
-}   
+});
 
 // 이미지 변경 
 // router.route('/upload').get((req, res) => {

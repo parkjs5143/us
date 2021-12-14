@@ -415,7 +415,7 @@ const MainProfile = (idx)=>{
                             <p>{email}</p>
                         </div>
                         <div className="option_box">
-                            <Link to="/mypage"><img src="/img/setting.png" alt="setting"/></Link>
+                            <Link to={'/mypage?idx='+idx.idx}><img src="/img/setting.png" alt="setting"/></Link>
                         </div>
                         <div className="posting_box">
                             <button className="post_btn" type="button" onClick={onOpenPost}>게시물 올리기</button>{postOn?<Post1/>:""}

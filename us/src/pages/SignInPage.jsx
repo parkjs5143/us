@@ -190,7 +190,7 @@ const LoginPage = () => {
 
             // 작업 완료 되면 페이지 이동(새로고침)
             if(res.data == false){
-                alert("아이디와 패스워드가 일치하지 않습니다.")
+                alert("아이디와 패스워드가 일치하지 않습니다.");
             } else{
                 document.location.href = `/main?idx=${res.data}`
             }

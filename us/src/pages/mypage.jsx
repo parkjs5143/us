@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import Header from "../components/header";
 // import MypageSideBar from "../components/mypageSideBar";
 import styled from "styled-components";
@@ -73,9 +73,12 @@ const WithdrawWrap = styled.div`
 
 const Mypage = () =>{
     // 파일 미리보기 
-    const [fileImage, setFileImage] = useState("img/hamster_profile.jpg");
+    const [fileImage, setFileImage] = useState('');
+
     const changeImage = (e)=>{
-        setFileImage(""+URL.createObjectURL(e.target.files[0]));
+        setFileImage(""+e.target.files[0].name);
+        console.log(e.target.files[0]);
+        document.querySelector('.profileImg img').src = URL.createObjectURL(e.target.files[0]);
     }
 
     // 탈퇴진행
@@ -132,35 +135,28 @@ const Mypage = () =>{
         }
     }
 
-
+    const param = window.location.search.split('=')[1];
     const cookies = document.cookie.substring(6);
-        console.log("쿠키!!!! => " + cookies);
-    const editProfile = () =>{
-        window.location.href="/mypage/" + cookies ;
-    }
-    const editPw = () =>{
-        window.location.href="/mypagePw/" + cookies ;
-    }
-    const oneToOne = () =>{
-        window.location.href="/mypageQnA/" + cookies ;
-    }
-
-    axios.get("http://localhost:3001/member/edit", {
-            params: {
-                'idx': cookies
-            }
-        })
-        .then(function (result) {
-            console.log(result.data[0]) 
-            setName(result.data[0].name)
-            setProImg(result.data[0].img)
-            setProEmail(result.data[0].email)
-            setProTell(result.data[0].tel)
-            setProCode(result.data[0].code)
-            setProGender(result.data[0].gender)
-
-        }).catch(function (error) {
-        });
+        
+    useEffect (()=>{
+        
+        axios.get("http://localhost:3001/member/edit", {
+                params: {
+                    'idx': param
+                }
+            })
+            .then(function (result) {
+                console.log(result.data[0]) 
+                setName(result.data[0].name)
+                setProImg(result.data[0].img)
+                setProEmail(result.data[0].email)
+                setProTell(result.data[0].tel)
+                setProCode(result.data[0].code)
+                setProGender(result.data[0].gender)
+    
+            }).catch(function (error) {
+            });
+    },[]);
     
         const [name , setName] = React.useState('')
         const [proImg, setProImg] = React.useState('')
@@ -195,15 +191,6 @@ const Mypage = () =>{
 
         const send = async () => {
             
-            // let log = await axios.post('http://localhost:3001/member/editMember?img='+password3+"&email="+password+"&name="+cookies+"&tel="+cookies+"&message="+cookies+"&gender="+cookies)
-            // console.log(log)
-    
-            // if(log.data===true){
-            //     alert('비밀번호가 수정되었습니다')
-            //     editPw();
-            // }else{
-            //     alert('이전 비밀번호 또는 새 비밀번호를 확인해주세요')
-            // }
         }
     return (
         <>
@@ -213,10 +200,10 @@ const Mypage = () =>{
                 <div className="container">
                     <div className="navForm">
                         <ul className="navBar">
-                            <li className="menuLink on" onClick={editProfile}>프로필 편집</li>
-                            <li className="menuLink" onClick={editPw}>비밀번호 변경</li>
-                            <li className="menuLink" >로그인 활동</li>
-                            <li className="menuLink" onClick={oneToOne}>문의하기</li>
+                            <Link to={'/mypage?idx='+param}><li className="menuLink on">프로필 편집</li></Link>
+                            <Link to={'/mypagePw?idx='+param}><li className="menuLink">비밀번호 변경</li></Link>
+                            <Link to={'/mypageMap?idx='+param}><li className="menuLink">로그인 활동</li></Link>
+                            <Link to={'/mypageQna?idx='+param}><li className="menuLink">문의하기</li></Link>
                         </ul>
                     </div>
                     <div className="content">

@@ -59,19 +59,82 @@ const MyPageQnAWrap = styled.div`
 `;
 
 const MyPageQnA = () =>{
-    const menuClick = ()=>{  
-    };
+    const [name, setName] = useState('');
+    const [proImg, setProImg] = React.useState('')
 
-    let [inquiry, setInquiry] = useState([]);
-    let [qType, setQtype] = useState(null);
-    let [title, setTitle] = useState(null);
-    let [content, setContent] = useState(null);
     let [type, setType] = useState([]);
+    let [title, setTitle] = useState('');
+    let [content, setContent] = useState('');
+    let [sTitle, setSTitle] = useState('');
+    let [sContent, setSContent] = useState('');
+
     const [modalOn, setModalOn] = useState(false); 
     let [popup, setPopup] = useState();
 
+    // memberIdx
+    const param = window.location.search.split('=')[1];
+
+    useEffect(()=>{
+        axios.get("http://localhost:3001/member/edit", {
+            params: {
+                'idx': param
+            }
+        })
+        .then(function (result) {
+            console.log(result.data[0]) 
+            setName(result.data[0].name)
+            setProImg(result.data[0].img)
+        }).catch(function (error) {
+        });
+
+    },[])
+
+    // 문의 유형 선택시
     const selectType = (e) => {
+        e.preventDefault();
         setType(e.target.value);
+    }
+    // 제목 입력시
+    const changeTitle = (e)=>{
+        e.preventDefault();
+        setTitle(e.target.value);
+    }
+    // 내용 입력시
+    const changeContent = (e)=>{
+        e.preventDefault();
+        setContent(e.target.value);
+    }
+    // 신고 유형 입력시
+    const changeSTitle = (e)=>{
+        e.preventDefault();
+        setSTitle(e.target.value);
+    }
+    // 신고 사유 입력시 
+    const changeSContent = (e)=>{
+        e.preventDefault();
+        setSContent(e.target.value);
+    }
+
+    // axios 제출
+    const goRegist = async () => {
+
+        let korType = '';
+        // 신고하기의 경우
+        if(type==='declaration'){
+            korType += '신고하기';
+        }else{  // 일반문의 시
+            korType += '일반문의';
+        }
+
+        let log = await axios.post('http://localhost:3001/inquiry?memberIdx='+param+"&title="+title+"&content="+content+"&type="+korType)
+            console.log(log);
+            if(log.data===true){
+                alert('문의가 등록되었습니다.');
+                window.location.reload();
+            }else{
+                alert('다시 입력해 주세요!')
+                window.location.reload();
+            }
     }
 
     const onOpenModal = (e) => {
@@ -89,7 +152,7 @@ const MyPageQnA = () =>{
             <div id="mw_temp" className="mw">
                 <div className="bg"></div>
                 <div className="fg">
-                    <div className="closeBtn" onClick={onOpenModal}><i class="fas fa-times"></i></div>
+                    <div className="closeBtn" onClick={onOpenModal}><i className="fas fa-times"></i></div>
                     <p className="modalTitle">신고대상 찾기</p>
                     <div className="searchName"><i class="far fa-angry"></i><input type="text" placeholder="신고대상자명을 입력하세요" /><input type="button" value="검색" /></div>
                     <div className="findForm">
@@ -109,18 +172,6 @@ const MyPageQnA = () =>{
         )
     }
 
-    const cookies = document.cookie.substring(6);
-        console.log("쿠키!!!! => " + cookies);
-    const editProfile = () =>{
-        window.location.href="/mypage/" + cookies ;
-    }
-    const editPw = () =>{
-        window.location.href="/mypagePw/" + cookies ;
-    }
-    const oneToOne = () =>{
-        window.location.href="/mypageQnA/" + cookies ;
-    }
-
     return (
         <>
             <Header/>
@@ -128,10 +179,10 @@ const MyPageQnA = () =>{
                 <div className="container">
                     <div>
                     <ul className="navBar">
-                                <li className="menuLink" onClick={editProfile}>프로필 편집</li>
-                                <li className="menuLink " onClick={editPw}>비밀번호 변경</li>
-                                <li className="menuLink" >로그인 활동</li>
-                                <li className="menuLink on" onClick={oneToOne}>문의하기</li>
+                            <Link to={"/mypage?idx=" + param}><li className="menuLink ">프로필 편집</li></Link>
+                            <Link to={"/mypagePw?idx=" + param}><li className="menuLink">비밀번호 변경</li></Link>
+                            <Link to={"/mypageLogin?idx=" + param}><li className="menuLink">로그인 활동</li></Link>
+                            <Link to={"/mypageQnA?idx=" + param}><li className="menuLink on">문의하기</li></Link>
                         </ul>
                     </div>
                     <div className="content">
@@ -142,15 +193,15 @@ const MyPageQnA = () =>{
                                 </li>
                                 <li className="profileItem">
                                     <div className="profileImg section1">
-                                        <img src="img/hamster_profile.jpg" alt="프로필사진"/>
+                                        <img src={proImg===null||proImg==='' ? '/img/blank_profile.png' : proImg} alt="프로필사진"/>
                                     </div>
                                     <div className="profileNameBox section2">
-                                        <p className="profileName">햄수수수수타</p>
+                                        <p className="profileName">{name}</p>
                                     </div>
                                 </li>
                                 <li className="profileItem profileSelect firstItem">
                                     <div className="QnaTitle section1">문의유형</div>
-                                    <select name="category1" id="category1" onClick={selectType}>
+                                    <select name="category1" id="category1" onChange={selectType}>
                                         <option value="inquiry1">계정관리</option>
                                         <option value="inquiry2">로그인 활동</option>
                                         <option value="inquiry3">사용법 안내</option>
@@ -160,13 +211,13 @@ const MyPageQnA = () =>{
                                 <li className="profileItem profileSelect">
                                     <div className="QnaTitle section1">문의명</div>
                                     <div className="titleBox section2">
-                                        <input type="text" name="title" id="title" placeholder="제목"/>
+                                        <input type="text" name="title" id="title" placeholder="제목" onBlur={changeTitle}/>
                                     </div>
                                 </li>
                                 <li className="profileItem profileSelect">
                                     <div className="QnaContent section1">문의내용</div>
                                     <div className="contentBox section2">
-                                        <textarea type="text" name="content" id="content" placeholder="내용"/>
+                                        <textarea type="text" name="content" id="content" placeholder="내용" onBlur={changeContent}/>
                                     </div>
                                 </li>
                             </ul>
@@ -174,14 +225,14 @@ const MyPageQnA = () =>{
                             <ul className="profileList">
                                 <li className="profileItem profileFirst">
                                     <h1>신고/문의하기</h1>
-                                    <span className="red">* 신고사실은 신고대상자가 알지 못합니다.</span>
+                                    <span className="red">* 신고사실은 신고대상자가 알 수 없습니다.</span>
                                 </li>
                                 <li className="profileItem">
                                     <div className="profileImg section1">
-                                        <img src="img/hamster_profile.jpg" alt="프로필사진"/>
+                                        <img src={proImg===null||proImg==='' ? '/img/blank_profile.png' : proImg} alt="프로필사진"/>
                                     </div>
                                     <div className="profileNameBox section2">
-                                        <p className="profileName">햄수수수수타</p>
+                                        <p className="profileName">{name}</p>
                                     </div>
                                 </li>
                                 <li className="profileItem profileSelect firstItem">
@@ -203,19 +254,19 @@ const MyPageQnA = () =>{
                                 <li className="profileItem profileSelect">
                                     <div className="QnaTitle section1">신고유형</div>
                                     <div className="titleBox section2">
-                                        <input type="text" placeholder="신고유형"/>
+                                        <input type="text" placeholder="신고유형" onBlur={changeTitle}/>
                                     </div>
                                 </li>
                                 <li className="profileItem profileSelect">
                                     <div className="QnaContent section1">신고이유</div>
                                     <div className="contentBox section2">
-                                        <textarea type="text" name="content" id="content" placeholder="신고하는 이유"/>
+                                        <textarea type="text" name="content" id="content" placeholder="신고하는 이유" onBlur={changeContent}/>
                                     </div>
                                 </li>
                             </ul>
                         }
                         <div className="submitBtn">
-                            <button type="submit" className="btn"> 제출 </button>
+                            <button type="submit" className="btn" onClick={goRegist}> 제출 </button>
                         </div>
                     </div>
                 </div>
