@@ -249,7 +249,7 @@ const friendList = function (idx, callback) {
         if (err) {
             console.log(err);
         } else {
-            conn.query('select m.idx, m.img, m.name, m.message from friend as f join member as m on m.idx = f.friendIdx where f.memberIdx = ?;', [idx], (err, result) => {
+            conn.query('select m.idx, m.img, m.email, m.name, m.message from friend as f join member as m on m.idx = f.friendIdx where f.memberIdx = ?;', [idx], (err, result) => {
                 conn.release();
                 if (err) {
                     callback(err, null);

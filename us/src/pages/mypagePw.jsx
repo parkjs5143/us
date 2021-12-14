@@ -34,7 +34,6 @@ let passwordDisable2 = false;
 
 const MyPagePw = () =>{
     const param = window.location.search.split('=')[1];
-    const cookies = document.cookie.substring(6);
 
     useEffect(()=>{
         axios.get("http://localhost:3001/member/edit", {
@@ -54,16 +53,13 @@ const MyPagePw = () =>{
 ///member/ComparePassword
     const [name , setName] = React.useState('')
     const [proImg, setProImg] = React.useState('')
-    const [idxPw , setIdxPw] = React.useState('')
 
 
     //비밀번호 유효성 검사
-   
     const send = async () => {
-        console.log(password3+"///////////////"+password +"///////////"+ cookies)
+        console.log(password3+"///////////////"+password +"///////////"+ param)
         let log = await axios.post('http://localhost:3001/member/ComparePassword?userPw='+password3+"&userPw2="+password+"&idx="+param)
         console.log(log)
-
     }
 
     const [password, setPassword] = useState('');
@@ -95,6 +91,7 @@ const MyPagePw = () =>{
         }
         idDisabled()
     }
+
     //새 비밀번호 확인 
     const passwordInput2 = (e) => {
         e.preventDefault();
@@ -110,6 +107,7 @@ const MyPagePw = () =>{
         }
         idDisabled()
     }
+
     //전 비밀번호 
     const passwordInput3 = (e) => {
         e.preventDefault();
@@ -119,17 +117,14 @@ const MyPagePw = () =>{
         if (!regExp.test(password)) {
             passwordDisable = false
             changeDispaly('block')
-
         } else {
             passwordDisable = true
             changeDispaly('none')
-
         }
         idDisabled()
     }
 
     const [ disabled, setDisabled ] = useState('disabled');
-
     const [forDis, setForDis] = useState("none");
     const [forDis2, setForDis2] = useState("none");
 
@@ -147,7 +142,6 @@ const MyPagePw = () =>{
             setDisabled('disabled');
         }
     }
-   
 
     return (
         <>

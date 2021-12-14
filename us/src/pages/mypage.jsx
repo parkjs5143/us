@@ -72,18 +72,86 @@ const WithdrawWrap = styled.div`
 `;
 
 const Mypage = () =>{
-    // 파일 미리보기 
+    // 초기 프로필 세팅
+    const [name , setName] = React.useState('')
+    const [proImg, setProImg] = React.useState('')
+    const [proEmail, setProEmail] = React.useState('')
+    const [protell, setProTell] = React.useState('')
+    const [proInfo, setProInfo] = React.useState('')
+    const [proCode, setProCode] = React.useState('')
+    const [proGender, setProGender] = React.useState('')
+    //memberIdx
+    const param = window.location.search.split('=')[1];
+    // 이미지 파일 변경 
     const [fileImage, setFileImage] = useState('');
-
+    // 탈퇴 팝업
+    const [withdrawPop, setWithdrawPop] = useState(false);
+    
+    // 프로필 정보 가져오기
+    useEffect (()=>{
+        axios.get("http://localhost:3001/member/edit", {
+                params: {
+                    'idx': param
+                }
+            })
+            .then(function (result) {
+                console.log(result.data[0]) 
+                setName(result.data[0].name)
+                setProInfo(result.data[0].message)
+                setProImg(result.data[0].img)
+                setProEmail(result.data[0].email)
+                setProTell(result.data[0].tel)
+                setProCode(result.data[0].code)
+                setProGender(result.data[0].gender)
+            }).catch(function (error) {
+            });
+    },[]);
+    
+    // 이미지 변경 함수
     const changeImage = (e)=>{
         setFileImage(""+e.target.files[0].name);
         console.log(e.target.files[0]);
         document.querySelector('.profileImg img').src = URL.createObjectURL(e.target.files[0]);
     }
 
+    // 프로필 정보 onChange 이벤트 함수
+    const nameInput = (e) => {
+        e.preventDefault();
+        const data = e.target.value;
+        setName(data)
+    }
+    const infoInput = (e) => {
+        e.preventDefault();
+        const data = e.target.value;
+        setProInfo(data)
+    }
+    const emailInput = (e) => {
+        e.preventDefault();
+        const data = e.target.value;
+        setProEmail(data)
+    }
+    const telInput = (e) => {
+        e.preventDefault();
+        const data = e.target.value;
+        setProTell(data)
+    }
+    
+    // 수정 진행
+    const send = async () => {
+        console.log(fileImage)
+        console.log(proEmail)
+        console.log(name)
+        console.log(protell)
+            console.log(proInfo)
+        console.log(proGender)
+
+        let log = await axios.post('http://localhost:3001/member/editMember?img='+fileImage+"&email="+proEmail+"&name="+name+"&tel="+protell+"&message="+proInfo+"&gender="+proGender)
+        console.log(log)
+    }
+
     // 탈퇴진행
     const withdrawRun = ()=>{
-        axios.delete('http://127.0.0.1:3000/member/delete?idx=75')
+        axios.delete('http://127.0.0.1:3000/member/delete?idx='+param)
         .then(function (response) {
             // handle success
             console.log(response);
@@ -100,7 +168,7 @@ const Mypage = () =>{
         });
     }
 
-    // 탈퇴하기 html
+    // 탈퇴 html
     const WithdrawPop = ()=>{
         return (
             <WithdrawWrap>
@@ -125,7 +193,7 @@ const Mypage = () =>{
         )
     }
 
-    const [withdrawPop, setWithdrawPop] = useState(false);
+    // 탈퇴 팝업 열기
     const changePop = ()=>{
         setWithdrawPop(!withdrawPop);
         if(withdrawPop){
@@ -135,63 +203,6 @@ const Mypage = () =>{
         }
     }
 
-    const param = window.location.search.split('=')[1];
-    const cookies = document.cookie.substring(6);
-        
-    useEffect (()=>{
-        
-        axios.get("http://localhost:3001/member/edit", {
-                params: {
-                    'idx': param
-                }
-            })
-            .then(function (result) {
-                console.log(result.data[0]) 
-                setName(result.data[0].name)
-                setProImg(result.data[0].img)
-                setProEmail(result.data[0].email)
-                setProTell(result.data[0].tel)
-                setProCode(result.data[0].code)
-                setProGender(result.data[0].gender)
-    
-            }).catch(function (error) {
-            });
-    },[]);
-    
-        const [name , setName] = React.useState('')
-        const [proImg, setProImg] = React.useState('')
-        const [proEmail, setProEmail] = React.useState('')
-        const [protell, setProTell] = React.useState('')
-        const [proInfo, setProInfo] = React.useState('')
-        const [proCode, setProCode] = React.useState('')
-        const [proGender, setProGender] = React.useState('')
-
-
-        const nameInput = (e) => {
-            e.preventDefault();
-            const data = e.target.value;
-            setName(data)
-        }
-        const infoInput = (e) => {
-            e.preventDefault();
-            const data = e.target.value;
-            setProInfo(data)
-        }
-        const emailInput = (e) => {
-            e.preventDefault();
-            const data = e.target.value;
-            setProEmail(data)
-        }
-        const telInput = (e) => {
-            e.preventDefault();
-            const data = e.target.value;
-            setProTell(data)
-        }
-
-
-        const send = async () => {
-            
-        }
     return (
         <>
             {withdrawPop ? <WithdrawPop/> : ""}
@@ -233,7 +244,7 @@ const Mypage = () =>{
                             <li className="profileItem">
                                 <div className="section1">소개</div>
                                 <div className="section2">
-                                    <textarea name="intro" id="intro" placeholder="소개" onChange={infoInput}/>
+                                    <textarea name="intro" id="intro" placeholder="소개" onChange={infoInput} placeholder={proInfo}/>
                                 </div>
                             </li>
                             <li className="profileItem privacy">
@@ -264,7 +275,7 @@ const Mypage = () =>{
                         </ul>
                         <div className="widthraw" onClick={changePop}> 탈퇴하기 </div>
                         <div className="submitBtn">
-                            <button type="submit" className="btn"> 수정 </button>
+                            <button type="submit" className="btn" onClick={send}> 수정 </button>
                         </div>
                     </div>
                 </div>

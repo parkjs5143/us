@@ -59,21 +59,32 @@ const MyPageQnAWrap = styled.div`
 `;
 
 const MyPageQnA = () =>{
+    // 프로필정보
     const [name, setName] = useState('');
     const [proImg, setProImg] = React.useState('')
 
+    // 문의 유형
     let [type, setType] = useState([]);
     let [title, setTitle] = useState('');
     let [content, setContent] = useState('');
-    let [sTitle, setSTitle] = useState('');
-    let [sContent, setSContent] = useState('');
 
+    // 신고 대상자
+    let [defendant, setDefendant] = useState({});
+
+    // 팝업
     const [modalOn, setModalOn] = useState(false); 
     let [popup, setPopup] = useState();
+
+    // 팝업 친구 목록
+    let [friendsList, setFriendsList] = useState([]);
+
+    // 코드 검색
+    let [codeFriend, setCodeFriend] = useState('');
 
     // memberIdx
     const param = window.location.search.split('=')[1];
 
+    // 프로필정보 불러오기
     useEffect(()=>{
         axios.get("http://localhost:3001/member/edit", {
             params: {
@@ -86,8 +97,14 @@ const MyPageQnA = () =>{
             setProImg(result.data[0].img)
         }).catch(function (error) {
         });
-
     },[])
+
+    // 친구목록 불러오기
+    useEffect(async () => {
+        const list = await axios.get(`http://localhost:3001/main/friend/list?idx=${param}`)
+        setFriendsList(list.data)
+        console.log(friendsList)
+    }, [modalOn]);
 
     // 문의 유형 선택시
     const selectType = (e) => {
@@ -104,37 +121,32 @@ const MyPageQnA = () =>{
         e.preventDefault();
         setContent(e.target.value);
     }
-    // 신고 유형 입력시
-    const changeSTitle = (e)=>{
-        e.preventDefault();
-        setSTitle(e.target.value);
-    }
-    // 신고 사유 입력시 
-    const changeSContent = (e)=>{
-        e.preventDefault();
-        setSContent(e.target.value);
+
+    // 신고대상자 선택시
+    const addDefendant = (target)=>{
+        console.log(target);
+        setDefendant(target);
+        document.querySelector('#target').value = target.email;
+        setModalOn(!modalOn);
     }
 
-    // axios 제출
+    // 문의하기 axios 제출
     const goRegist = async () => {
-
         let korType = '';
-        // 신고하기의 경우
+        
         if(type==='declaration'){
             korType += '신고하기';
-        }else{  // 일반문의 시
             korType += '일반문의';
         }
-
         let log = await axios.post('http://localhost:3001/inquiry?memberIdx='+param+"&title="+title+"&content="+content+"&type="+korType)
-            console.log(log);
-            if(log.data===true){
-                alert('문의가 등록되었습니다.');
-                window.location.reload();
-            }else{
-                alert('다시 입력해 주세요!')
-                window.location.reload();
-            }
+        console.log(log);
+        if(log.data===true){
+            alert('문의가 등록되었습니다.');
+            window.location.reload();
+        }else{
+            alert('다시 입력해 주세요!')
+            window.location.reload();
+        }
     }
 
     const onOpenModal = (e) => {
@@ -146,7 +158,8 @@ const MyPageQnA = () =>{
             document.body.style.overflow = "unset";
         }
     }
-    // 신고대상 찾기 팝업
+    
+    // 신고대상 찾기 팝업 html
     const Modal = () => {
         return(
             <div id="mw_temp" className="mw">
@@ -154,15 +167,15 @@ const MyPageQnA = () =>{
                 <div className="fg">
                     <div className="closeBtn" onClick={onOpenModal}><i className="fas fa-times"></i></div>
                     <p className="modalTitle">신고대상 찾기</p>
-                    <div className="searchName"><i class="far fa-angry"></i><input type="text" placeholder="신고대상자명을 입력하세요" /><input type="button" value="검색" /></div>
+                    <div className="searchName"><i class="far fa-angry"></i><input type="text" placeholder="신고대상자 코드를 입력하세요" /><input type="button" value="검색" /></div>
                     <div className="findForm">
-                        <p>김사과 [ <span className="email">somin@somin.com</span> ]</p>
-                        <p>김사과 [ <span className="email">somin@somin.com</span> ]</p>
-                        <p>김사과 [ <span className="email">somin@somin.com</span> ]</p>
-                        <p>김사과 [ <span className="email">somin@somin.com</span> ]</p>
-                        <p>김사과 [ <span className="email">somin@somin.com</span> ]</p>
-                        <p>김사과 [ <span className="email">somin@somin.com</span> ]</p>
-                        <p>김사과 [ <span className="email">somin@somin.com</span> ]</p>
+                        {friendsList.length!==0 ?
+                            friendsList.map(list=>(
+                                <p onClick={()=>{addDefendant(list)}}>{list.name} [ <span className="email">{list.email}</span> ]</p>
+                            ))
+                            :
+                            <p>신고할 친구가 존재하지 않습니다.<br/>상단의 신고 대상자 코드를 입력하세요</p>
+                        }
                     </div>
                     <div className="searchBtn">
                         <input type="button" value="선택완료"/>
