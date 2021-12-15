@@ -270,7 +270,7 @@ const invitation = function (invitationCode, idx, callback) {
         } else {
             let flag = false;
             let fIdx = null;
-            conn.query('select idx, name, message, img from member where code = ?;', [invitationCode], (err, result1) => {
+            conn.query('select idx, name, message, img, email from member where code = ?;', [invitationCode], (err, result1) => {
                 if (result1 != "") fIdx = result1[0].idx; 
                 conn.query('select exists (select idx from friend where memberIdx = ? and friendIdx = ? limit 1) as success;', [idx, fIdx], (err, result2) => {
                     if (result2[0].success == 1) flag = true;

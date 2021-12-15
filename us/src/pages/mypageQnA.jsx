@@ -50,12 +50,10 @@ const MyPageQnAWrap = styled.div`
     .searchName input[type="text"] { width: 25rem; margin-left: 1.5rem; border: none; border-bottom: 2px solid #9b9b9b; height: 3rem; font-size: 1.4rem;  }
     .searchName input[type="button"] { width: 6rem; padding: 1rem; margin-left: 1rem; font-size: 1.4rem; font-weight: bold; color: #14c1c7; cursor: pointer; border: none; box-shadow: 1.5px 1.5px 1.5px 2px #e7e7e7; } 
     .searchName { margin-left: 4rem; margin-top: 3rem; font-size: 1.5rem; font-weight: bold; color: #444; }
-    .findForm { border: 1px solid #c7c7c7; width: 38rem; height: 28rem; margin-left: 3.6rem; margin-top: 2rem; overflow-y: auto; }
+    .findForm { border: 1px solid #c7c7c7; width: 38rem; height: 32rem; margin-left: 3.6rem; margin-top: 2rem; overflow-y: auto; }
     .findForm p {  border: 1px solid #c7c7c7; height: 3rem; width: 85%; margin: 0rem auto 0.5rem; border-radius: 5px; padding: 1.2rem 1.5rem 0.5rem; }
     .email { color: #14c1c7;  }
     .fa-angry { font-size: 3rem;}
-    .searchBtn { width: 15rem; margin-left: 15.5rem;  }
-    .searchBtn input { padding-left: 0; margin-top: 1.5rem;  background: #14c1c7; border-radius: 7px; color: #fff; font-weight: bold; cursor: pointer; box-shadow: 3px 3px 3px #d0d0d0; }
 `;
 
 const MyPageQnA = () =>{
@@ -79,7 +77,7 @@ const MyPageQnA = () =>{
     let [friendsList, setFriendsList] = useState([]);
 
     // 코드 검색
-    let [codeFriend, setCodeFriend] = useState('');
+    let [codeFriend, setCodeFriend] = useState(null);
 
     // memberIdx
     const param = window.location.search.split('=')[1];
@@ -130,6 +128,14 @@ const MyPageQnA = () =>{
         setModalOn(!modalOn);
     }
 
+    // 코드 검색 버튼 클릭
+    const codeBtn = async() =>{
+        let code = document.getElementById('codeInput').value
+        let findFriend = await axios.post("http://localhost:3001/main/friend?code=" + code + `&idx=${param}`);
+        console.log(findFriend.data);
+        setCodeFriend({info:findFriend.data.result1[0], flag:findFriend.data.flag});
+    }
+
     // 문의하기 axios 제출
     const goRegist = async () => {
         let korType = '';
@@ -167,18 +173,18 @@ const MyPageQnA = () =>{
                 <div className="fg">
                     <div className="closeBtn" onClick={onOpenModal}><i className="fas fa-times"></i></div>
                     <p className="modalTitle">신고대상 찾기</p>
-                    <div className="searchName"><i class="far fa-angry"></i><input type="text" placeholder="신고대상자 코드를 입력하세요" /><input type="button" value="검색" /></div>
+                    <div className="searchName"><i class="far fa-angry"></i><input type="text" placeholder="신고대상자 코드를 입력하세요" id="codeInput"/><input type="button" value="검색" onClick={codeBtn}/></div>
                     <div className="findForm">
-                        {friendsList.length!==0 ?
-                            friendsList.map(list=>(
-                                <p onClick={()=>{addDefendant(list)}}>{list.name} [ <span className="email">{list.email}</span> ]</p>
-                            ))
+                        {codeFriend==null ?
+                            friendsList.length!==0 ?
+                                friendsList.map(list=>(
+                                    <p onClick={()=>{addDefendant(list)}} style={{cursor:"pointer"}}>{list.name} [ <span className="email">{list.email}</span> ]</p>
+                                ))
+                                :
+                                <p>신고할 친구가 존재하지 않습니다.<br/>상단의 신고 대상자 코드를 입력하세요</p>
                             :
-                            <p>신고할 친구가 존재하지 않습니다.<br/>상단의 신고 대상자 코드를 입력하세요</p>
+                            <p onClick={()=>{addDefendant(codeFriend.info)}} style={{cursor:"pointer"}}>{codeFriend.info.name} [ <span className="email">{codeFriend.info.email}</span> ]</p>
                         }
-                    </div>
-                    <div className="searchBtn">
-                        <input type="button" value="선택완료"/>
                     </div>
                 </div>
             </div>
