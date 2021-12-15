@@ -28,12 +28,32 @@ input, textarea, button { padding: 0; outline: 0; border: 0; resize: none; borde
 .btn:disabled { background: #dfdfdf; }
 .btn { width: 12rem; height: 4rem; font-size: 1.5rem; background: #14c1c7; border-radius: 7px; color: #fff; cursor: pointer; box-shadow: 3px 3px 3px #d0d0d0; }
 `;
+
+// 버튼 활성화
 let passwordDisable = false;
 let passwordDisable2 = false;
-
+let passwordDisable3 = false;
 
 const MyPagePw = () =>{
+    // memberIdx 가져오기
     const param = window.location.search.split('=')[1];
+
+    ///member/ComparePassword
+    const [name , setName] = React.useState('')
+    const [proImg, setProImg] = React.useState('')
+
+    const [password, setPassword] = useState('');
+    const [password2, setPassword2] = useState('');
+    const [password3, setPassword3] = useState('');
+
+    //오류메시지 저장
+    const [passwordMessage, setPasswordMessage] = useState('');
+
+    //유효성 검사
+    const [isPassword, setIsPassword] = useState(false);
+    const [ disabled, setDisabled ] = useState('disabled');
+    const [forDis, setForDis] = useState("none");
+    const [forDis2, setForDis2] = useState("none");
 
     useEffect(()=>{
         axios.get("http://localhost:3001/member/edit", {
@@ -47,32 +67,38 @@ const MyPagePw = () =>{
             setProImg(result.data[0].img)
         }).catch(function (error) {
         });
-
     },[])
     
-///member/ComparePassword
-    const [name , setName] = React.useState('')
-    const [proImg, setProImg] = React.useState('')
-
-
-    //비밀번호 유효성 검사
+    //비밀번호 변경 제출
     const send = async () => {
         console.log(password3+"///////////////"+password +"///////////"+ param)
         let log = await axios.post('http://localhost:3001/member/ComparePassword?userPw='+password3+"&userPw2="+password+"&idx="+param)
         console.log(log)
+        if(log.data === false){
+            alert('이전 비밀번호를 확인해주세요.')
+            window.location.reload();
+        } else{
+            console.log("통과")
+            alert("비밀번호가 변경되었습니다");
+            window.location.reload();
+        }
     }
 
-    const [password, setPassword] = useState('');
-    const [password2, setPassword2] = useState('');
-    const [password3, setPassword3] = useState('');
-
-    
-
-    //오류메시지 저장
-    const [passwordMessage, setPasswordMessage] = useState('');
-
-    //유효성 검사
-    const [isPassword, setIsPassword] = useState(false);
+    //전 비밀번호 
+    const passwordInput3 = (e) => {
+        e.preventDefault();
+        const regExp = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,25}$/
+        const password = e.target.value;
+        setPassword3(password);
+        if (!regExp.test(password)) {
+            passwordDisable3 = false;
+            changeDispaly('block')
+        } else {
+            passwordDisable3 = true;
+            changeDispaly('none')
+        }
+        idDisabled()
+    }
 
     //새 비밀번호
     const passwordInput = (e) => {
@@ -83,11 +109,11 @@ const MyPagePw = () =>{
         if (!regExp.test(password)) {
             setPasswordMessage('* 영문,숫자,특수문자 포함 8자 이상 입력해주세요.');
             setIsPassword(false);
-            passwordDisable = false
+            passwordDisable = false;
         } else {
             setPasswordMessage('');
             setIsPassword(true);
-            passwordDisable = true
+            passwordDisable = true;
         }
         idDisabled()
     }
@@ -97,36 +123,17 @@ const MyPagePw = () =>{
         e.preventDefault();
         const passwordC = e.target.value;
         setPassword2(passwordC);
-        console.log(password2 +"//////////////"+ password)
+        console.log(password2 +"새 비밀번호 확인 / 새 비밀번호"+ password)
 
-        if(password === password2){
-            passwordDisable2 = true
-            changeDispaly2('none')
+        if(password === e.target.value){
+            passwordDisable2 = true;
+            changeDispaly2('none');
         }else{
-            changeDispaly2('block')
+            changeDispaly2('block');
+            passwordDisable2 = false;
         }
         idDisabled()
     }
-
-    //전 비밀번호 
-    const passwordInput3 = (e) => {
-        e.preventDefault();
-        const regExp = /^(?=.*[a-zA-Z])(?=.*[!@#$%^*+=-])(?=.*[0-9]).{8,25}$/
-        const password = e.target.value;
-        setPassword3(password);
-        if (!regExp.test(password)) {
-            passwordDisable = false
-            changeDispaly('block')
-        } else {
-            passwordDisable = true
-            changeDispaly('none')
-        }
-        idDisabled()
-    }
-
-    const [ disabled, setDisabled ] = useState('disabled');
-    const [forDis, setForDis] = useState("none");
-    const [forDis2, setForDis2] = useState("none");
 
     const changeDispaly = (display) => {
         setForDis(display)
@@ -136,7 +143,8 @@ const MyPagePw = () =>{
     }
 
     const idDisabled = () => {
-        if(passwordDisable === true && passwordDisable2 === true) {
+        console.log(passwordDisable,passwordDisable2,passwordDisable3);
+        if(passwordDisable === true && passwordDisable2 === true && passwordDisable3===true) {
             setDisabled('');
         }else{
             setDisabled('disabled');

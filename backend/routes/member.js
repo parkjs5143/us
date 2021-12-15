@@ -389,6 +389,7 @@ const UpdatePassword = function (userPw, userPw2, idx, callback) {
                 if(bcrypt.compareSync(userPw, result1[0].userPw) == false){
                     console.log(bcrypt.compareSync(userPw, result1[0].userPw))
                     console.log('password 틀림')
+                    callback(null, false);
                     return;
                 } else {
                     console.log('패스워드 맞음');
@@ -411,7 +412,6 @@ const UpdatePassword = function (userPw, userPw2, idx, callback) {
         }
     })
 }
-
 
 
 // 정보 수정
@@ -460,15 +460,15 @@ const storage = multer.diskStorage({
 });
 const upload = multer({ storage: storage });
 router.route('/member/editMember').post(upload.single('img'), async (req, res) => {
-    const img = req.body.img;
-    const email = req.body.email;
-    const name = req.body.name;
-    const tel = req.body.tel;
-    const message = req.body.message;
-    const gender = req.body.gender;
+    const img = req.query.img;
+    const email = req.query.email;
+    const name = req.query.name;
+    const tel = req.query.tel;
+    const message = req.query.message;
+    const gender = req.query.gender;
 
     console.log(`img : ${img}, email:${email}, name:${name}, tel:${tel}, message:${message}, gender:${gender}`);
-    if(pool){
+    if(당구){
         editMember(img, name, tel, message, gender, email, (err, result)=>{
             if(err){
                 console.log(err)
@@ -485,7 +485,7 @@ const editMember = function (img, name, tel, message, gender, email, callback) {
         if (err) {
             console.log(err)
         } else {
-            conn.query('update member set img=?, name=?, tel=?, message=?, gender=? where idx=?', [img, name, tel, message, gender, email], (err, result) => {
+            conn.query('update member set img=?, name=?, tel=?, message=?, gender=? where email=?', [img, name, tel, message, gender, email], (err, result) => {
                 if (err) {
                     callback(err, null);
                     return;
@@ -496,7 +496,7 @@ const editMember = function (img, name, tel, message, gender, email, callback) {
 
         }
     })
-}   
+} 
 
 // 이미지 변경 
 // router.route('/upload').get((req, res) => {

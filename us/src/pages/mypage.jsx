@@ -74,10 +74,13 @@ const WithdrawWrap = styled.div`
 const Mypage = () =>{
     // 초기 프로필 세팅
     const [name , setName] = React.useState('')
+    const [changeName , setChangeName] = React.useState('')
     const [proImg, setProImg] = React.useState('')
     const [proEmail, setProEmail] = React.useState('')
     const [protell, setProTell] = React.useState('')
     const [proInfo, setProInfo] = React.useState('')
+    const [proInfo2, setProInfo2] = React.useState('')
+
     const [proCode, setProCode] = React.useState('')
     const [proGender, setProGender] = React.useState('')
     //memberIdx
@@ -97,9 +100,11 @@ const Mypage = () =>{
             .then(function (result) {
                 console.log(result.data[0]) 
                 setName(result.data[0].name)
-                setProInfo(result.data[0].message)
+                setChangeName(result.data[0].name)
                 setProImg(result.data[0].img)
                 setProEmail(result.data[0].email)
+                setProInfo(result.data[0].message)
+                setProInfo2(result.data[0].message)
                 setProTell(result.data[0].tel)
                 setProCode(result.data[0].code)
                 setProGender(result.data[0].gender)
@@ -109,7 +114,7 @@ const Mypage = () =>{
     
     // 이미지 변경 함수
     const changeImage = (e)=>{
-        setFileImage(""+e.target.files[0].name);
+        setFileImage("img/"+e.target.files[0].name);
         console.log(e.target.files[0]);
         document.querySelector('.profileImg img').src = URL.createObjectURL(e.target.files[0]);
     }
@@ -118,7 +123,7 @@ const Mypage = () =>{
     const nameInput = (e) => {
         e.preventDefault();
         const data = e.target.value;
-        setName(data)
+        setChangeName(data)
     }
     const infoInput = (e) => {
         e.preventDefault();
@@ -140,13 +145,19 @@ const Mypage = () =>{
     const send = async () => {
         console.log(fileImage)
         console.log(proEmail)
-        console.log(name)
+        console.log(changeName)
         console.log(protell)
-            console.log(proInfo)
+        console.log(proInfo)
         console.log(proGender)
 
-        let log = await axios.post('http://localhost:3001/member/editMember?img='+fileImage+"&email="+proEmail+"&name="+name+"&tel="+protell+"&message="+proInfo+"&gender="+proGender)
+        let log = await axios.post('http://localhost:3001/member/editMember?img='+fileImage+"&email="+proEmail+"&name="+changeName+"&tel="+protell+"&message="+proInfo+"&gender="+proGender)
         console.log(log)
+        if(log.data == false){
+            alert("수정실패")
+        }else{
+            alert("개인정보가 수정 되었습니다")
+            window.location.reload();
+        }
     }
 
     // 탈퇴진행
@@ -244,7 +255,7 @@ const Mypage = () =>{
                             <li className="profileItem">
                                 <div className="section1">소개</div>
                                 <div className="section2">
-                                    <textarea name="intro" id="intro" placeholder="소개" onChange={infoInput} placeholder={proInfo}/>
+                                    <textarea name="intro" id="intro" placeholder={proInfo2==null||proInfo2==''? "소개":proInfo2} onChange={infoInput}/>
                                 </div>
                             </li>
                             <li className="profileItem privacy">
@@ -263,7 +274,7 @@ const Mypage = () =>{
                             <li className="profileItem">
                                 <div className="section1">번호</div>
                                 <div className="section2">
-                                    <input type="text" name="hp" id="hp" placeholder={protell} onChange={telInput}/>
+                                    <input type="text" name="hp" id="hp" placeholder={'+82 '+protell} onChange={telInput}/>
                                 </div>
                             </li>
                             <li className="profileItem">
