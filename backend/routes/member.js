@@ -189,6 +189,7 @@ router.route('/getCookie').get((req, res)=>{
 // 로그아웃
 router.route('/member/logout').get((req, res) => {
     res.clearCookie("first");
+    res.clearCookie("three");
     req.session.destroy(function (err, result) {
         if (err) console.err('err : ', err);
         res.send(result);
@@ -468,7 +469,7 @@ router.route('/member/editMember').post(upload.single('img'), async (req, res) =
     const gender = req.query.gender;
 
     console.log(`img : ${img}, email:${email}, name:${name}, tel:${tel}, message:${message}, gender:${gender}`);
-    if(당구){
+    if(pool){
         editMember(img, name, tel, message, gender, email, (err, result)=>{
             if(err){
                 console.log(err)

@@ -43,7 +43,7 @@ const MemberDetailPage = () => {
                 <hr/>
                 <div className="memberFlexBox">
                     <div className="memberImgBox">
-                        <img src={detail.img !== null? detail.img : '/img/admin/noneImg.png'}/>
+                        <img src={detail.img !== null? '/'+detail.img : '/img/admin/noneImg.png'}/>
                     </div>
                     <div className="memberInfoText">
                         <p>회원번호 : {detail.idx}</p>
