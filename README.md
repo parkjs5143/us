@@ -36,14 +36,41 @@
 + 로그인/로그아웃 기능
 
 ### 구동 화면
-###### 메인 페이지(게시물)
+##### 로그인
+![loginpage](https://user-images.githubusercontent.com/75155418/146747126-be0c1e0a-a5ed-4161-8087-fad02c7b8370.png)
+
+##### 회원가입
+![joinpage](https://user-images.githubusercontent.com/75155418/146747714-ca0e9ebc-e456-4e9e-b9d6-ebda58627940.png)
+
+##### 메인(게시물)
 ![main](https://user-images.githubusercontent.com/75155418/145069016-ee490278-32c1-47e8-8f77-cdbf1229c6ec.png)
 
-###### 마이페이지
+##### 메인(채팅)
+![main_chat](https://user-images.githubusercontent.com/75155418/146749862-fa85f101-d265-4edf-93d7-3a68684bd034.gif)
+
+##### 메인(내위치/친구위치)
+![mainpage_map](https://user-images.githubusercontent.com/75155418/146751025-34bc2a93-6d10-41bc-aa95-9d8a58d4d3dc.gif)
+
+##### 친구추가(팝업)
+![friends](https://user-images.githubusercontent.com/75155418/146752451-9ea2a8d5-e184-4b55-889c-c44fa6a7f89c.gif)
+
+##### 마이페이지
 ![mypage](https://user-images.githubusercontent.com/75155418/145069673-abfc1f3f-bb50-44e9-9a22-01ae606635a3.png)
 
-###### 마이페이지(문의하기)
+##### 마이페이지(문의하기)
 ![mypageQnA](https://user-images.githubusercontent.com/75155418/145070591-a3fdabc1-f77e-46d6-b05e-538c3dfffcfe.png)
 
-###### 관리자 페이지
+##### 관리자
 ![admin](https://user-images.githubusercontent.com/75155418/145069519-1c291401-f7ed-43c8-9f0c-66e72e68be77.png)
+
+##### 관리자(회원)
+![admin_member](https://user-images.githubusercontent.com/75155418/146754218-9c9b7bea-a06a-4814-a76d-cea89f7ca6bb.gif)
+
+##### 관리자(게시물)
+![admin_post](https://user-images.githubusercontent.com/75155418/146757209-044e5e9a-ff4f-4920-a022-97869abf2e74.gif)
+
+##### 관리자(채팅)
+![admin_chat](https://user-images.githubusercontent.com/75155418/146757581-f4177159-1d3f-4f21-a8a8-984aa13d5ffe.gif)
+
+#### 관리자(문의)
+![admin_qna](https://user-images.githubusercontent.com/75155418/146758802-30ca64a7-a431-49c9-b4ae-5dcaa192aaf1.png)
