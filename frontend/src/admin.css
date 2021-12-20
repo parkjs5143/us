@@ -1,0 +1,12 @@
+
+/* 페이지네이션 css */
+.detail-link { text-decoration: none; }
+.fa-angle-left, .fa-angle-double-left, .fa-angle-right, .fa-angle-double-right { font-size: 2.1rem; }
+.pagination { padding: 1rem; }
+.pagination ul{ padding:0; justify-content: center; }
+
+/* 팝업 */
+.mw { position:fixed; top:0; left:0; width:100%; height:100%; z-index: 1000; }
+.mw .bg { position:fixed; top:0; left:0; width:100%; height:100%; background:#000; opacity:.5; filter:alpha(opacity=50); }
+.mw .fg { position:absolute; top:50%; left:50%; width: 50rem; height: 60rem;  transform: translate(-50%, -50%); background:#fff; border-radius: 30px; }
+.closeBtn{ position: absolute; cursor: pointer; font-size: 4rem; top: 1.5rem; right: 3rem; }
