@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import styled from "styled-components";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
@@ -114,7 +114,7 @@ const MainProfileWrap = styled.div`
     .post2_pop_box{position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); background:white;border:none; width: 60rem; height: 56rem; border-radius: 15px; padding: 1rem;}
     .wr_upload_txt{text-align:center; font-size: 2.3rem; margin:1rem 0; font-weight:600;}
     .txt_table{border:1px;}
-    .post_input_txt{width: 55rem; height: 33.5rem; border: 3px solid #a5a7c38a; margin-top:-0.5rem; resize:none; font-size:2rem;}
+    .post_input_txt{width: 55rem; height: 39.5rem; border: 3px solid #a5a7c38a; margin-top:-0.5rem; resize:none; font-size:2rem;}
     .post_input_txt_box{display:flex; justify-content:center; margin-top:3rem;}
     .post_txt_btn{border-radius: 5px; background-color: #14c1c7; color: white; border: none; height: 3.5rem; width:10rem; cursor: pointer;}
     .post_txt_btn_box{margin-top: 3.7rem; display: flex; justify-content: center;}
@@ -137,6 +137,7 @@ const MainProfile = (idx)=>{
     let [friendPage, setFPage] = useState(0);
     // 게시물 업로드 파일저장
     const [imgFile, setImgFile] = useState(null);
+    const contentInput = useRef();
 
     useEffect(async () => {
         const profile = await axios.get(`http://localhost:3001/main?idx=${idx.idx}`)
@@ -151,7 +152,7 @@ const MainProfile = (idx)=>{
             for(let i=0; i<profile.data[3].length; i++){friendFor[i]=profile.data[3][i]}; 
             setFriends(friendFor); 
         }
-    }, [idx]);
+    }, []);
 
 
     // 상단 친구목록 버튼
@@ -233,23 +234,25 @@ const MainProfile = (idx)=>{
 
     // 게시물 등록 버튼 클릭 (axios 제출)
     const WriteBoard = async()=> {
-        const content = document.getElementById('upload_textbox').innerHTML;
+        const content = contentInput.current.value;
         let formData = new FormData();
 
         for (const key of Object.keys(imgFile)) {
             formData.append('fileupload', imgFile[key]);
         }
         formData.append('memberIdx', idx.idx);
-        formData.append('content', '꺄르륵');
+        formData.append('content', content);
         formData.append('hashTag', '');
 
         return await axios.post(`http://localhost:3001/post/upload`, formData, {
             headers: {
                 "Content-Type": "multipart/form-data",
             }
+        }).then((res)=>{
+            alert('게시물이 등록되었습니다.');
+            window.location.href = '/main?idx=' + idx.idx;
         });
     }
-    
 
     const Post2 = () => {
         return(
@@ -263,7 +266,7 @@ const MainProfile = (idx)=>{
                     </div>
                     <div className="post2_pop_sec2">
                         <div className="post_input_txt_box">
-                            <textarea className="post_input_txt" id="upload_textbox" maxLength="5000"/>
+                            <textarea className="post_input_txt" id="upload_textbox" maxLength="5000" ref={contentInput}/>
                         </div>
                         <div className="post_txt_btn_box">
                             <button type="button" className="post_txt_btn" onClick={WriteBoard}>게시물 등록</button>
