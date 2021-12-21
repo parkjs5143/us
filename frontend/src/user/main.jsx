@@ -51,7 +51,7 @@ const MainPage = () =>{
                                                 <img className="social1_img" src={'/uploads/'+postData.imgName}/>
                                             </div>
                                             {postData.cnt>1 ?
-                                            <div className="slide_box"><i class="far fa-copy"></i></div> : <></>
+                                            <div className="slide_box"><i className="far fa-copy"></i></div> : <></>
                                             }
                                         </Link>
                                     </div>

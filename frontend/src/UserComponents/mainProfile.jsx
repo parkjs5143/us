@@ -135,6 +135,8 @@ const MainProfile = (idx)=>{
     let [friends, setFriends] = useState([])
     let friendFor = [];
     let [friendPage, setFPage] = useState(0);
+    // 게시물 업로드 파일저장
+    const [imgFile, setImgFile] = useState(null);
 
     useEffect(async () => {
         const profile = await axios.get(`http://localhost:3001/main?idx=${idx.idx}`)
@@ -184,7 +186,6 @@ const MainProfile = (idx)=>{
     }, [addOn]);
 
     //친구추가 팝업
-    
     const[addFriends, setAddF] = useState(null);
     
     const codeBtn = async() =>{
@@ -221,6 +222,7 @@ const MainProfile = (idx)=>{
     const[postTxtOn, setPostTxtOn] = React.useState(false);
     const onOpenPostTxt = () =>{
         setPostTxtOn(!postTxtOn);
+        console.log(imgFile);
          //팝업 창 띄울 시 body 스크롤
         if(postTxtOn==false){
             document.body.style.overflow = "hidden";
@@ -228,6 +230,26 @@ const MainProfile = (idx)=>{
             document.body.style.overflowY = "unset";
         }
     }
+
+    // 게시물 등록 버튼 클릭 (axios 제출)
+    const WriteBoard = async()=> {
+        const content = document.getElementById('upload_textbox').innerHTML;
+        let formData = new FormData();
+
+        for (const key of Object.keys(imgFile)) {
+            formData.append('fileupload', imgFile[key]);
+        }
+        formData.append('memberIdx', idx.idx);
+        formData.append('content', '꺄르륵');
+        formData.append('hashTag', '');
+
+        return await axios.post(`http://localhost:3001/post/upload`, formData, {
+            headers: {
+                "Content-Type": "multipart/form-data",
+            }
+        });
+    }
+    
 
     const Post2 = () => {
         return(
@@ -243,16 +265,8 @@ const MainProfile = (idx)=>{
                         <div className="post_input_txt_box">
                             <textarea className="post_input_txt" id="upload_textbox" maxLength="5000"/>
                         </div>
-                        <div className="hashtag_box">
-                            <input id="in_hashtag" type="text" placeholder="해시태그를 입력하세요." maxlength="10"/>
-                            <span className="hashtag_input_submit">등록</span>
-                            <div id="hashtag_list"></div>
-                        </div>
-                        <div className="hashtag_tip">해시태그는 4개까지만 입력이 가능합니다.</div>
                         <div className="post_txt_btn_box">
-                            <Link to="/uploadPage">
-                                <button type="button" className="post_txt_btn">게시물 등록</button>
-                            </Link>
+                            <button type="button" className="post_txt_btn" onClick={WriteBoard}>게시물 등록</button>
                         </div>
                     </div>
                 </div>
@@ -287,7 +301,7 @@ const MainProfile = (idx)=>{
                                             <div className="upload_txt">업로드 할 이미지를 선택하세요.</div>
                                         </div>
                                     </div>
-                                    <input type="file" id="files" multiple accept="image/png" onChange={handleFileSelect}/>
+                                    <input type="file" id="files" multiple accept="image/jpg,impge/png,image/jpeg,image/gif" onChange={handleFileSelect}/>
                                 </div>
                                 <div className="prev_upload_box">
                                     <div className="prev_upload"></div>
@@ -313,7 +327,7 @@ const MainProfile = (idx)=>{
                     <div className="add_friend_pop_sec1_box">
                         <img src="/img/person_add.png" style={{width: '3rem'}} alt="친구추가"/>
                         <input className="input_friend_code" type="text" id="codeInput"/>
-                        <button type="button" class="select_friend_btn" onClick={codeBtn}>검색</button>
+                        <button type="button" className="select_friend_btn" onClick={codeBtn}>검색</button>
                     </div>
                     <div className="add_friend_pop_sec2">
                         {addFriends!==null?
@@ -509,6 +523,7 @@ const MainProfile = (idx)=>{
 
     //이미지 업로드 js 
     function handleFileSelect(evt) {
+        setImgFile(evt.target.files);
         let fileSize = document.querySelectorAll(".prev_img");
         var files = evt.target.files;
         if(fileSize.length + files.length < 7){

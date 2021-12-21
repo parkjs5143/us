@@ -14,10 +14,10 @@ const storage = multer.diskStorage({
     destination: function (req, file, cb) {
         // 이미지 파일
         if (file.mimetype == "image/jpeg" || file.mimetype == "image/jpg" || file.mimetype == "image/png") {
-            cb(null, 'uploads')
+            cb(null, 'C:/project/us/frontend/public/uploads')
             //텍스트 파일
         } else if (file.mimetype == "application/pdf" || file.mimetype == "application/txt" || file.mimetype == "application/octet-stream") {
-            cb(null, 'uploads')
+            cb(null, 'C:/project/us/frontend/public/uploads')
         }
     },
     // 파일이름 설정
