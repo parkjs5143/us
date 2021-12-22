@@ -1,11 +1,10 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import Header from "../UserComponents/header";
 import styled from "styled-components";
-import { Link } from "react-router-dom";
-
+import { Link, useParams } from "react-router-dom";
+import axios from "axios";
 
 const UploadForm = styled.div`
-
     @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap');
     .upload_container{max-width: 100rem; border: 2px solid #a5a7c38a; height: 82rem; margin: 1rem auto;}
     .upload_header_box{display:flex; margin:2rem; position:relative; padding: 0 1rem; width:54rem;}
@@ -14,38 +13,38 @@ const UploadForm = styled.div`
     .upload_profile_id{font-size: 2.4rem; margin-left:1rem;}
     .upload_option_box{position:absolute; top: 1.8rem; right: 0.6rem;}
     .upload_option_img{cursor:pointer; width:3rem;}
-    .images_list{margin: 2rem auto; width: 53rem; height: 39rem; overflow:hidden; display:flex;}
+    .images_list{margin: 2rem auto; width: 53rem; overflow:hidden; display:flex; position: relative;}
     .upload_mini_header{display:flex; margin:0 0 0 4rem; position:relative;}
-    .mini_header_logo{width: 4rem; height: 3rem;}
+    .mini_header_logo{width: 4rem;}
     .cats_img{width: 13rem; height: 3.7rem; position: absolute; top: 0.3rem; right: 4rem;}
-    .wr_post_container{display: flex; margin:1rem auto; width:51rem; height: 13rem; border: 2px solid #00000045; font-size: 1.7rem; padding: 1rem; border-radius: 6px;}
+    .wr_post_container{display: flex; margin:1rem auto; width:51rem; height: 7rem; border: 2px solid #00000045; font-size: 1.7rem; padding: 1rem; border-radius: 6px;}
     .return_main_btn{border-radius: 5px; background-color: #14c1c7; color: white; border: none; height: 4.5rem; cursor: pointer; width:15rem; font-size:1.7rem; box-shadow:3px 3px 3px #9b9b9b9e;}
-    .return_main_btn_container{display: flex; justify-content: center; margin-top: 3.5rem;}
+    .return_main_btn_container{display: flex; justify-content: center; padding: 7rem;}
     .option_btn{border:none; background:none;}
     .option_pop_container{position:relative;}
     .option_pop_box{position:absolute; top: -3px; right: -82px;}
     .wr_post_area{padding-left:2rem; padding-top:0.7rem;}
     .wr_post_writer{font-weight:bold; padding-left:1rem; padding-top:0.5rem;}
-    .up_replay_box{margin-top: 9rem; width: 38rem; height: 61rem; border: 2px solid #00000045; border-radius: 5px;}
+    .up_replay_box{margin-top: 9rem; width: 38rem; height: 87%; border: 2px solid #00000045; border-radius: 5px; position:relative;}
     .left_right_container{display:flex;}
     .upload_time{font-size:1.5rem; margin-left:1rem; color:#555;}
     .reply_header{display:flex; position:relative;}
     .reply_img{width:3.5rem; height:3rem;}
     .reply_img_box{position:absolute; top:4.5rem; left:6.6rem;}
     .reply_title{position:absolute; top:1.3rem; left:0.7rem; font-size:2.8rem;}
-    .up_img{width:53rem; height:39rem;}
+    .up_img{width:53rem;}
     .img_pagnation{position: relative; display:flex;}
-    .prev_box{position:absolute; top:-25.7rem; left:2.5rem;}
-    .next_box{position:absolute; top:-25.7rem; right:2.5rem;}
+    .prev_box{position:absolute; top:45%; left:0;}
+    .next_box{position:absolute; top:45%; right:0;}
     .reply1_box{display:flex; margin: 2rem 1rem 1rem 1rem;}
     .re_profile_img{width: 3rem; height: 3rem; border-radius: 50%; border: 2px solid #00000054;}
-    .re_reply{font-size: 1.4rem; margin:0.5rem; white-space: nowrap; text-overflow: ellipsis; overflow: hidden; width:9.7rem;}
+    .re_reply{font-size: 1.4rem; margin:0.5rem; }
     .re_time{font-size: 0.7rem; margin-left:1.5rem; color: gray;}
     .reply2_box{display:flex; margin: 1rem 1rem 1rem 6.5rem;}
     .reply3_box{display:flex; margin: 1rem 1rem 1rem 12rem;}
     .input_reply_box{display:flex;}
-    .re_btn{background-color:#f8fafc; color:#14c1c7; border:none; height:3.9rem; width:4.4rem; font-weight:600;font-size:1.5rem; line-height: 4.7rem;}
-    .input_reply_container{margin-top: 32rem; height: 4rem;}
+    .re_btn{background:none; color:#14c1c7; border:none; height:3.9rem; width:4.4rem; font-weight:600;font-size:1.5rem; line-height: 4.7rem; cursor:pointer;}
+    .input_reply_container{margin-top: 32rem; height: 4rem; position: absolute; bottom:1rem;}
     .like_img{width:2rem; height:2rem;}
     .like_box{display:flex; margin-left: auto;}
     .in_input{outline: none; width:30rem; height:2.5rem; border: 1px solid #808080b0; resize:none; border-radius:15px; line-height: 2.5rem; font-size: 1.3rem; padding: 0.5rem 1rem; font-family: 'Nanum Gothic', sans-serif;}
@@ -55,16 +54,13 @@ const UploadForm = styled.div`
     .like_delete_box{display:flex;}
     .re_delete_box{display:flex;}
     .re_delete_btn{padding:0;}
-    .re_delete{font-size: 0.5rem;
-        color: gray; line-height: 0rem; margin: 0; font-weight:600;}
+    .re_delete{font-size: 0.5rem; color: gray; line-height: 0rem; margin: 0; font-weight:600;}
     .in_input_box{margin:0.5rem;}
-    .like_btn{background:none; border:none;}
+    .like_btn{background:none; border:none; }
     .re_id_box{display:flex;}
     .re_id_div{margin:1rem 0 0 0.5rem;}
     .re_id_span{font-size: 1.5rem; font-weight: 600; line-height: 1rem;}
-
 `;
-
 
 const EditPopWrap = styled.div`
 @import url('https://fonts.googleapis.com/css2?family=Courgette&family=Noto+Sans+KR:wght@300&display=swap');
@@ -158,17 +154,93 @@ const PostEditDelete = styled.div`
     .option_pop_box{position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); background:white;border:none; width: 15rem; height: 15rem; border-radius: 15px; padding: 1rem;}
     .edit_delete_close_btn{background:none; border:none;}
     .edit_delete_close{display: flex; justify-content: right;}
-    .btn_container{display:flex; position: relative;
-    }
+    .btn_container{display:flex; position: relative;}
     .edit_btn{width:7rem;height: 3.5rem; background: black;border-radius: 5px;border: 1px solid black;font-size: 1.5rem;font-weight:600; color: white;}
     .delete_btn{width:7rem;height: 3.5rem;background: black;border-radius: 5px;border: 1px solid black;font-size: 1.5rem;font-weight:600; color: white;}
     .edit_btn_box{position:absolute; top: 2.7rem; left: 0.1rem;}
     .delete_btn_box{position:absolute; top: 2.7rem;right: 0.1rem;}
-
 `
+let img = 0;
 
+// 몇일전, 분, 시간, 일, 년 까지 구하는 함수
+function timeForToday(value) {
+    const today = new Date();
+    const timeValue = new Date(value);
+
+    const betweenTime = Math.floor((today.getTime() - timeValue.getTime()) / 1000 / 60);
+    if (betweenTime < 1) return '방금전';
+    if (betweenTime < 60) {
+        return `${betweenTime}분전`;
+    }
+
+    const betweenTimeHour = Math.floor(betweenTime / 60);
+    if (betweenTimeHour < 24) {
+        return `${betweenTimeHour}시간전`;
+    }
+
+    const betweenTimeDay = Math.floor(betweenTime / 60 / 24);
+    if (betweenTimeDay < 31) {
+        return `${betweenTimeDay}일전`;
+    }
+
+    const betweenTimeMonth = Math.floor(betweenTime / 60 / 24 / 30);
+    if (betweenTimeDay < 365){
+        return `${betweenTimeMonth}달 전`;
+    }
+
+    return `${Math.floor(betweenTimeDay / 365)}년전`;
+}
 
 const UploadPage = () => {
+    const param = window.location.search.split('=')[1]  // memberIdx
+
+    const {idx} = useParams();  // postIdx
+    const [memEmail, setMemEmail] = useState('');
+    const [memImg, setMemImg] = useState('');
+    const [postContent, setPostContent] = useState('');
+    const [postTime, setPostTime] = useState('');
+    const [postImgArr, setPostImgArr] = useState([]);
+    const [replyArr, setReplyArr] = useState([]);
+
+    let [detailImg, setDetailImg] = useState(0) // scrollImg-useEffect 재실행을 위한 값 변경 저장
+    let [scrollImg, setScrollImg ] = useState(''); // imgName 저장
+    
+    useEffect(async () => {
+        const list = await axios.get("http://localhost:3001/post/detail?postIdx="+idx);
+        console.log(list);
+
+        setMemEmail(list.data[0][0].email.split('@')[0]);
+        setMemImg(list.data[0][0].img);
+        setPostContent(list.data[0][0].content);
+        setPostTime(timeForToday(list.data[0][0].createdAt));
+        setPostImgArr(list.data[1]);
+        setReplyArr(list.data[2]);
+
+        // scrollImg-useEffect 재실행을 위해 detailImg 값 변경
+        if(detailImg===0){
+            setDetailImg(1)
+        }else{
+            setDetailImg(0)
+        }
+    }, []);
+
+    console.log(`${memEmail}  ${memImg}  ${postContent}  ${postTime}  ${postImgArr.length}  ${replyArr}`)
+    
+    useEffect(async () => { // scrollImg-useEffect
+        if(postImgArr.length!==0){
+            setScrollImg(postImgArr[0].imgName)
+        }
+    }, [detailImg]);
+
+    // 이미지 버튼
+    const next = () => {
+        img = postImgArr.length-1 === img ? img : img+1;
+        setScrollImg(postImgArr[img].imgName)
+    }
+    const prev = () => {
+        img = img === 0 ? 0 : img-1;
+        setScrollImg(postImgArr[img].imgName)
+    }
 
     //게시물 수정/삭제 팝업열기
     const[PostOptionOn, setPostOptionOn] = React.useState(false);
@@ -179,9 +251,7 @@ const UploadPage = () => {
         } else {
             document.body.style.overflowY = "hidden";
         }
-        
     }
-
 
     // 게시물 수정 팝업열기
     const[postEditOn, setPostEditOn] = React.useState(false);
@@ -310,11 +380,10 @@ const UploadPage = () => {
         window.location.reload();
     }
 
-
     // 전체 DOM
     return (
         <>
-        <Header/>
+        <Header idx={param}/>
         <UploadForm>
             {postEditOn ? <EditPop/> : ""}
             {PostDelOn ? <DelPop/> : ""}
@@ -324,14 +393,14 @@ const UploadPage = () => {
                         <div className="upload_header_box">
                             <div className="upload_profile_box">
                                 <div className="upload_profile">
-                                    <img className="upload_profile_img" src="/img/profile_img.png" alt="게시물 프로필"/>
+                                    <img className="upload_profile_img" src={'/'+memImg} alt="게시물 프로필"/>
                                 </div>
                                 <div className="up_pro_time_container">
                                     <div className="upload_profile_id">
-                                        <span>sh239_tt</span>
+                                        <span>{memEmail}</span>
                                     </div>
                                     <div className="upload_time">
-                                        <span>2시간전</span>
+                                        <span>{postTime}</span>
                                     </div>
                                 </div>
                             </div>
@@ -344,17 +413,16 @@ const UploadPage = () => {
                         </div>
                         <div className="post_images_box">
                             <div className="images_list">
-                                <img className="up_img" src="/img/puppy.jpg" alt="게시물 사진"/>
-                                <img className="up_img" src="/img/puppy.jpg" alt="게시물 사진"/>
-                                <img className="up_img" src="/img/puppy.jpg" alt="게시물 사진"/>
-                            </div>
-                            <div className="img_pagnation">
+                                <img className="up_img" src={"/uploads/"+scrollImg} alt="게시물 사진"/>
                                 <div className="prev_box">
-                                    <img className="prev_arr" src="/img/arr-left-circle.svg" alt="이전"/>
+                                    <img className="prev_arr" style={img===0?{opacity: '0'}:{opacity: '1'}} onClick={prev} src="/img/arr-left-circle.svg" alt="이전"/>
                                 </div>
                                 <div className="next_box">
-                                    <img className="prev_arr" src="/img/arr-right-circle.svg" alt="다음"/>
+                                    <img className="prev_arr" style={img===postImgArr.length-1?{opacity: '0'}:{opacity: '1'}} onClick={next}src="/img/arr-right-circle.svg" alt="다음"/>
                                 </div>
+                            </div>
+                            <div className="img_pagnation">
+                                
                             </div>
                         </div>
                         <div className="upload_mini_header">
@@ -365,8 +433,8 @@ const UploadPage = () => {
                             </div>
                         </div>
                         <div className="wr_post_container">
-                            <div className="wr_post_writer">sh239_tt</div>
-                            <div className="wr_post_area">헤이 모두들 안녕?? 내가 누군지 아뉘??</div>
+                            <div className="wr_post_writer">{memEmail}</div>
+                            <div className="wr_post_area">{postContent}</div>
                         </div>
                     </div>
                     <div className="upload_right_box">
@@ -380,139 +448,139 @@ const UploadPage = () => {
                         </div>
                         <div className="up_replay_box">
                             <div className="up_reply_minibox">
-                                <div className="reply1_box">
-                                    <div className="re_profile">
-                                        <img className="re_profile_img" src="/img/profile_img.png" alt="댓글 프로필"/>
-                                    </div>
-                                    <div className="re_reply_box">
-                                        <div className="re_id_box">
-                                            <div className="re_id_div">
-                                                <span className="re_id_span">shdd_0594</span>
-                                            </div>
-                                            <div className="re_reply">
-                                                <span className="reply">아니 안녕 못해!!ㅎㅎㅎㅎㅎㅎㅎㅎㅎㅎhhh</span>
-                                            </div>
-                                        </div>
-                                        <div className="re_time_reply_box">
-                                            <div className="re_time">
-                                                <span>30분 전</span>
-                                            </div>
-                                            <div>
-                                                <button type="button" className="reply_btn">댓글달기</button>
-                                            </div>
-                                            <div className="re_delete_box">
-                                                <button className="re_delete_btn" type="button">
-                                                    <p className="re_delete">삭제</p>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="like_box">
-                                        <button type="button" className="like_btn"><img className="like_img" src="/img/smile.png" alt="좋아요"/></button>
-                                    </div>
-                                </div>
-                                <div className="reply1_box">
-                                    <div className="re_profile">
-                                        <img className="re_profile_img" src="/img/profile_img.png" alt="댓글 프로필"/>
-                                    </div>
-                                    <div className="re_reply_box">
-                                        <div className="re_id_box">
-                                            <div className="re_id_div">
-                                                <span className="re_id_span">shdd_0594</span>
-                                            </div>
-                                            <div className="re_reply">
-                                                <span className="reply">💛💚💙💛🧡❤💜🤎🖤</span>
-                                            </div>
-                                        </div>
-                                        <div className="re_time_reply_box">
-                                            <div className="re_time">
-                                                <span>30분 전</span>
-                                            </div>
-                                            <div>
-                                                <button type="button" className="reply_btn">댓글달기</button>
-                                            </div>
-                                            <div className="re_delete_box">
-                                                <button className="re_delete_btn" type="button">
-                                                    <p className="re_delete">삭제</p>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="like_box">
-                                        <button type="button" className="like_btn"><img className="like_img" src="/img/smile.png" alt="좋아요"/></button>
-                                    </div>
-                                </div>
-                                <div className="reply2_box">
-                                    <div className="re_profile">
-                                        <img className="re_profile_img" src="/img/profile_img.png" alt="댓글 프로필"/>
-                                    </div>
-                                    <div className="re_reply_box">
-                                        <div className="re_id_box">
-                                            <div className="re_id_div">
-                                                <span className="re_id_span">shdd_0594</span>
-                                            </div>
-                                            <div className="re_reply">
-                                                <span className="reply">바다 가고싶다...😥😣</span>
-                                            </div>
-                                        </div>
-                                        <div className="re_time_reply_box">
-                                            <div className="re_time">
-                                                <span>30분 전</span>
-                                            </div>
-                                            <div>
-                                                <button type="button" className="reply_btn">댓글달기</button>
-                                            </div>
-                                            <div className="re_delete_box">
-                                                <button className="re_delete_btn" type="button">
-                                                    <p className="re_delete">삭제</p>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    <div className="like_box">
-                                        <button type="button" className="like_btn"><img className="like_img" src="/img/smile.png" alt="좋아요"/></button>
-                                    </div>
-                                </div>
-                                <div className="reply3_box">
-                                    <div className="re_profile">
-                                        <img className="re_profile_img" src="/img/profile_img.png" alt="댓글 프로필"/>
-                                    </div>
-                                    <div className="re_reply_box">
-                                        <div className="re_id_box">
-                                            <div className="re_id_div">
-                                                <span className="re_id_span">shdd_0594</span>
-                                            </div>
-                                            <div className="re_reply">
-                                                <span className="reply">에이 요!!</span>
-                                            </div>
-                                        </div>
-                                        <div className="re_time_reply_box">
-                                            <div className="re_time">
-                                                <span>30분 전</span>
-                                            </div>
-                                            <div>
-                                                <button type="button" className="reply_btn">댓글달기</button>
-                                            </div>
-                                            <div className="re_delete_box">
-                                                <button className="re_delete_btn" type="button">
-                                                    <p className="re_delete">삭제</p>
-                                                </button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                    
-                                    <div className="like_box">
-                                        <button type="button" className="like_btn">
-                                            <img className="like_img" src="/img/smile.png" alt="좋아요"/>
-                                        </button>
-                                    </div>
-                                </div>
+                                {/* 댓글시작 */}
+                                {
+                                    replyArr.length !== 0 ?
+                                        replyArr.map((data) => {
+                                            // const isLike = await axios.get(`http://localhost:3001/reply/like/exist?replyIdx=&memberIdx=${param}`)
+                                            if(data.depth===0){
+                                                return (
+                                                    <div className="reply1_box">
+                                                        <div className="re_profile">
+                                                            <img className="re_profile_img" src={"/"+data.img} alt="댓글 프로필"/>
+                                                        </div>
+                                                        <div className="re_reply_box">
+                                                            <div className="re_id_box">
+                                                                <div className="re_id_div">
+                                                                    <span className="re_id_span">{data.email.split('@')[0]}</span>
+                                                                </div>
+                                                                <div className="re_reply">
+                                                                    <span className="reply">{data.content}</span>
+                                                                </div>
+                                                            </div>
+                                                            <div className="re_time_reply_box">
+                                                                <div className="re_time">
+                                                                    <span>{timeForToday(data.createdAt)}</span>
+                                                                </div>
+                                                                <div>
+                                                                    <button type="button" className="reply_btn">댓글달기</button>
+                                                                </div>
+                                                                {
+                                                                    param == data.memberIdx ? 
+                                                                    <div className="re_delete_box">
+                                                                        <button className="re_delete_btn" type="button">
+                                                                            <p className="re_delete">삭제</p>
+                                                                        </button>
+                                                                    </div>
+                                                                    :
+                                                                    ""
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                        <div className="like_box">
+                                                            <button type="button" className="like_btn"><img className="like_img" src="/img/smile.png" alt="좋아요"/></button>
+                                                        </div>
+                                                    </div>
+                                                )
+                                            } else if(data.depth===1) {
+                                                return (
+                                                    <div className="reply2_box">
+                                                        <div className="re_profile">
+                                                            <img className="re_profile_img" src={"/"+data.img} alt="댓글 프로필"/>
+                                                        </div>
+                                                        <div className="re_reply_box">
+                                                            <div className="re_id_box">
+                                                                <div className="re_id_div">
+                                                                    <span className="re_id_span">{data.email.split('@')[0]}</span>
+                                                                </div>
+                                                                <div className="re_reply">
+                                                                    <span className="reply">{data.content}</span>
+                                                                </div>
+                                                            </div>
+                                                            <div className="re_time_reply_box">
+                                                                <div className="re_time">
+                                                                    <span>{timeForToday(data.createdAt)}</span>
+                                                                </div>
+                                                                <div>
+                                                                    <button type="button" className="reply_btn">댓글달기</button>
+                                                                </div>
+                                                                {
+                                                                    param == data.memberIdx ? 
+                                                                    <div className="re_delete_box">
+                                                                        <button className="re_delete_btn" type="button">
+                                                                            <p className="re_delete">삭제</p>
+                                                                        </button>
+                                                                    </div>
+                                                                    : ""
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                        <div className="like_box">
+                                                            <button type="button" className="like_btn"><img className="like_img" src="/img/smile.png" alt="좋아요"/></button>
+                                                        </div>
+                                                    </div>
+                                                )
+                                            } else {
+                                                return (
+                                                    <div className="reply3_box">
+                                                        <div className="re_profile">
+                                                            <img className="re_profile_img" src={"/"+data.img} alt="댓글 프로필"/>
+                                                        </div>
+                                                        <div className="re_reply_box">
+                                                            <div className="re_id_box">
+                                                                <div className="re_id_div">
+                                                                    <span className="re_id_span">{data.email.split('@')[0]}</span>
+                                                                </div>
+                                                                <div className="re_reply">
+                                                                    <span className="reply">{data.content}</span>
+                                                                </div>
+                                                            </div>
+                                                            <div className="re_time_reply_box">
+                                                                <div className="re_time">
+                                                                    <span>{timeForToday(data.createdAt)}</span>
+                                                                </div>
+                                                                <div>
+                                                                    <button type="button" className="reply_btn">댓글달기</button>
+                                                                </div>
+                                                                {
+                                                                    param == data.memberIdx ? 
+                                                                    <div className="re_delete_box">
+                                                                        <button className="re_delete_btn" type="button">
+                                                                            <p className="re_delete">삭제</p>
+                                                                        </button>
+                                                                    </div>
+                                                                    :
+                                                                    ""
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                        <div className="like_box">
+                                                            <button type="button" className="like_btn"><img className="like_img" src="/img/smile.png" alt="좋아요"/></button>
+                                                        </div>
+                                                    </div>
+                                                )
+                                            }
+                                        })
+                                    :
+                                    <div>등록된 댓글이 없습니다. 댓글을 등록해보세요.</div>
+                                }
+                                {/* 댓글끝 */}
                             </div>
                             <div className="input_reply_container">
                                 <form>
                                     <div className="input_reply_box">
                                         <div className="in_input_box">
-                                            <textarea className="in_input" value="댓글 달기.."/>
+                                            <textarea className="in_input" placeholder="댓글 달기.."/>
                                         </div>
                                         <div className="re_btn_box">
                                             <button type="submit" className="re_btn">게시</button>
@@ -532,7 +600,6 @@ const UploadPage = () => {
         </UploadForm>
         </>
     );
-
 
     //이미지 업로드 js 
     function handleFileSelect(evt) {

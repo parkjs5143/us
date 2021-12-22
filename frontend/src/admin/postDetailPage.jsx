@@ -36,7 +36,6 @@ const Form = styled.div` background-color: rgb(248, 250, 252); height: 100%; pos
 let img = 0;
 
 const PostDetailPage = () => {
-
     const id = useParams();  // 넘겨받은 id값
 
     const [detail, setDetail] = useState({postInfo:[0], postImg:[0], postReply:[0]});

@@ -34,7 +34,7 @@ import MypagePw from './user/mypagePw';
 import MypageLogin from './user/mypageLogin';
 import MypageQnA from './user/mypageQnA';
 
-import UploadPage from './user/uploadPage';
+import DetailPage from './user/detailPage';
 
 function App() {
   return (
@@ -72,7 +72,7 @@ function App() {
         <Route path={"/mypageLogin"} element={<MypageLogin/>}/>
         <Route path={"/mypageQnA"} element={<MypageQnA/>}/>
         
-        <Route path={"/uploadpage"} element={<UploadPage/>}/>
+        <Route path={"/detail/:idx"} element={<DetailPage/>}/>
       </Routes>
     </Router>
     </>

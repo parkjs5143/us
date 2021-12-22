@@ -46,7 +46,7 @@ const MainPage = () =>{
                             {post.length!==0 ? 
                                 post.map((postData, index)=>(
                                     <div className={(index+1)%3===0?'last_box':'box'}>
-                                        <Link to={"/uploadPage/"+postData.postIdx}>
+                                        <Link to={"/detail/"+postData.postIdx+"?idx="+param}>
                                             <div className="social1">
                                                 <img className="social1_img" src={'/uploads/'+postData.imgName}/>
                                             </div>
