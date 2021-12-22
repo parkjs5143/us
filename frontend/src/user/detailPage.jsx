@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Header from "../UserComponents/header";
+import ReplyLike from "../UserComponents/replyLike";
 import styled from "styled-components";
 import { Link, useParams } from "react-router-dom";
 import axios from "axios";
@@ -45,8 +46,7 @@ const UploadForm = styled.div`
     .input_reply_box{display:flex;}
     .re_btn{background:none; color:#14c1c7; border:none; height:3.9rem; width:4.4rem; font-weight:600;font-size:1.5rem; line-height: 4.7rem; cursor:pointer;}
     .input_reply_container{margin-top: 32rem; height: 4rem; position: absolute; bottom:1rem;}
-    .like_img{width:2rem; height:2rem;}
-    .like_box{display:flex; margin-left: auto;}
+    .like_img{width:2rem; height:2rem; cursor:pointer;}
     .in_input{outline: none; width:30rem; height:2.5rem; border: 1px solid #808080b0; resize:none; border-radius:15px; line-height: 2.5rem; font-size: 1.3rem; padding: 0.5rem 1rem; font-family: 'Nanum Gothic', sans-serif;}
     .re_time_reply_box{display:flex;}
     .reply_btn{border:none; background:none; color:gray; font-size:0.5rem; cursor:pointer; margin:0; line-height:0.1rem; font-weight:600;}
@@ -56,7 +56,8 @@ const UploadForm = styled.div`
     .re_delete_btn{padding:0;}
     .re_delete{font-size: 0.5rem; color: gray; line-height: 0rem; margin: 0; font-weight:600;}
     .in_input_box{margin:0.5rem;}
-    .like_btn{background:none; border:none; }
+    .like_box{display:flex; margin-left: auto;}
+    .like_btn{ background:none; border:none; }
     .re_id_box{display:flex;}
     .re_id_div{margin:1rem 0 0 0.5rem;}
     .re_id_span{font-size: 1.5rem; font-weight: 600; line-height: 1rem;}
@@ -452,7 +453,6 @@ const UploadPage = () => {
                                 {
                                     replyArr.length !== 0 ?
                                         replyArr.map((data) => {
-                                            // const isLike = await axios.get(`http://localhost:3001/reply/like/exist?replyIdx=&memberIdx=${param}`)
                                             if(data.depth===0){
                                                 return (
                                                     <div className="reply1_box">
@@ -487,9 +487,7 @@ const UploadPage = () => {
                                                                 }
                                                             </div>
                                                         </div>
-                                                        <div className="like_box">
-                                                            <button type="button" className="like_btn"><img className="like_img" src="/img/smile.png" alt="좋아요"/></button>
-                                                        </div>
+                                                        <ReplyLike className="like_box" replyIdx={data.idx} memberIdx={param}/>
                                                     </div>
                                                 )
                                             } else if(data.depth===1) {
@@ -525,9 +523,7 @@ const UploadPage = () => {
                                                                 }
                                                             </div>
                                                         </div>
-                                                        <div className="like_box">
-                                                            <button type="button" className="like_btn"><img className="like_img" src="/img/smile.png" alt="좋아요"/></button>
-                                                        </div>
+                                                        <ReplyLike className="like_box" replyIdx={data.idx} memberIdx={param}/>
                                                     </div>
                                                 )
                                             } else {
@@ -564,9 +560,7 @@ const UploadPage = () => {
                                                                 }
                                                             </div>
                                                         </div>
-                                                        <div className="like_box">
-                                                            <button type="button" className="like_btn"><img className="like_img" src="/img/smile.png" alt="좋아요"/></button>
-                                                        </div>
+                                                        <ReplyLike className="like_box" replyIdx={data.idx} memberIdx={param}/>
                                                     </div>
                                                 )
                                             }
