@@ -207,8 +207,8 @@ const UploadPage = () => {
     let [scrollImg, setScrollImg ] = useState(''); // imgName 저장
 
     // 대댓글 댓글idx, 그룹idx
-    const [reReIdx, setReRe] = useState('');
-    const [reReGroupIdx, setReReFroupIdx] = useState('');
+    const [reReIdx, setReRe] = useState(null);
+    const [reReGroupIdx, setReReFroupIdx] = useState(null);
 
     // 댓글 입력 textarea 선택
     const replyValue = useRef();
@@ -308,8 +308,18 @@ const UploadPage = () => {
     // 댓글 등록 실행
     const submitReply = async () =>{
         const content = replyValue.current.value;
-        await axios.post(`http://localhost:3001/reply/insert_reply?idx=${reReIdx}&groupIdx=${reReGroupIdx}&postIdx=${idx}&content=${content}&memberIdx=${param}&parentIdx=${reReIdx}`)
-        .then(function (response) {
+        await axios({
+            method: "post",
+            url:`http://localhost:3001/reply/insert_reply`,
+            data: {
+                idx: reReIdx,
+                groupIdx: reReGroupIdx,
+                postIdx: idx,
+                content: content,
+                memberIdx: param,
+                parentIdx: reReIdx
+            }
+        }).then(function (response) {
             console.log(response);
             alert('등록되었습니다.');
             window.location.reload();
