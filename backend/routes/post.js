@@ -118,7 +118,7 @@ router.route('/post/edit').put(upload.array('fileupload', 10), (req, res) => {
 })
 
 // 게시글 삭제
-router.route('/post/delete').delete((req, res) => {
+router.route('/post/delete').get((req, res) => {
     const idx = req.query.idx;
 
     if (pool) {

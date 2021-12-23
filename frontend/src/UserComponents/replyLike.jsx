@@ -11,26 +11,23 @@ const ReplyLike = ({replyIdx, memberIdx})=>{
     }, [isLike]);
 
     const handleClick = async ()=>{
-        axios.get(`http://localhost:3001/reply/like/exist?replyIdx=${replyIdx}&memberIdx=${memberIdx}`).then((res)=>{
-            console.log(res);
-            if(isLike==0){
-            } else {
-    
-            }
+        axios.get(`http://localhost:3001/reply/like?replyIdx=${replyIdx}&memberIdx=${memberIdx}`).then((res)=>{
+            console.log(res.data);
+            res.data ? setIsLike('1') : setIsLike('0');
         });
     }
 
     return(
-        isLike===0 ? 
+        isLike===1 ? 
             <div className="like_box">
                 <button type="button" className="like_btn">
-                    <img className="like_img" src="/img/smile.png" alt="좋아요비활성화" onClick={handleClick}/>
+                    <img className="like_img" src="/img/heart.png" alt="좋아요비활성화" onClick={handleClick}/>
                 </button>
             </div>
         :
         <div className="like_box">
             <button type="button" className="like_btn">
-                <img className="like_img" src="/img/heart.png" alt="좋아요활성화" onClick={handleClick}/>
+                <img className="like_img" src="/img/smile.png" alt="좋아요활성화" onClick={handleClick}/>
             </button>
         </div>
     )

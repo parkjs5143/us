@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Header from "../UserComponents/header";
 import ReplyLike from "../UserComponents/replyLike";
 import styled from "styled-components";
@@ -205,6 +205,13 @@ const UploadPage = () => {
 
     let [detailImg, setDetailImg] = useState(0) // scrollImg-useEffect 재실행을 위한 값 변경 저장
     let [scrollImg, setScrollImg ] = useState(''); // imgName 저장
+
+    // 대댓글 댓글idx, 그룹idx
+    const [reReIdx, setReRe] = useState('');
+    const [reReGroupIdx, setReReFroupIdx] = useState('');
+
+    // 댓글 입력 textarea 선택
+    const replyValue = useRef();
     
     useEffect(async () => {
         const list = await axios.get("http://localhost:3001/post/detail?postIdx="+idx);
@@ -225,15 +232,13 @@ const UploadPage = () => {
         }
     }, []);
 
-    console.log(`${memEmail}  ${memImg}  ${postContent}  ${postTime}  ${postImgArr.length}  ${replyArr}`)
-    
     useEffect(async () => { // scrollImg-useEffect
         if(postImgArr.length!==0){
             setScrollImg(postImgArr[0].imgName)
         }
     }, [detailImg]);
 
-    // 이미지 버튼
+    // 이미지 swipe 버튼
     const next = () => {
         img = postImgArr.length-1 === img ? img : img+1;
         setScrollImg(postImgArr[img].imgName)
@@ -276,6 +281,61 @@ const UploadPage = () => {
         } else {
             document.body.style.overflowY = "hidden";
         }
+    }
+
+    // 게시물 수정 실행
+    function editSubmit () {
+        alert('수정되었습니다.');
+        window.location.reload();
+    }
+
+    // 게시물 삭제하기 실행
+    const delSubmit = async () => {
+        await axios.get('http://localhost:3001/post/delete?idx='+idx)
+        .then(function (response) {
+            console.log(response);
+            alert('삭제되었습니다.');
+            window.location.href = '/main?idx='+param;
+        })
+        .catch(function (error) {
+            alert('삭제실패했습니다..');
+            console.log(error);
+        })
+        .then(function () {
+        });
+    }
+
+    // 댓글 등록 실행
+    const submitReply = async () =>{
+        const content = replyValue.current.value;
+        await axios.post(`http://localhost:3001/reply/insert_reply?idx=${reReIdx}&groupIdx=${reReGroupIdx}&postIdx=${idx}&content=${content}&memberIdx=${param}&parentIdx=${reReIdx}`)
+        .then(function (response) {
+            console.log(response);
+            alert('등록되었습니다.');
+            window.location.reload();
+        })
+        .catch(function (error) {
+            alert('등록 실패했습니다.');
+            console.log(error);
+        })
+        .then(function () {
+        });
+    }
+
+    // 댓글 삭제 실행
+    const delReply = (replyIdx)=>{
+        axios.get('http://localhost:3001/reply/delete_reply?idx='+replyIdx)
+        .then(function (response) {
+            console.log(response);
+            alert('삭제되었습니다.');
+            window.location.reload();
+        })
+        .catch(function (error) {
+            alert('삭제 실패했습니다.');
+            console.log(error);
+        })
+        .then(function () {
+        });
     }
 
     // 게시물 수정/삭제 팝업 DOM
@@ -367,18 +427,6 @@ const UploadPage = () => {
                 </div>
             </DelPopWrap>
         )
-    }
-
-    // 수정하기 실행
-    function editSubmit () {
-        alert('수정되었습니다.');
-        window.location.reload();
-    }
-
-    // 삭제하기 실행
-    function delSubmit () {
-        alert('삭제되었습니다.');
-        window.location.reload();
     }
 
     // 전체 DOM
@@ -478,7 +526,7 @@ const UploadPage = () => {
                                                                 {
                                                                     param == data.memberIdx ? 
                                                                     <div className="re_delete_box">
-                                                                        <button className="re_delete_btn" type="button">
+                                                                        <button className="re_delete_btn" type="button" onClick={()=>{delReply(data.idx)}}>
                                                                             <p className="re_delete">삭제</p>
                                                                         </button>
                                                                     </div>
@@ -515,7 +563,7 @@ const UploadPage = () => {
                                                                 {
                                                                     param == data.memberIdx ? 
                                                                     <div className="re_delete_box">
-                                                                        <button className="re_delete_btn" type="button">
+                                                                        <button className="re_delete_btn" type="button" onClick={()=>{delReply(data.idx)}}>
                                                                             <p className="re_delete">삭제</p>
                                                                         </button>
                                                                     </div>
@@ -551,7 +599,7 @@ const UploadPage = () => {
                                                                 {
                                                                     param == data.memberIdx ? 
                                                                     <div className="re_delete_box">
-                                                                        <button className="re_delete_btn" type="button">
+                                                                        <button className="re_delete_btn" type="button" onClick={()=>{delReply(data.idx)}}>
                                                                             <p className="re_delete">삭제</p>
                                                                         </button>
                                                                     </div>
@@ -566,7 +614,7 @@ const UploadPage = () => {
                                             }
                                         })
                                     :
-                                    <div>등록된 댓글이 없습니다. 댓글을 등록해보세요.</div>
+                                    <div style={{lineHeight: "20rem", textAlign: "center", fontSize: "1.3rem", color: "rgba(0,0,0,.8)"}}>등록된 댓글이 없습니다. 댓글을 등록해보세요.</div>
                                 }
                                 {/* 댓글끝 */}
                             </div>
@@ -574,10 +622,10 @@ const UploadPage = () => {
                                 <form>
                                     <div className="input_reply_box">
                                         <div className="in_input_box">
-                                            <textarea className="in_input" placeholder="댓글 달기.."/>
+                                            <textarea className="in_input" placeholder="댓글 달기.." ref={replyValue}/>
                                         </div>
                                         <div className="re_btn_box">
-                                            <button type="submit" className="re_btn">게시</button>
+                                            <button type="submit" className="re_btn" onClick={submitReply}>게시</button>
                                         </div>
                                     </div>
                                 </form>
