@@ -255,7 +255,7 @@ const MainProfile = ({idx, param})=>{
         }).then((res)=>{
             alert('게시물이 등록되었습니다.');
             console.log(res);
-            window.location.href = '/main?idx=' + param;
+            window.location.href = '/main/'+idx+'?idx=' + param;
         });
     }
 

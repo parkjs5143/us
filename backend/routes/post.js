@@ -97,7 +97,7 @@ const postDetail = function(postIdx, callback){
 }
 
 // 게시글 수정
-router.route('/post/edit').put(upload.array('fileupload', 10), (req, res) => {
+router.route('/post/edit').post(upload.array('fileupload', 10), (req, res) => {
     const idx = req.body.idx;
     const content = req.body.content;
     const file = req.files;
@@ -224,7 +224,7 @@ const postEdit = function (idx, content, file, hashTag, callback) {
             conn.query('update post set content = ? where idx = ?', [content, idx], (err, result1) => {
                 conn.query('select imgName from img where postIdx = ?', [idx], (err, result2) => {
                     for (let i = 0; i < result2.length; i++) {
-                        fs.unlink('uploads/images/'+result2[i].imgName, (err) => {
+                        fs.unlink('C:/project/us/frontend/public/uploads/'+result2[i].imgName, (err) => {
                             console.log(err);
                         });
                     } 

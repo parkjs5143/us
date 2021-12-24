@@ -6,6 +6,7 @@ import { Link, useParams } from "react-router-dom";
 import axios from "axios";
 
 const UploadForm = styled.div`
+    button{cursor:pointer;}
     @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap');
     .upload_container{max-width: 100rem; border: 2px solid #a5a7c38a; height: 82rem; margin: 1rem auto;}
     .upload_header_box{display:flex; margin:2rem; position:relative; padding: 0 1rem; width:54rem;}
@@ -215,9 +216,14 @@ const UploadPage = () => {
     // 내용 업데이트 상태
     const [isUpdate, setIsUpdate] = useState(false);
 
-    // 댓글 입력 textarea 선택
+    // 댓글 입력 textarea
     const replyValue = useRef();
-    
+
+    // 게시물 수정 textarea
+    const editContent = useRef();
+    // 게시물 수정 파일저장
+    const [imgFile, setImgFile] = useState(null);
+
     useEffect(async () => {
         const list = await axios.get("http://localhost:3001/post/detail?postIdx="+idx);
         console.log(list);
@@ -290,8 +296,30 @@ const UploadPage = () => {
     }
 
     // 게시물 수정 실행
-    function editSubmit () {
-        alert('수정되었습니다.');
+    const editSubmit = async () => {
+        const content = editContent.current.value;
+        console.log(content);
+        console.log(imgFile);
+        let formData = new FormData();
+        
+        if(imgFile!==null){   // 수정할 사진을 등록했을 경우
+            for (const key of Object.keys(imgFile)) {
+                formData.append('fileupload', imgFile[key]);
+            }
+        }
+            formData.append('idx', idx);
+            formData.append('content', content);
+            formData.append('hashTag', '');
+    
+            return await axios.post(`http://localhost:3001/post/edit`, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data",
+                }
+            }).then((res)=>{
+                alert('게시물이 등록되었습니다.');
+                console.log(res);
+                window.location.href = '/detail/'+idx+'?idx=' + param;
+            });
     }
 
     // 게시물 삭제하기 실행
@@ -385,11 +413,11 @@ const UploadPage = () => {
                 <div className="popContainer">
                     <div className="popHeader">
                         <div className="title">게시글 수정</div>
-                        <img className="closeIcon" src="img/clear_black.png" alt="엑스버튼" onClick={openEditOn}/>
+                        <img className="closeIcon" src="/img/clear_black.png" alt="엑스버튼" onClick={openEditOn}/>
                     </div>
                     <div className="popContent">
                         <div className="textWrap">
-                            <textarea name="content" id="content">헤이 모두들 안녕?? 내가 누군지 아뉘??</textarea>
+                            <textarea name="content" id="content" ref={editContent}>{postContent}</textarea>
                         </div>
                         <div className="post1_pop_sec2">
                             <div className="filebox">
@@ -405,12 +433,16 @@ const UploadPage = () => {
                             </div>
                             <div className="prev_upload_box">
                                 <div className="prev_upload">
-                                    <span>
-                                        <div className="prev_img">
-                                            <img src="img/hamster_profile.jpg" alt="게시물사진"/>
-                                            <br/><div className="img_del"><i className="fas fa-times-circle"></i></div>
-                                        </div>
-                                    </span>
+                                    {postImgArr.map((data)=>{
+                                        return(
+                                            <span>
+                                                <div className="prev_img">
+                                                    <img src={'/uploads/'+data.imgName} alt="게시물사진"/>
+                                                    <br/><div className="img_del"><i className="fas fa-times-circle"></i></div>
+                                                </div>
+                                            </span>
+                                        )
+                                    })}
                                 </div>
                             </div>
                         </div>
@@ -433,7 +465,7 @@ const UploadPage = () => {
                         <div className="title"><img src="img/us_logo.png" alt="로고" /></div>
                     </div>
                     <div className="popContent">
-                        <div className="textWrap">게시물을 삭제하시겠습니까?</div>
+                        <div className="textWrap">{}</div>
                     </div>
                     <div className="btnWrap">
                         <button type="submit" onClick={delSubmit}>네, 삭제할래요</button>
@@ -671,8 +703,10 @@ const UploadPage = () => {
 
     //이미지 업로드 js 
     function handleFileSelect(evt) {
+        setImgFile(evt.target.files);
         let fileSize = document.querySelectorAll(".prev_img");
         var files = evt.target.files;
+        // document.querySelector('.prev_upload').removeChild('span');
         if(fileSize.length + files.length < 7){
         for (var i = 0, f; f = files[i]; i++) {
             if (!f.type.match('image.*')) {
@@ -689,7 +723,7 @@ const UploadPage = () => {
                             '" title="', escape(theFile.name),
                             '" alt="게시물 사진"/><br><div class="img_del"><i class="fas fa-times-circle"></i></div></div>'
                         ].join('');
-                    document.querySelector('.prev_upload').insertBefore(span, null);
+                    document.querySelector('.prev_upload').insertBefore(span,null);
                     const muti_img_list = document.querySelectorAll(".img_del");
                     for (let i = 0; i < muti_img_list.length; i++) {
                         muti_img_list[i].addEventListener('click', function () {
