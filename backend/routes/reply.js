@@ -7,8 +7,7 @@ const cors = require('cors');
 
 const router = express.Router()
 router.use(bodyParser.urlencoded({ extended: false }))
-router.use(bodyParser.json())
-// router.use(bodyParser.urlencoded({ extends: true }))  
+router.use(bodyParser.json())  
 router.use(cors({origin : 'http://localhost:3000', credentials : true, methods : "PUT,GET,POST,DELETE,OPTIONS,HEAD"}));
 
 // 댓글 입력
@@ -19,8 +18,6 @@ router.route('/reply/insert_reply').post((req, res) => {
     const content = req.body.content;
     const memberIdx = req.body.memberIdx;
     const parentIdx = req.body.parentIdx;
-
-    console.log(idx,groupIdx,postIdx,content,memberIdx, parentIdx);
 
     if (pool) {
         replyInsert(idx, groupIdx, postIdx, content, memberIdx, (err, result) => {

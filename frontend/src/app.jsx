@@ -56,7 +56,7 @@ function App() {
         <Route path={"/admin/chat/detail/:idx"} element={<ChatDetailPage/>} />
 
         {/* 사용자 */}
-        <Route path={"/main"} element={<MainPage/>}/>
+        <Route path={"/main/:idx"} element={<MainPage/>}/>
         <Route path={"/maintalk"} element={<MainTalkPage/>}/>
         <Route path={"/mainmap"} element={<MainMapPage/>}/>
         

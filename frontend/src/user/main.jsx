@@ -22,14 +22,15 @@ const MainForm = styled.div`
 
 
 const MainPage = () =>{
-    const param = window.location.search.split('=')[1]
+    const param = window.location.search.split('=')[1]  // 로그인한 memberIdx
+    const {idx} = useParams();  // 프로필페이지의 memberIdx
 
     const [post, setPost] = useState([]);
 
     useEffect(async () => {
         const cookie = document.cookie; // 받아온 id값 저장
 
-        const post = await axios.get(`http://localhost:3001/main/post?idx=${param}`)
+        const post = await axios.get(`http://localhost:3001/main/post?idx=${idx}`)
         console.log(post)
         setPost(post.data)
     }, []);
@@ -39,14 +40,14 @@ const MainPage = () =>{
         <Header idx={param}/>
         <MainForm>
             <div className="container">
-                <MainProfile idx={param}/>
+                <MainProfile idx={idx} param={param}/>
                 <div className="section4_box">
                     <div className="social_layer">
                         <div className="social_box">
                             {post.length!==0 ? 
                                 post.map((postData, index)=>(
                                     <div className={(index+1)%3===0?'last_box':'box'}>
-                                        <Link to={"/detail/"+postData.postIdx+"?idx="+param}>
+                                        <Link to={`/detail/${postData.postIdx}?idx=${param}`}>
                                             <div className="social1">
                                                 <img className="social1_img" src={'/uploads/'+postData.imgName}/>
                                             </div>

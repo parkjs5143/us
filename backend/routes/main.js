@@ -175,7 +175,7 @@ const main = function (idx, callback) {
             const sql3 = 'select count(*) as friendCnt from friend where memberIdx = ?;'
             const sql3s = mysql.format(sql3, idx);
 
-            const sql4 = 'select img, name from member where idx in (select f.friendIdx from member as m join friend as f on m.idx = f.memberIdx where m.idx = ?);';
+            const sql4 = 'select idx, img, name from member where idx in (select f.friendIdx from member as m join friend as f on m.idx = f.memberIdx where m.idx = ?);';
             const sql4s = mysql.format(sql4, idx);
 
             conn.query(sql1s + sql2s + sql3s + sql4s, (err, result) => {

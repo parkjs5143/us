@@ -192,7 +192,7 @@ const LoginPage = () => {
             if(res.data == false){
                 alert("아이디와 패스워드가 일치하지 않습니다.");
             } else{
-                document.location.href = `/main?idx=${res.data}`
+                document.location.href = `/main/${res.data}?idx=${res.data}`
             }
         })
         .catch()
@@ -239,7 +239,7 @@ const LoginPage = () => {
                             {/* 비밀번호 인풋 */}
                             <p className='login-text'>비밀번호</p>
                             <div className="forheigth">
-                                <input id="pw" value={password} onChange={checkPassword} placeholder="비밀번호를 입력해주세요." type="password" />
+                                <input id="pw" value={password} onChange={checkPassword} placeholder="비밀번호를 입력해주세요." type="password" onKeyPress={(e)=>{if(e.key=='Enter'){onClickLogin(e)}}}/>
                                 <p className="red" style={{ display: display2 }}>* 영문,숫자,특수문자 포함 8자 이상 입력해주세요.</p>
                             </div>
                         </div>
