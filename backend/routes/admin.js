@@ -376,7 +376,7 @@ router.route('/admin/dashBoard').get((req, res) => {
 });
 
 // 문의 삭제
-router.route('/admin/inquiry/delete').delete((req, res) => {
+router.route('/admin/inquiry/delete').get((req, res) => {
     const idx = req.query.idx;
     if(pool) {
         adminInquiryDelete(idx, (err, result) => {

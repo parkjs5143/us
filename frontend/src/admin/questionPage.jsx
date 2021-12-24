@@ -197,7 +197,7 @@ const QuestionPage = () => {
 
     const Delete = async() =>{
         let delCheck = document.querySelectorAll('.delCheck');
-        for(let i in delCheck){ delCheck[i].checked? await axios.delete('http://localhost:3001/admin/inquiry/delete?idx='+delCheck[i].id.substring(15)):<></> }
+        for(let i in delCheck){ delCheck[i].checked? await axios.get('http://localhost:3001/admin/inquiry/delete?idx='+delCheck[i].id.substring(15)):<></> }
         alert('삭제되었습니다')
         delCheck.forEach((check)=>{ check.checked = false; })
         if(change==1){setChange(0)}else{setChange(1)}

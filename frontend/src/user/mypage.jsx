@@ -162,7 +162,7 @@ const Mypage = () =>{
 
     // 탈퇴진행
     const withdrawRun = ()=>{
-        axios.delete('http://localhost:3001/member/delete?idx='+param)
+        axios.get('http://localhost:3001/member/delete?idx='+param)
         .then(function (response) {
             // handle success
             console.log(response);
