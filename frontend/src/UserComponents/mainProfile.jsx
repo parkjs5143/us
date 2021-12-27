@@ -442,7 +442,7 @@ const MainProfile = ({idx, param})=>{
                             idx===param ?
                             <>
                                 <div className="option_box">
-                                    <Link to={'/mypage?idx='+idx.idx}><img src="/img/setting.png" alt="setting"/></Link>
+                                    <Link to={'/mypage?idx='+idx}><img src="/img/setting.png" alt="setting"/></Link>
                                 </div>
                                 <div className="posting_box">
                                     <button className="post_btn" type="button" onClick={onOpenPost}>게시물 올리기</button>{postOn?<Post1/>:""}
@@ -518,7 +518,7 @@ const MainProfile = ({idx, param})=>{
                     idx===param ?
                     <>
                         <div className="sec_chat_container">
-                            <Link to={"/mainTalk?idx="+idx.idx}>
+                            <Link to={"/mainTalk?idx="+idx}>
                                 <div className="sec_chat_box">
                                     <div className="sec_chat_img">
                                         <img className="sec3_img2" src="/img/chat.png"/>
@@ -530,7 +530,7 @@ const MainProfile = ({idx, param})=>{
                             </Link>
                         </div>
                         <div className="sec_location_container">
-                            <Link to={"/mainMap?idx="+idx.idx}>
+                            <Link to={"/mainMap?idx="+idx}>
                                 <div className="sec_location_box">
                                     <div className="sec_location_img">
                                         <img className="sec3_img3" src="/img/location.png"/>
