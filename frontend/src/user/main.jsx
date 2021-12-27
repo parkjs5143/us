@@ -37,7 +37,7 @@ const MainPage = () =>{
 
     return (
         <>
-        <Header idx={param}/>
+        <Header idx={idx} param={param}/>
         <MainForm>
             <div className="container">
                 <MainProfile idx={idx} param={param}/>

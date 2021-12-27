@@ -217,7 +217,7 @@ const Mypage = () =>{
     return (
         <>
             {withdrawPop ? <WithdrawPop/> : ""}
-            <Header/>
+            <Header idx={param} param={param}/>
             <MypageWrap>
                 <div className="container">
                     <div className="navForm">

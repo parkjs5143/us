@@ -33,7 +33,7 @@ const MypageLogin = () =>{
     
     return (
         <>
-            <Header/>
+            <Header idx={param} param={param}/>
             <MypageLoginWrap>
                 <div className="container">
                     <div>

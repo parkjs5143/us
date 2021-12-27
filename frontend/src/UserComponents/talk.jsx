@@ -96,7 +96,7 @@ const Talk = ({current, loginIdx})=>{
     // sendBtn 클릭
     const sendMsg = (event)=>{
         event.preventDefault();
-        console.log('왜또안나오니',loginIdx);
+        console.log('loginIdx',loginIdx);
 
         const data = document.querySelector('.talkTextInput').value;
         const output = {idx:idx, memberIdx: loginIdx, sender:name, commend:'chat', type:'text', data:data, roomName : title};

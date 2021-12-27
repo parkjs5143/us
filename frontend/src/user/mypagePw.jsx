@@ -153,7 +153,7 @@ const MyPagePw = () =>{
 
     return (
         <>
-            <Header/>
+            <Header idx={param} param={param}/>
             <MyPagePwWrap>
                 <div className="container">
                     <div>

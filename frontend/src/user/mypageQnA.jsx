@@ -193,7 +193,7 @@ const MyPageQnA = () =>{
 
     return (
         <>
-            <Header/>
+            <Header idx={param} param={param}/>
             <MyPageQnAWrap>
                 <div className="container">
                     <div>

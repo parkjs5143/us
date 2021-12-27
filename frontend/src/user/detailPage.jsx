@@ -372,6 +372,7 @@ const UploadPage = () => {
             console.log(response);
             alert('삭제되었습니다.');
             setIsUpdate(true);
+            window.location.href=`/main/${idx}?idx=${param}`;
         })
         .catch(function (error) {
             alert('삭제 실패했습니다.');
@@ -479,7 +480,7 @@ const UploadPage = () => {
     // 전체 DOM
     return (
         <>
-        <Header idx={param}/>
+        <Header idx={idx} param={param}/>
         <UploadForm>
             {postEditOn ? <EditPop/> : ""}
             {PostDelOn ? <DelPop/> : ""}
@@ -489,7 +490,7 @@ const UploadPage = () => {
                         <div className="upload_header_box">
                             <div className="upload_profile_box">
                                 <div className="upload_profile">
-                                    <img className="upload_profile_img" src={memImg!==null?'/'+memImg:'/img/blank_profile.png'} alt="게시물 프로필"/>
+                                    <img className="upload_profile_img" src={memImg!==null||memImg!==''?'/'+memImg:'/img/blank_profile.png'} alt="게시물 프로필"/>
                                 </div>
                                 <div className="up_pro_time_container">
                                     <div className="upload_profile_id">
@@ -555,7 +556,7 @@ const UploadPage = () => {
                                                 return (
                                                     <div className="reply1_box">
                                                         <div className="re_profile">
-                                                            <img className="re_profile_img" src={data.img!==null?"/"+data.img:'/img/blank_profile.png'} alt="댓글 프로필"/>
+                                                            <img className="re_profile_img" src={data.img!=null&&data.img!=''?"/"+data.img:'/img/blank_profile.png'} alt="댓글 프로필"/>
                                                         </div>
                                                         <div className="re_reply_box">
                                                             <div className="re_id_box">
@@ -592,7 +593,7 @@ const UploadPage = () => {
                                                 return (
                                                     <div className="reply2_box">
                                                         <div className="re_profile">
-                                                            <img className="re_profile_img" src={data.img!==null?"/"+data.img:'/img/blank_profile.png'} alt="댓글 프로필"/>
+                                                            <img className="re_profile_img" src={data.img!==null&&data.img!==''?"/"+data.img:'/img/blank_profile.png'} alt="댓글 프로필"/>
                                                         </div>
                                                         <div className="re_reply_box">
                                                             <div className="re_id_box">
@@ -628,7 +629,7 @@ const UploadPage = () => {
                                                 return (
                                                     <div className="reply3_box">
                                                         <div className="re_profile">
-                                                            <img className="re_profile_img" src={data.img!==null?"/"+data.img:'/img/blank_profile.png'} alt="댓글 프로필"/>
+                                                            <img className="re_profile_img" src={data.img!=null&&data.img!=''?"/"+data.img:'/img/blank_profile.png'} alt="댓글 프로필"/>
                                                         </div>
                                                         <div className="re_reply_box">
                                                             <div className="re_id_box">
@@ -692,7 +693,7 @@ const UploadPage = () => {
                     </div>
                 </div>
                 <div className="return_main_btn_container">
-                    <Link to="/main">
+                    <Link to={"/main/"+idx+"?idx="+param}>
                     <button type="button" className="return_main_btn">메인으로 가기</button>
                     </Link>
                 </div>
