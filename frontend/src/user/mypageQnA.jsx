@@ -156,12 +156,12 @@ const MyPageQnA = () =>{
                 title: title,
                 content: content,
                 type: korType,
-                respondent : defendant
+                respondent : defendant.idx
             }
+        }).then(()=>{
+            alert('등록되었습니다.');
+            window.location.reload();
         });
-
-        alert('등록되었습니다.');
-        window.location.reload();
     }
 
     const onOpenModal = (e) => {

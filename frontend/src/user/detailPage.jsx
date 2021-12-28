@@ -156,8 +156,8 @@ const PostEditDelete = styled.div`
     .edit_delete_close_btn{background:none; border:none;}
     .edit_delete_close{display: flex; justify-content: right;}
     .btn_container{display:flex; position: relative;}
-    .edit_btn{width:7rem;height: 3.5rem; background: black;border-radius: 5px;border: 1px solid black;font-size: 1.5rem;font-weight:600; color: white;}
-    .delete_btn{width:7rem;height: 3.5rem;background: black;border-radius: 5px;border: 1px solid black;font-size: 1.5rem;font-weight:600; color: white;}
+    .edit_btn{width:7rem; height: 3.5rem; background: #14c1c7; border-radius: 5px; font-size: 1.5rem;font-weight:600; color: white; border:none;}
+    .delete_btn{width:7rem; height: 3.5rem; background: #14c1c7; border-radius: 5px; font-size: 1.5rem;font-weight:600; color: white;border:none;}
     .edit_btn_box{position:absolute; top: 2.7rem; left: 0.1rem;}
     .delete_btn_box{position:absolute; top: 2.7rem;right: 0.1rem;}
 `
@@ -316,7 +316,7 @@ const UploadPage = () => {
                     "Content-Type": "multipart/form-data",
                 }
             }).then((res)=>{
-                alert('게시물이 등록되었습니다.');
+                alert('게시물이 수정되었습니다.');
                 console.log(res);
                 window.location.href = '/detail/'+idx+'?idx=' + param;
             });
@@ -329,7 +329,7 @@ const UploadPage = () => {
         .then(function (response) {
             console.log(response);
             alert('삭제되었습니다.');
-            window.location.href=`/main/${idx}?idx=${param}`;
+            window.location.href=`/main/${param}?idx=${param}`;
         })
         .catch(function (error) {
             alert('삭제실패했습니다..');
@@ -356,6 +356,7 @@ const UploadPage = () => {
         }).then(function (response) {
             console.log(response);
             alert('등록되었습니다.');
+            setIsUpdate(!isUpdate);
             window.location.href=`/detail/${idx}?idx=${param}`;
         })
         .catch(function (error) {
@@ -372,8 +373,7 @@ const UploadPage = () => {
         .then(function (response) {
             console.log(response);
             alert('삭제되었습니다.');
-            setIsUpdate(true);
-            window.location.href=`/main/${idx}?idx=${param}`;
+            setIsUpdate(!isUpdate);
         })
         .catch(function (error) {
             alert('삭제 실패했습니다.');
@@ -435,7 +435,7 @@ const UploadPage = () => {
                             </div>
                             <div className="prev_upload_box">
                                 <div className="prev_upload">
-                                    {postImgArr.map((data)=>{
+                                    {/* {postImgArr.map((data)=>{
                                         return(
                                             <span>
                                                 <div className="prev_img">
@@ -444,7 +444,7 @@ const UploadPage = () => {
                                                 </div>
                                             </span>
                                         )
-                                    })}
+                                    })} */}
                                 </div>
                             </div>
                         </div>
@@ -464,7 +464,7 @@ const UploadPage = () => {
             <DelPopWrap>
                 <div className="popContainer">
                     <div className="popHeader">
-                        <div className="title"><img src="img/us_logo.png" alt="로고" /></div>
+                        <div className="title"><img src="/img/us_logo.png" alt="로고" /></div>
                     </div>
                     <div className="popContent">
                         <div className="textWrap">삭제하시겠습니까?</div>
@@ -683,7 +683,7 @@ const UploadPage = () => {
                                 }
                                 <div className="input_reply_box">
                                     <div className="in_input_box">
-                                        <textarea className="in_input" placeholder="댓글 달기.." ref={replyValue}/>
+                                        <textarea className="in_input" placeholder="댓글 달기.." ref={replyValue} onKeyPress={()=>{if (window.event.keyCode == 13) {submitReply()}}}/>
                                     </div>
                                     <div className="re_btn_box">
                                         <button type="submit" className="re_btn" onClick={submitReply}>게시</button>

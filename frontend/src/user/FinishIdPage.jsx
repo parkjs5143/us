@@ -57,7 +57,7 @@ const SuckFindId = (props) => {
         color: gray;
     }
     `;
-    const urldata = useParams();
+    const {urldata} = useParams();
     console.log(urldata)
     const [data ,setData] = useState(urldata)
     
@@ -72,7 +72,7 @@ const SuckFindId = (props) => {
             <div className="topNum">
             <img src="/img/us_logo_forLogin.png"></img>
                 </div>
-                <h1>회원님의 이메일 주소는 <span>{urldata.someInfo}</span> 입니다.</h1>
+                <h1>회원님의 이메일 주소는 <span>{urldata}</span> 입니다.</h1>
                 <hr/>
             </div>
 

@@ -106,7 +106,7 @@ const Findidpw2 = () => {
         })
         .then(res => {
             console.log(res)
-                window.location.href="/FinFindidpw/"
+                window.location.href="/FinFindidpw";
         })
         .catch()
     }
