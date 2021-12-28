@@ -157,7 +157,69 @@ router.route('/main/insert_friend').post((req, res) => {
 })
 
 
+// 채팅방 만들기
+router.route('/main/insert_chat_room').get((req,res)=>{
+    const senderIdx = req.query.senderIdx;
+    const receiverIdx = req.query.receiverIdx;
 
+    console.log(senderIdx,receiverIdx)
+
+    if (pool) {
+        insertRoom(senderIdx, receiverIdx, (err, result) => {
+            if (err) {
+                res.writeHead('201', { 'content-type': 'text/html; charset=utf8' });
+                res.write('<h2>메인데이터 출력 실패 </h2>');
+                res.write('<p>데이터가 안나옵니다.</p>')
+                res.end();
+            } else {
+                res.send(result);
+            }
+        })
+    }
+})
+
+// 채팅방 만들기
+const insertRoom = function(senderIdx, receiverIdx, callback) { 
+    pool.getConnection((err, conn) => {
+        if (err) {
+            console.log(err)
+        } else {
+            conn.query('select m1.idx from room_mem m1 inner join room_mem m2 on m2.roomIdx=m1.roomIdx where m1.memberIdx=? and m2.memberIdx=?',[senderIdx, receiverIdx], (err1, result1) => {
+                if (err1) {
+                    console.log(err1);
+                    conn.release();
+                } else {
+                    console.log(result1);
+                    if(Array.isArray(result1) && result1.length === 0){ // 두 멤버 채팅방 없을 경우
+                        conn.query("SELECT AUTO_INCREMENT as auto FROM information_schema.tables WHERE table_name = 'room' AND table_schema = 'us'",(err2, result2)=>{
+                            console.log(result2);
+                            if(err2){
+                                callback(err2, null);
+                                console.log(err2);
+                            }else{
+                                conn.query('insert into room(title, type) values (?,?)', ['채팅방'+result2[0].auto, '일반']);
+                                conn.query('insert into room_mem(roomIdx, memberIdx) values (?,?)', [result2[0].auto, receiverIdx]);
+                                conn.query('insert into room_mem(roomIdx, memberIdx) values (?,?)', [result2[0].auto, senderIdx], (err3, result3)=>{
+                                    conn.release();
+                                    if (err3) {
+                                        callback(err3, null);
+                                        console.log(err3);
+                                        return;
+                                    } else {
+                                        callback(null, result2);
+                                    }
+                                })
+                            }
+                        })
+                    }else{  // 두 멤버 채팅방 있을 경우
+                        callback(null, 'false');
+                        conn.release();
+                    }
+                }
+            })
+        }
+    })
+}
 
 
 // 메인페이지
@@ -184,7 +246,7 @@ const main = function (idx, callback) {
                     callback(err, null);
                     return;
                 } else {
-                    callback(null, result);
+                    callback(null, false);
                 }
             });
         }

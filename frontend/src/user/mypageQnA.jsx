@@ -142,17 +142,29 @@ const MyPageQnA = () =>{
         
         if(type==='declaration'){
             korType += '신고하기';
+        } else {
             korType += '일반문의';
         }
-        let log = await axios.post('http://localhost:3001/inquiry?memberIdx='+param+"&title="+title+"&content="+content+"&type="+korType)
-        console.log(log);
-        if(log.data===true){
-            alert('문의가 등록되었습니다.');
+
+        await axios({
+            method: "post",
+            url:`http://localhost:3001/inquiry`,
+            data: {
+                memberIdx: param,
+                title: title,
+                content: content,
+                type: korType
+            }
+        }).then(function (res) {
+            console.log(res);
+            alert('등록되었습니다.');
             window.location.reload();
-        }else{
-            alert('다시 입력해 주세요!')
-            window.location.reload();
-        }
+        })
+        .catch(function (err) {
+            alert('등록실패했습니다.');
+        })
+        .then(function () {
+        });
     }
 
     const onOpenModal = (e) => {
@@ -256,7 +268,7 @@ const MyPageQnA = () =>{
                                 </li>
                                 <li className="profileItem profileSelect firstItem">
                                     <div className="QnaTitle section1">문의유형</div>
-                                    <select name="category1" id="category1" onClick={selectType}>
+                                    <select name="category1" id="category1" onChange={selectType}>
                                         <option value="inquiry1">계정관리</option>
                                         <option value="inquiry2">로그인 활동</option>
                                         <option value="inquiry3">사용법 안내</option>

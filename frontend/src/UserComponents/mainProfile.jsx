@@ -211,6 +211,11 @@ const MainProfile = ({idx, param})=>{
         setAddOn(!addOn);
     }
 
+    // 채팅방 만들기 axios
+    const makeChatRoom = (reciverIdx)=>{
+        
+    }
+
     //게시물 올리기 팝업1(업로드될 이미지 선택 팝업)
     const[postOn, setPostOn] = React.useState(false);
     const onOpenPost = () =>{
@@ -416,9 +421,13 @@ const MainProfile = ({idx, param})=>{
                                             <div className="pop_sec2_friend_detail_m"><p className="detail_m">{listData.message!==null?listData.message:'-'}</p></div>
                                         </div>
                                     </div>
-                                    <div className="chat_img_box">
-                                        <img className="chat_img" src="/img/message.png" alt="채팅방 이미지"/>
-                                    </div>
+                                    {
+                                        idx===param?
+                                            <div className="chat_img_box" onClick={()=>{ makeChatRoom(listData.idx); window.location.href=`mainTalk?idx=${param}`; }}>
+                                                <img className="chat_img" src="/img/message.png" alt="채팅방 이미지"/>
+                                            </div>
+                                        : ''
+                                    }
                                 </div>
                             ))
                             : <div className="pop_no_friend_box">등록된 친구가 없습니다<br/>상단 버튼을 눌러 추가하세요</div>

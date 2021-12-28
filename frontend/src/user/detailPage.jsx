@@ -328,7 +328,7 @@ const UploadPage = () => {
         .then(function (response) {
             console.log(response);
             alert('삭제되었습니다.');
-            setIsUpdate(true);
+            window.location.href=`/main/${idx}?idx=${param}`;
         })
         .catch(function (error) {
             alert('삭제실패했습니다..');
@@ -466,7 +466,7 @@ const UploadPage = () => {
                         <div className="title"><img src="img/us_logo.png" alt="로고" /></div>
                     </div>
                     <div className="popContent">
-                        <div className="textWrap">{}</div>
+                        <div className="textWrap">삭제하시겠습니까?</div>
                     </div>
                     <div className="btnWrap">
                         <button type="submit" onClick={delSubmit}>네, 삭제할래요</button>
