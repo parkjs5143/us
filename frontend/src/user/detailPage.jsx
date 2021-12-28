@@ -8,7 +8,7 @@ import axios from "axios";
 const UploadForm = styled.div`
     button{cursor:pointer;}
     @import url('https://fonts.googleapis.com/css2?family=Nanum+Gothic&display=swap');
-    .upload_container{max-width: 100rem; border: 2px solid #a5a7c38a; height: 82rem; margin: 1rem auto;}
+    .upload_container{max-width: 100rem; height: 82rem; margin: 1rem auto;}
     .upload_header_box{display:flex; margin:2rem; position:relative; padding: 0 1rem; width:54rem;}
     .upload_profile_img{width: 5.5rem; height: 5.5rem; border-radius: 50%; border: 2px solid #0000009e;}
     .upload_profile_box{display:flex;}
@@ -19,21 +19,20 @@ const UploadForm = styled.div`
     .upload_mini_header{display:flex; margin:0 0 0 4rem; position:relative;}
     .mini_header_logo{width: 4rem;}
     .cats_img{width: 13rem; height: 3.7rem; position: absolute; top: 0.3rem; right: 4rem;}
-    .wr_post_container{display: flex; margin:1rem auto; width:51rem; height: 7rem; border: 2px solid #00000045; font-size: 1.7rem; padding: 1rem; border-radius: 6px;}
+    .wr_post_container{display: flex; margin:0 auto; margin-top:1rem; width:51rem; height: 7rem; border: 1px solid #8080803b; font-size: 1.7rem; padding: .5rem;}
     .return_main_btn{border-radius: 5px; background-color: #14c1c7; color: white; border: none; height: 4.5rem; cursor: pointer; width:15rem; font-size:1.7rem; box-shadow:3px 3px 3px #9b9b9b9e;}
-    .return_main_btn_container{display: flex; justify-content: center; padding: 7rem;}
+    .return_main_btn_container{display: flex; justify-content: center; padding: 5rem;}
     .option_btn{border:none; background:none;}
     .option_pop_container{position:relative;}
     .option_pop_box{position:absolute; top: -3px; right: -82px;}
     .wr_post_area{padding-left:2rem; padding-top:0.7rem;}
     .wr_post_writer{font-weight:bold; padding-left:1rem; padding-top:0.5rem;}
-    .up_replay_box{margin-top: 9rem; width: 38rem; height: 87%; border: 2px solid #00000045; border-radius: 5px; position:relative;}
+    .up_replay_box{width: 40rem; height: 100%; border: 1px solid #8080803b; position:relative;}
     .left_right_container{display:flex;}
     .upload_time{font-size:1.5rem; margin-left:1rem; color:#555;}
-    .reply_header{display:flex; position:relative;}
-    .reply_img{width:3.5rem; height:3rem;}
-    .reply_img_box{position:absolute; top:4.5rem; left:6.6rem;}
-    .reply_title{position:absolute; top:1.3rem; left:0.7rem; font-size:2.8rem;}
+    .reply_img{height:3rem;}
+    .reply_img_box{position:relative; top:.3rem; display: inline-block; margin-left:.5rem;}
+    .reply_title{display:inline-block; font-size:2rem;}
     .up_img{width:53rem;}
     .img_pagnation{position: relative; display:flex;}
     .prev_box{position:absolute; top:45%; left:0;}
@@ -46,9 +45,9 @@ const UploadForm = styled.div`
     .reply3_box{display:flex; margin: 1rem 1rem 1rem 12rem;}
     .input_reply_box{display:flex;}
     .re_btn{background:none; color:#14c1c7; border:none; height:3.9rem; width:4.4rem; font-weight:600;font-size:1.5rem; line-height: 4.7rem; cursor:pointer;}
-    .input_reply_container{margin-top: 32rem; position: absolute; bottom:1rem;}
+    .input_reply_container{margin-top: 32rem; position: absolute; bottom:0rem;}
     .like_img{width:2rem; height:2rem; cursor:pointer;}
-    .in_input{outline: none; width:30rem; height:2.5rem; border: 1px solid #808080b0; resize:none; border-radius:15px; line-height: 2.5rem; font-size: 1.3rem; padding: 0.5rem 1rem; font-family: 'Nanum Gothic', sans-serif;}
+    .in_input{outline: none; width:32rem; height:2.5rem; border: 1px solid #8080803b; resize:none; border-radius:15px; line-height: 2.5rem; font-size: 1.3rem; padding: 0.5rem 1rem; font-family: 'Nanum Gothic', sans-serif;}
     .re_time_reply_box{display:flex;}
     .reply_btn{border:none; background:none; color:gray; font-size:0.5rem; cursor:pointer; margin:0; line-height:0.1rem; font-weight:600;}
     .re_delete_btn{background: none; border: none;}
@@ -302,11 +301,12 @@ const UploadPage = () => {
         console.log(imgFile);
         let formData = new FormData();
         
-        if(imgFile!==null){   // 수정할 사진을 등록했을 경우
+        if(imgFile===null){   // 수정할 사진을 등록하지 않았을 경우
+            alert('수정할 사진을 선택해주세요.');
+        } else {
             for (const key of Object.keys(imgFile)) {
                 formData.append('fileupload', imgFile[key]);
             }
-        }
             formData.append('idx', idx);
             formData.append('content', content);
             formData.append('hashTag', '');
@@ -320,6 +320,7 @@ const UploadPage = () => {
                 console.log(res);
                 window.location.href = '/detail/'+idx+'?idx=' + param;
             });
+        }
     }
 
     // 게시물 삭제하기 실행
@@ -490,7 +491,7 @@ const UploadPage = () => {
                         <div className="upload_header_box">
                             <div className="upload_profile_box">
                                 <div className="upload_profile">
-                                    <img className="upload_profile_img" src={memImg!==null||memImg!==''?'/'+memImg:'/img/blank_profile.png'} alt="게시물 프로필"/>
+                                    <img className="upload_profile_img" src={memImg!=null&&memImg!=''?'/'+memImg:'/img/blank_profile.png'} alt="게시물 프로필"/>
                                 </div>
                                 <div className="up_pro_time_container">
                                     <div className="upload_profile_id">
@@ -538,14 +539,14 @@ const UploadPage = () => {
                         </div>
                     </div>
                     <div className="upload_right_box">
-                        <div className="reply_header">
+                        {/* <div className="reply_header">
                             <div className="reply_title">
                                 <p>댓글</p>
                             </div>
                             <div className="reply_img_box">
                                 <img className="reply_img" src="/img/bubble_chat.png" alt="댓글"/>
                             </div>
-                        </div>
+                        </div> */}
                         <div className="up_replay_box">
                             <div className="up_reply_minibox">
                                 {/* 댓글시작 */}
@@ -693,7 +694,7 @@ const UploadPage = () => {
                     </div>
                 </div>
                 <div className="return_main_btn_container">
-                    <Link to={"/main/"+idx+"?idx="+param}>
+                    <Link to={"/main/"+postMemIdx+"?idx="+param}>
                     <button type="button" className="return_main_btn">메인으로 가기</button>
                     </Link>
                 </div>

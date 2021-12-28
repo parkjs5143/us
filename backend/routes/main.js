@@ -178,7 +178,7 @@ router.route('/main/insert_chat_room').get((req,res)=>{
     }
 })
 
-// 채팅방 만들기
+// 채팅방 만들기 (이고토 Analyze table 해조야댐)
 const insertRoom = function(senderIdx, receiverIdx, callback) { 
     pool.getConnection((err, conn) => {
         if (err) {
@@ -197,7 +197,7 @@ const insertRoom = function(senderIdx, receiverIdx, callback) {
                                 callback(err2, null);
                                 console.log(err2);
                             }else{
-                                conn.query('insert into room(title, type) values (?,?)', ['채팅방'+result2[0].auto, '일반']);
+                                conn.query('insert into room(title, type) values (?,?)', ['채팅창'+result2[0].auto, '일반']);
                                 conn.query('insert into room_mem(roomIdx, memberIdx) values (?,?)', [result2[0].auto, receiverIdx]);
                                 conn.query('insert into room_mem(roomIdx, memberIdx) values (?,?)', [result2[0].auto, senderIdx], (err3, result3)=>{
                                     conn.release();
