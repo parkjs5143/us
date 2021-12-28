@@ -156,7 +156,6 @@ const MyPageQnA = () =>{
                 type: korType
             }
         }).then(function (res) {
-            console.log(res);
             alert('등록되었습니다.');
             window.location.reload();
         })

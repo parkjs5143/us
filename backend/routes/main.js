@@ -246,7 +246,7 @@ const main = function (idx, callback) {
                     callback(err, null);
                     return;
                 } else {
-                    callback(null, false);
+                    callback(null, result);
                 }
             });
         }

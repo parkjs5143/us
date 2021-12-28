@@ -76,7 +76,7 @@ const TalkList = (idx)=>{
         } catch(e){
             console.error(e.message)
         }
-    },[])
+    },[posts])
     
     const onView = (roomIdx) => {
         setCurrent(posts.find(item => item.idx === roomIdx))

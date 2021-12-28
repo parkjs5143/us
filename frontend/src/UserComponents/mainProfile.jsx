@@ -201,7 +201,6 @@ const MainProfile = ({idx, param})=>{
     const onAddFriend = async() => { //추가 버튼
         if(addFriends!==null&&addFriends.info!==undefined){
             let plusFriend = await axios.post("http://localhost:3001/main/insert_friend?fIdx="+addFriends.info.idx+"&idx="+param)
-            console.log(plusFriend)
         }
         setAddF(null)
         setAddOn(!addOn);
@@ -212,8 +211,10 @@ const MainProfile = ({idx, param})=>{
     }
 
     // 채팅방 만들기 axios
-    const makeChatRoom = (reciverIdx)=>{
-        
+    const makeChatRoom = async (receiverIdx)=>{
+        await axios(`http://localhost:3001/main/insert_chat_room?receiverIdx=${receiverIdx}&senderIdx=${param}`).then((res)=>{
+            window.location.href = '/mainTalk?idx='+param;
+        });
     }
 
     //게시물 올리기 팝업1(업로드될 이미지 선택 팝업)
@@ -259,7 +260,6 @@ const MainProfile = ({idx, param})=>{
             }
         }).then((res)=>{
             alert('게시물이 등록되었습니다.');
-            console.log(res);
             window.location.href = '/main/'+idx+'?idx=' + param;
         });
     }
@@ -411,9 +411,9 @@ const MainProfile = ({idx, param})=>{
                     <div className="pop_sec2">
                         {list.length!==0?
                             list.map(listData=>(
-                                <div className="pop_sec2_box" onClick={()=>{window.location.href=`/main/${listData.idx}?idx=${param}`}}>
+                                <div className="pop_sec2_box">
                                     <div className="pop_sec2_friend_box">
-                                        <div className="pop_sec2_friend_profileImg_box">
+                                        <div className="pop_sec2_friend_profileImg_box" onClick={()=>{window.location.href=`/main/${listData.idx}?idx=${param}`}}>
                                             <img className="pop_sec2_friend_profile_img" src={listData.img!==null&&listData.img!==''?"/"+listData.img:'/img/blank_profile.png'} alt="프로필 이미지"/>
                                         </div>
                                         <div className="pop_sec2_friend_detail_box">
@@ -423,7 +423,7 @@ const MainProfile = ({idx, param})=>{
                                     </div>
                                     {
                                         idx===param?
-                                            <div className="chat_img_box" onClick={()=>{ makeChatRoom(listData.idx); window.location.href=`mainTalk?idx=${param}`; }}>
+                                            <div className="chat_img_box" onClick={()=>{ makeChatRoom(listData.idx); }}>
                                                 <img className="chat_img" src="/img/message.png" alt="채팅방 이미지"/>
                                             </div>
                                         : ''
