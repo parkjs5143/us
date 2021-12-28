@@ -3,8 +3,11 @@ const mysql = require('mysql');
 const config = require('../config/config.json');
 const bodyParser = require('body-parser');
 const pool = mysql.createPool(config);
-const router = express.Router()
+const router = express.Router();
+const cors = require('cors');
+
 router.use(bodyParser.urlencoded({ extended: false }))
+router.use(cors({origin : 'http://localhost:3000', credentials : true, methods : "put,get,post,delete,options"}));
 
 // 문의하기
 router.route('/inquiry').post((req, res) => {
@@ -17,7 +20,9 @@ router.route('/inquiry').post((req, res) => {
     if (pool) {
         inquiry(memberIdx, title, content, type, respondent, (err, result) => {
             if (err) {
-                res.send(false);
+                res.writeHead('200', { 'content-type': 'text/html; charset=utf8' });
+                res.write('<h2>메인데이터 출력 실패 </h2>');
+                res.write('<p>데이터가 안나옵니다.</p>')
                 res.end();
             } else {
                 res.send(result);
@@ -41,7 +46,7 @@ const inquiry = function (memberIdx, title, content, type, respondent, callback)
                         callback(err, null);
                         return;
                     } else {
-                        callback(null, true);
+                        callback(null, result);
                     }
                 })
             } else {
@@ -51,7 +56,7 @@ const inquiry = function (memberIdx, title, content, type, respondent, callback)
                         callback(err, null);
                         return;
                     } else {
-                        callback(null, true);
+                        callback(null, result);
                     }
                 })
             }

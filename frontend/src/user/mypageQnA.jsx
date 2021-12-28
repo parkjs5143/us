@@ -67,7 +67,7 @@ const MyPageQnA = () =>{
     let [content, setContent] = useState('');
 
     // 신고 대상자
-    let [defendant, setDefendant] = useState({});
+    let [defendant, setDefendant] = useState(null);
 
     // 팝업
     const [modalOn, setModalOn] = useState(false); 
@@ -146,6 +146,8 @@ const MyPageQnA = () =>{
             korType += '일반문의';
         }
 
+        console.log(defendant);
+
         await axios({
             method: "post",
             url:`http://localhost:3001/inquiry`,
@@ -153,17 +155,13 @@ const MyPageQnA = () =>{
                 memberIdx: param,
                 title: title,
                 content: content,
-                type: korType
+                type: korType,
+                respondent : defendant
             }
-        }).then(function (res) {
-            alert('등록되었습니다.');
-            window.location.reload();
-        })
-        .catch(function (err) {
-            alert('등록실패했습니다.');
-        })
-        .then(function () {
         });
+
+        alert('등록되었습니다.');
+        window.location.reload();
     }
 
     const onOpenModal = (e) => {
@@ -192,7 +190,7 @@ const MyPageQnA = () =>{
                                     <p onClick={()=>{addDefendant(list)}} style={{cursor:"pointer"}}>{list.name} [ <span className="email">{list.email}</span> ]</p>
                                 ))
                                 :
-                                <p>신고할 친구가 존재하지 않습니다.<br/>상단의 신고 대상자 코드를 입력하세요</p>
+                                <p>신고할 친구가 존재하지 않습니다.</p>
                             :
                             <p onClick={()=>{addDefendant(codeFriend.info)}} style={{cursor:"pointer"}}>{codeFriend.info.name} [ <span className="email">{codeFriend.info.email}</span> ]</p>
                         }
