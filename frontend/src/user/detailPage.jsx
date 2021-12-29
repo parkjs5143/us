@@ -120,7 +120,7 @@ button:nth-child(2) { margin-left: 1rem; }
 #upload { cursor:pointer; }
 #upload p { display: inline-block; margin-left: .5rem; position: relative; top: -.5rem; }
 #upload img { margin-left: 1rem; }
-.file_aa { display:flex; align-items: center; margin: 1rem 0 0 0; }
+.file_aa { display:flex; align-items: center; margin-top:1rem;}
 .prev_upload_box { border: 1px solid lightgray; }
 .upload_txt_box { margin: 0.8rem 1rem; }
 .upload_img_ch { border:none; background-color:#3bf1f1; color:white; width:9rem; height:3.5rem; cursor:pointer; border-radius:5px; cursor:pointer;}
@@ -418,21 +418,7 @@ const UploadPage = () => {
                         <img className="closeIcon" src="/img/clear_black.png" alt="엑스버튼" onClick={openEditOn}/>
                     </div>
                     <div className="popContent">
-                        <div className="textWrap">
-                            <textarea name="content" id="content" ref={editContent}>{postContent}</textarea>
-                        </div>
                         <div className="post1_pop_sec2">
-                            <div className="filebox">
-                                <div className="file_aa">
-                                    <div className="file_label">
-                                        <label id="upload" htmlFor="files">
-                                            <p>여기를 눌러 수정 사진을 넣으세요.</p>
-                                            <img src="/img/add_photo.png" alt="추가"/>
-                                        </label>
-                                    </div>
-                                </div>
-                                <input type="file" id="files" multiple accept="image/png" onChange={handleFileSelect}/>
-                            </div>
                             <div className="prev_upload_box">
                                 <div className="prev_upload">
                                     {/* {postImgArr.map((data)=>{
@@ -447,6 +433,20 @@ const UploadPage = () => {
                                     })} */}
                                 </div>
                             </div>
+                            <div className="filebox">
+                                <div className="file_aa">
+                                    <div className="file_label">
+                                        <label id="upload" htmlFor="files">
+                                            <p>여기를 눌러 수정 사진을 넣으세요.</p>
+                                            <img src="/img/add_photo.png" alt="추가"/>
+                                        </label>
+                                    </div>
+                                </div>
+                                <input type="file" id="files" multiple accept="image/png" onChange={handleFileSelect}/>
+                            </div>
+                        </div>
+                        <div className="textWrap">
+                            <textarea name="content" id="content" ref={editContent}>{postContent}</textarea>
                         </div>
                     </div>
                     <div className="btnWrap">
@@ -554,6 +554,19 @@ const UploadPage = () => {
                                     replyArr.length !== 0 ?
                                         replyArr.map((data) => {
                                             if(data.depth===0){
+                                                if(data.content==='삭제된 댓글입니다.'){
+                                                    return (
+                                                        <div className="reply2_box">
+                                                        <div className="re_reply_box">
+                                                            <div className="re_id_box">
+                                                                <div className="re_reply">
+                                                                    <span className="reply" style={{color:'rgba(0,0,0,.5)'}}>{data.content}</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    )
+                                                }else{
                                                 return (
                                                     <div className="reply1_box">
                                                         <div className="re_profile">
@@ -589,8 +602,21 @@ const UploadPage = () => {
                                                         </div>
                                                         <ReplyLike className="like_box" replyIdx={data.idx} memberIdx={param}/>
                                                     </div>
-                                                )
+                                                )}
                                             } else if(data.depth===1) {
+                                                if(data.content==='삭제된 댓글입니다.'){
+                                                    return (
+                                                        <div className="reply2_box">
+                                                        <div className="re_reply_box">
+                                                            <div className="re_id_box">
+                                                                <div className="re_reply">
+                                                                    <span className="reply" style={{color:'rgba(0,0,0,.5)'}}>{data.content}</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    )
+                                                }else{
                                                 return (
                                                     <div className="reply2_box">
                                                         <div className="re_profile">
@@ -625,8 +651,21 @@ const UploadPage = () => {
                                                         </div>
                                                         <ReplyLike className="like_box" replyIdx={data.idx} memberIdx={param}/>
                                                     </div>
-                                                )
+                                                )}
                                             } else {
+                                                if(data.content==='삭제된 댓글입니다.'){
+                                                    return (
+                                                        <div className="reply2_box">
+                                                        <div className="re_reply_box">
+                                                            <div className="re_id_box">
+                                                                <div className="re_reply">
+                                                                    <span className="reply" style={{color:'rgba(0,0,0,.5)'}}>{data.content}</span>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    )
+                                                }else{
                                                 return (
                                                     <div className="reply3_box">
                                                         <div className="re_profile">
@@ -662,7 +701,7 @@ const UploadPage = () => {
                                                         </div>
                                                         <ReplyLike className="like_box" replyIdx={data.idx} memberIdx={param}/>
                                                     </div>
-                                                )
+                                                )}
                                             }
                                         })
                                     :
