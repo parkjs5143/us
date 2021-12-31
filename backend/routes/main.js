@@ -362,6 +362,7 @@ const insertFriend = function (fIdx, idx, callback) {
                     conn.query('delete from friend where memberIdx = ? and friendIdx = ?', [idx, fIdx]);
                 }else {
                     conn.query('insert into friend(memberIdx, friendIdx) values(?, ?)', [idx, fIdx]);
+                    conn.query('insert into friend(memberIdx, friendIdx) values(?, ?)', [fIdx, idx]);
                 }
 
                 conn.release();
