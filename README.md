@@ -53,6 +53,12 @@
 ##### 메인(게시물)
 ![main](https://user-images.githubusercontent.com/75155418/145069016-ee490278-32c1-47e8-8f77-cdbf1229c6ec.png)
 
+##### 게시물(업로드&수정&삭제)
+![postEdit](https://user-images.githubusercontent.com/75155418/147921380-207e53d2-35a6-4081-8197-6a6600192b72.gif)
+
+##### 게시물(댓글&대댓글&삭제)
+![postReply](https://user-images.githubusercontent.com/75155418/147920700-bb4737da-f1ce-4075-98f2-c6413c8fda1f.gif)
+
 ##### 메인(채팅)
 ![main_chat](https://user-images.githubusercontent.com/75155418/146749862-fa85f101-d265-4edf-93d7-3a68684bd034.gif)
 
