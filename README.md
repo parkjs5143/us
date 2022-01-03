@@ -30,6 +30,9 @@
 + 게시물 수정, 삭제
 + 댓글(좋아요) 대댓글, 삭제
 
+### ERD
+![erd](https://user-images.githubusercontent.com/75155418/147924496-f23517bb-a120-42fb-99bd-3d58fecb7567.png)
+
 ### 구동 화면
 ##### 로그인
 ![loginpage](https://user-images.githubusercontent.com/75155418/146747126-be0c1e0a-a5ed-4161-8087-fad02c7b8370.png)
