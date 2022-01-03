@@ -18,7 +18,9 @@
 + 총인원: 7명
 + 백엔드: 2명
 + 프론트엔드: 5명
-+ 내 기여도: 사용자 페이지 프론트엔드 80% / 관리자 페이지 프론트엔드 0%
+
+**내 기여도**
++ 사용자 페이지 프론트엔드 80% / 관리자 페이지 프론트엔드 0%
 
 **맡은 역할 (프론트엔드 사용자 페이지)**
 + 채팅(socket.io 를 이용한 소켓통신)
@@ -30,31 +32,34 @@
 
 ### 구동 화면
 ##### 로그인
-* 회원가입/로그인, 아이디 찾기/비밀번호 찾기 가능(유효성검사)
 ![loginpage](https://user-images.githubusercontent.com/75155418/146747126-be0c1e0a-a5ed-4161-8087-fad02c7b8370.png)
 
 ##### 회원가입
-![joinpage](https://user-images.githubusercontent.com/75155418/146747714-ca0e9ebc-e456-4e9e-b9d6-ebda58627940.png)
++ 유효성 검사
+![join](https://user-images.githubusercontent.com/75155418/147923649-53450fe3-6a37-4a93-96ec-9c1a2802d7c8.gif)
 
-##### 메인(게시물)
+##### 아이디/비밀번호 찾기
++ 아이디 찾기 시 일부 아이디 노출, 임시 비밀번호로 변경 후 가입된 이메일로 발송
+![findEmailPw](https://user-images.githubusercontent.com/75155418/147923514-a4b0655e-47fd-4a3b-90c5-53b574eebfcb.gif)
+
+##### 메인 게시물(업로드&수정&삭제)
 * 게시물 등록(이미지-최대6개, 글)
-![main](https://user-images.githubusercontent.com/75155418/145069016-ee490278-32c1-47e8-8f77-cdbf1229c6ec.png)
-
-##### 게시물(업로드&수정&삭제)
 ![postEdit](https://user-images.githubusercontent.com/75155418/147921380-207e53d2-35a6-4081-8197-6a6600192b72.gif)
 
-##### 게시물(댓글&대댓글&삭제)
+##### 게시물 디테일(댓글&대댓글&좋아요&삭제)
+* 댓글달기, 대댓글, 좋아요, 삭제
 ![postReply](https://user-images.githubusercontent.com/75155418/147920700-bb4737da-f1ce-4075-98f2-c6413c8fda1f.gif)
 
-##### 메인(채팅)
+##### 메인 채팅
 * 친구와 1:1 채팅 기능 (socket.io 이용)
 ![main_chat](https://user-images.githubusercontent.com/75155418/146749862-fa85f101-d265-4edf-93d7-3a68684bd034.gif)
 
-##### 메인(내위치/친구위치)
+##### 메인 위치
++ 친구 위치 및 내 위치 표시(카카오 API이용)
 ![mainpage_map](https://user-images.githubusercontent.com/75155418/146751025-34bc2a93-6d10-41bc-aa95-9d8a58d4d3dc.gif)
 
 ##### 친구추가(팝업)
-* 개인 코드를 통해 친구 등록 및 해지 (회원가입 시 코드생성)
+* 개인 코드를 통해 친구 등록 및 해지 (회원가입 시 생성되는 코드이용)
 ![friends](https://user-images.githubusercontent.com/75155418/146752451-9ea2a8d5-e184-4b55-889c-c44fa6a7f89c.gif)
 
 ##### 마이페이지
