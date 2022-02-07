@@ -8,6 +8,7 @@
 4. 개발툴 : Visual Studio Code, MySQL Workbench
 5. 사용 언어 : Node.js, React, MySQL
 6. 사용 기술 : Ajax, Open API(카카오), Mail API, soket.io
+7. 인원 : 총 7명 ( 나의 역할 : 프론트엔드, 기여도 20% )
 ```
 
 ### 프로젝트 상세내용
