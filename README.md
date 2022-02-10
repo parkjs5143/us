@@ -6,7 +6,7 @@
 2. 환경 : Node.js, Chrome 브라우저
 3. 주제 : 소셜 채팅 플랫폼
 4. 개발툴 : Visual Studio Code, MySQL Workbench
-5. 사용 언어 : Node.js, React, MySQL
+5. 사용 언어 : Node Express, React, MySQL
 6. 사용 기술 : Ajax, Open API(카카오), Mail API, soket.io
 7. 인원 : 프론트엔드 - 박정순(나), 김미정, 진서영, 박소민, 이재성 / 백엔드 - 소윤정, 정영범
 ```
