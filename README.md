@@ -37,7 +37,6 @@
 ![findEmailPw](https://user-images.githubusercontent.com/75155418/147923514-a4b0655e-47fd-4a3b-90c5-53b574eebfcb.gif)
 
 ##### 메인 게시물(업로드&수정&삭제)
-* 상단에는 프로필, 하단에는 게시물/채팅/위치 서비스로 구성하였습니다.
 * 게시물 등록(이미지-최대6개, 글)
 ![postEdit](https://user-images.githubusercontent.com/75155418/147921380-207e53d2-35a6-4081-8197-6a6600192b72.gif)
 
