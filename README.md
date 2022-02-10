@@ -36,18 +36,6 @@
 + 비밀번호 변경 시 임시 비밀번호 이메일로 발송
 ![findEmailPw](https://user-images.githubusercontent.com/75155418/147923514-a4b0655e-47fd-4a3b-90c5-53b574eebfcb.gif)
 
-##### 친구추가(팝업)
-* 개인 코드를 통해 친구 등록 및 해지 (회원가입 시 생성되는 코드이용)
-![friends](https://user-images.githubusercontent.com/75155418/146752451-9ea2a8d5-e184-4b55-889c-c44fa6a7f89c.gif)
-
-##### 마이페이지
-* 마이페이지로 프로필 수정 및 탈퇴
-![mypage](https://user-images.githubusercontent.com/75155418/145069673-abfc1f3f-bb50-44e9-9a22-01ae606635a3.png)
-
-##### 마이페이지(문의하기)
-* 마이페이지에서 문의하기 가능(일반문의/신고)
-![mypageQnA](https://user-images.githubusercontent.com/75155418/145070591-a3fdabc1-f77e-46d6-b05e-538c3dfffcfe.png)
-
 ##### 메인 게시물(업로드&수정&삭제)
 * 상단에는 프로필, 하단에는 게시물/채팅/위치 서비스로 구성하였습니다.
 * 게시물 등록(이미지-최대6개, 글)
@@ -64,6 +52,18 @@
 ##### 메인 위치
 + 친구 위치 및 내 위치 표시(카카오 API이용)
 ![mainpage_map](https://user-images.githubusercontent.com/75155418/146751025-34bc2a93-6d10-41bc-aa95-9d8a58d4d3dc.gif)
+
+##### 친구추가(팝업)
+* 개인 코드를 통해 친구 등록 및 해지 (회원가입 시 생성되는 코드이용)
+![friends](https://user-images.githubusercontent.com/75155418/146752451-9ea2a8d5-e184-4b55-889c-c44fa6a7f89c.gif)
+
+##### 마이페이지
+* 마이페이지로 프로필 수정 및 탈퇴
+![mypage](https://user-images.githubusercontent.com/75155418/145069673-abfc1f3f-bb50-44e9-9a22-01ae606635a3.png)
+
+##### 마이페이지(문의하기)
+* 마이페이지에서 문의하기 가능(일반문의/신고)
+![mypageQnA](https://user-images.githubusercontent.com/75155418/145070591-a3fdabc1-f77e-46d6-b05e-538c3dfffcfe.png)
 
 ##### 관리자
 ![admin](https://user-images.githubusercontent.com/75155418/145069519-1c291401-f7ed-43c8-9f0c-66e72e68be77.png)
