@@ -27,10 +27,7 @@
 ![erd](https://user-images.githubusercontent.com/75155418/147924496-f23517bb-a120-42fb-99bd-3d58fecb7567.png)
 
 ### 구동 화면
-##### 로그인
-![loginpage](https://user-images.githubusercontent.com/75155418/146747126-be0c1e0a-a5ed-4161-8087-fad02c7b8370.png)
-
-##### 회원가입
+##### 로그인/회원가입
 + 유효성 검사
 ![join](https://user-images.githubusercontent.com/75155418/147923649-53450fe3-6a37-4a93-96ec-9c1a2802d7c8.gif)
 
