@@ -1,0 +1,9 @@
+{
+    "connectionLimit":30,
+    "multipleStatements": true,
+    "host" : "25.42.204.241",
+    "port": "3306",
+    "user": "Beom",
+    "password": "Oh753951!!@@!@",
+    "database": "us"
+}
