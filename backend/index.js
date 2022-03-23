@@ -2,10 +2,10 @@
 const express = require('express');
 const app = express();
 const http = require('http').createServer(app);
-// const logger = require('morgan');
-// const cors = require('cors');
-// const static = require('serve-static');
-// const path = require('path');
+const logger = require('morgan');
+const cors = require('cors');
+const static = require('serve-static');
+const path = require('path');
 const mysql = require('mysql');
 const config = require('./config/config');
 

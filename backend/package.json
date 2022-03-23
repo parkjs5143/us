@@ -5,7 +5,7 @@
   "main": "app.js",
   "scripts": {
     "start": "nodemon",
-    "dev": "concurrently \"npm start --prefix C:/project/us/frontend\" \"npm start\""
+    "dev": "concurrently \"npm start --prefix Users/bagjeongsun/us/frontend\" \"npm start\""
   },
   "author": "",
   "license": "ISC",
